@@ -5,7 +5,7 @@
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CatalogMemberDataTool/trunk Products.CatalogMemberDataTool 
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CMFDiffTool/trunk Products.CMFDiffTool
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CNXMLDocument/trunk Products.CNXMLDocument
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CNXMLTraansforms/trunk Products.CNXMLTraansforms
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CNXMLTransforms/trunk Products.CNXMLTransforms
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.ExtZSQL/trunk Products.ExtZSQL
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.FSImportTool/trunk Products.FSImportTool
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.Lensmaker/trunk Products.Lensmaker
