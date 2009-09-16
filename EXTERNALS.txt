@@ -1,0 +1,34 @@
+#
+# applied by: svn propset svn:externals -F ./EXTERNALS.txt .
+#
+
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CatalogMemberDataTool/trunk CatalogMemberDataTool 
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CMFDiffTool/trunk CMFDiffTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CNXMLDocument/trunk CNXMLDocument
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.CNXMLTraansforms/trunk CNXMLTraansforms
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.ExtZSQL/trunk ExtZSQL
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.FSImportTool/trunk FSImportTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.Lensmaker/trunk Lensmaker
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.LensOrganizer/trunk LensOrganizer
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.LinkMapTool/trunk LinkMapTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.MathEditor/trunk MathEditor
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosBugTrackingTool/trunk RhaptosBugTrackingTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCacheTool/trunk RhaptosCacheTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollaborationTool/trunk RhaptosCollaborationTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollection/trunk RhaptosCollection
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosContent/trunk RhaptosContent
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosForums/trunk RhaptosForums
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosHitCountTool/trunk RhaptosHitCountTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosModuleEditor/trunk RhaptosModuleEditor
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosModuleStorage/trunk RhaptosModuleStorage
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPatchTool/trunk RhaptosPatchTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPDFLatexTool/trunk RhaptosPDFLatexTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPrint/trunk RhaptosPrint
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosRepository/trunk RhaptosRepository
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSimilarityTool/trunk RhaptosSimilarityTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSite/trunk RhaptosSite
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosWorkgroup/trunk RhaptosWorkgroup
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.UniFile/trunk UniFile
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.XMLTemplateMaker/trunk XMLTemplateMaker
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.ZAnnot/trunk ZAnnot
+
