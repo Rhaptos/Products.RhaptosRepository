@@ -12,11 +12,11 @@ https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.Lensmaker/b
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.LensOrganizer/branches/generic-setup-refactor Products.LensOrganizer
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.LinkMapTool/branches/generic-setup-refactor Products.LinkMapTool
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.MathEditor/branches/generic-setup-refactor Products.MathEditor
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosBugTrackingTool/trunk Products.RhaptosBugTrackingTool
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCacheTool/trunk Products.RhaptosCacheTool
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollaborationTool/trunk Products.RhaptosCollaborationTool
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollection/trunk Products.RhaptosCollection
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosContent/trunk Products.RhaptosContent
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosBugTrackingTool/branches/generic-setup-refactor Products.RhaptosBugTrackingTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCacheTool/branches/generic-setup-refactor Products.RhaptosCacheTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollaborationTool/branches/generic-setup-refactor Products.RhaptosCollaborationTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosCollection/branches/generic-setup-refactor Products.RhaptosCollection
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosContent/branches/generic-setup-refactor Products.RhaptosContent
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosForums/trunk Products.RhaptosForums
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosHitCountTool/trunk Products.RhaptosHitCountTool
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosModuleEditor/trunk Products.RhaptosModuleEditor
