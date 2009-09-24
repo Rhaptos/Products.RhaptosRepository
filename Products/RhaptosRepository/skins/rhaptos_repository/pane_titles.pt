@@ -1,0 +1,33 @@
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="alphabet python:['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                                  'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Other'];
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 selected python:params and len(params) >= 1 and params[0] or None;
+                 linkbase string:${context/portal_url}/content/browse_content/titles;">
+
+<tal:comment replace="nothing">
+  note: cannot be named 'pane_title' because that leads to browse_content/title, and title is an attribute!
+  also: 'selected' is not currently used, but may be in the future.
+</tal:comment>
+
+<span id="cnx_browse_active_pane" tal:condition="not:params"></span>
+
+<h2>Titles</h2>
+
+<div class="cnx_alphabet">
+<tal:a tal:repeat="letter alphabet">
+  <a tal:content="letter"
+     onclick="setPane('view', 'titles', 'A',this);return false;"
+     tal:attributes="href string:$linkbase/$letter;
+                     class python:selected == letter and 'selected' or None;
+                     onclick string:setPane('view','titles','$letter',this);;return false;;">
+    A
+  </a>
+</tal:a>
+</div>
+
+</div>

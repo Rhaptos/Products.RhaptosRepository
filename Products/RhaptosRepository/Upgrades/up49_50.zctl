@@ -1,0 +1,14 @@
+from Testing.makerequest import makerequest
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+
+app=makerequest(app)
+app.REQUEST.setServerURL(protocol='http', hostname='yoda.cnx.rice.edu:8080')
+app.REQUEST.set('VirtualRootPhysicalPath', ('', 'plone'))
+
+ExternalMethod('temp','temp','RisaRepository.Upgrade','convertToBTree')(app.plone)
+ExternalMethod('temp','temp','RisaRepository.Upgrade','referenceUpgrade')(app.plone)
+#ExternalMethod('temp','temp','RisaRepository.Upgrade','fixTitleCatalog')(app.plone)
+
+
+
+get_transaction().commit()

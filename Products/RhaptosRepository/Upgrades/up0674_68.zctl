@@ -1,0 +1,15 @@
+portal = app.plone
+content = portal.content
+
+historystr = "here/portlet_search_history/macros/portlet"
+
+# content
+right_slots = list(content.right_slots)
+
+if historystr in right_slots:
+    idx = right_slots.index(historystr)
+    del right_slots[idx]
+    content.manage_changeProperties(right_slots=right_slots)
+
+import transaction
+transaction.commit()

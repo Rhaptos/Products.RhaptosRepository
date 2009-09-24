@@ -1,0 +1,17 @@
+from Testing.makerequest import makerequest
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+
+app=makerequest(app)
+
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','installRepositoryStatsPortlet')(app.plone)
+
+# catalog index addition (for new navtree)
+portal = app.plone
+catalog = portal.content.catalog
+newindex = 'atomicInstitution'
+if newindex not in catalog.indexes():
+    catalog.addIndex(newindex, 'FieldIndex', {'indexed_attrs':'institution'})
+    #catalog.refreshCatalog()
+    catalog.reindexIndex('atomicInstitution', None)
+
+get_transaction().commit()

@@ -1,0 +1,97 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" metal:use-macro="here/manage_look/macros/view">
+
+    <form metal:fill-slot="main" method="post" tal:attributes="action request/URL1">
+
+      <p class="form-help">
+	Parameters allow you to assign simple values to Zope objects. 
+      </p>
+
+      <table tal:condition="python:here.getParameters()!={}" cellspacing="0" cellpadding="2" border="0">
+	  <tr class="list-header">
+	    <td align="left" valign="top" width="16">
+	      &#160;
+	    </td>
+	    <td align="left" valign="top">
+	      <div class="form-label">
+		Name
+	      </div>
+	    </td>
+	    <td align="left" valign="top">
+	      <div class="form-label">
+		Value
+	      </div>
+	    </td>
+	    <td align="left" valign="top">
+	      <div class="form-label">
+		Type
+	      </div>
+	    </td>
+	  </tr>
+	  <tr tal:repeat="key python:here.getParameters().keys()">
+	    <td width="16">
+	      <input type="checkbox" name="keys:list" tal:attributes="value key"/>
+	    </td>
+	    <td>
+	      <div class="form-label"><label for="cb-title" tal:content="key" /></div>
+	    </td>
+	    <td>
+	      <input type="text" size="35" name="values:list" tal:attributes="value python:here.getParameters()[key]"/>
+	    </td>
+	    <td>
+	      <div class="list-item" tal:define="value python:here.getParameters()[key]">
+		<span tal:condition="python:same_type(value,'')" tal:replace="string:string" />
+		  <span tal:condition="python:same_type(value,10)" tal:replace="string:int" />
+	      </div>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td colspan="2">&#160;</td>
+	    <td align="left" valign="top">
+	      <div class="form-element">
+		<input name="manage_editParameters:method" type="submit" 
+		  class="form-element" value="Save Changes" />
+		<input name="manage_delParameters:method" type="submit" 
+		  class="form-element" value="Delete" />
+	      </div>
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+      </table>
+
+      <br/>
+
+      <p class="form-help">
+	To add a parameter, enter a name, type 
+	and value and click the &quot;Add&quot; button.
+      </p>
+
+      <table cellspacing="0" cellpadding="2" border="0">
+	  <tr>
+	    <td><div class="form-label">Name</div></td>
+	    <td><input type="text" name="key:string" size="35"/></td>
+	  </tr>
+	  <tr>
+	    <td><div class="form-label">Value</div></td>
+	    <td><input type="text" name="value:string" size="35"/></td>
+	  </tr>
+	  <tr>
+	    <td><div class="form-label">Type</div></td>
+	    <td>
+	      <select name="type:string">
+		<option selected="selected">string</option>
+		<option>int</option>
+	      </select>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td><input class="form-element" name="manage_addParameter:method" type="submit" value="Add"/></td>
+	  </tr>
+      </table>
+
+    </form>
+  </html>

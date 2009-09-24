@@ -1,0 +1,436 @@
+<div  tal:omit-tag=""
+      tal:define="category options/panename | nothing;
+                  pss modules/Products/PythonScripts/standard;
+                  paneParams options/boxparams | nothing;
+                  paneParams python:paneParams and [pss.url_unquote(x.replace('*' ,'%')) for x in paneParams];
+                  paramPath python:category and (category + (paneParams and '/'.join(['']+paneParams) or '')) or '';
+                  displayParams python:paneParams and ' > '.join(paneParams);
+                  overTitle python:'Browse' + (category and ' - %s' % category.capitalize() or '')
+                                            + (displayParams and ' - %s' % displayParams or '');"
+      xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+<html metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+<head>
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+
+  <link rel="stylesheet" href="/content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+
+  <metal:js metal:fill-slot="javascript_head_slot">
+  <script type="text/javascript" charset="iso-8859-1" src="/historyManager.js"> </script>
+  <script type="text/javascript" language="Javascript"
+          tal:content="string:var portal_url='${context/portal_url}';"> </script>
+  <script type="text/javascript" language="Javascript"
+          tal:content="string:var paramPath='$paramPath';"> </script>
+  <script type="text/javascript">
+<!--
+unFocus.History.addEventListener("historyChange", beCurrent);
+
+function writelog(str) {
+    return  // comment this line out and turn on the 'console' element to use
+    var console = document.getElementById('console');
+    var theNewParagraph = document.createElement('p');
+    var theTextOfTheParagraph = document.createTextNode(str);
+    theNewParagraph.appendChild(theTextOfTheParagraph);
+    console.appendChild(theNewParagraph);
+}
+
+function clearlog() {
+      var cell = document.getElementById('console');
+//    if (node !== undefined && node !=== null)
+//    {
+//       return;
+//    }
+      if ( cell.hasChildNodes() )
+      {
+          while ( cell.childNodes.length >= 1 )
+          {
+              cell.removeChild( cell.firstChild );
+          }
+      }
+}
+
+window.onload = function(e) {
+    //writelog("onload");
+    initialSettings();
+    beCurrent();
+}
+
+var xmlreq = new XMLHttpRequest();
+
+function scrollUp() {
+    //writelog("scrollup");
+    var yscroll = 0;
+    if (window.pageYOffset) {
+        yscroll = window.pageYOffset;
+    } else if (document.documentElement.scrollTop) {
+        yscroll = document.documentElement.scrollTop;
+    }
+    var viewheight = document.getElementById('cnx_view').offsetHeight;
+    var viewc = document.getElementById('cnx_view_cell');
+    var yposition = 0;
+    while (viewc) {
+        yposition += viewc.offsetTop;
+        viewc = viewc.offsetParent;
+    }
+    var calculation = Math.floor(viewheight/2) + yposition - yscroll;
+    yposition = (calculation < 0) ? yposition : -1; // if at least half of pane is below scroll level, don't bother to scroll up
+    return yposition;
+    //writelog("scrollup done");
+}
+
+function initialSettings(){ // the non-JS folk can stick with all boring blue colors for now
+    //writelog("initSettings");
+    var browse = document.getElementById('cnx_browse');
+    var refine = document.getElementById('cnx_refine');
+    var view = document.getElementById('cnx_view');
+
+    document.getElementById("arrow-1-2").style.display = 'none';
+    document.getElementById("arrow-1-2-selected").style.display = 'inline';
+    browse.className = 'portlet selected';
+    refine.className = 'portlet unselected';
+    view.className = 'portlet unselected';
+
+    var activePane = document.getElementById('cnx_browse_active_pane');
+    if (activePane) {
+        var parentOf = activePane.parentNode;
+        var foundRefine = 0;
+        var foundView = 0;
+        while (!foundRefine && !foundView && parentOf != document) {
+            if (parentOf == refine) foundRefine = 1;
+            if (parentOf == view) foundView = 1;
+            parentOf = parentOf.parentNode;
+        }
+
+        if (foundRefine) {
+            browse.className = 'portlet';
+            refine.className = 'portlet selected';
+            document.getElementById("arrow-2-3").style.display = 'none';
+            document.getElementById("arrow-2-3-selected").style.display = 'inline';
+        } else if (foundView) {
+            browse.className = 'portlet ';
+            refine.className = 'portlet';
+            view.className = 'portlet selected';
+            document.getElementById("arrow-2-3").style.display = 'none';
+            document.getElementById("arrow-2-3-selected").style.display = 'inline';
+        }
+    }
+    //writelog('initSettings done');
+}
+
+function loadDiv(div_id) {
+    //writelog("loadDiv: " + div_id);
+    if (xmlreq.readyState==4) {
+        if (xmlreq.status==200) {
+           //writelog("loading...");
+           document.getElementById(div_id).innerHTML = xmlreq.responseText;
+           //writelog("...loading done");
+           // determine whether to scroll back up or not
+           if (div_id == 'cnx_view_full') {
+               var yposition = scrollUp();
+               if (yposition != -1) scrollTo(0,yposition - 15); // 15 for padding
+           }
+       }
+       else {
+          alert("Problem retrieving data for "+div_id+": " + xmlreq.statusText)
+       }
+     }
+     //writelog("loadDiv done");
+}
+
+function getDivContents(div_id, url) {
+    //writelog("getDivContents: " + div_id + " " + url);
+    if (xmlreq.readyState != 0) xmlreq.abort();
+    var change_func = new Function("loadDiv('"+div_id+"');")
+    xmlreq.open("GET", url, true);
+    xmlreq.setRequestHeader('Accept-Charset','utf-8');
+    xmlreq.onreadystatechange = change_func;
+    xmlreq.send(null);
+    //writelog('getDivContents done');
+return false;
+}
+
+/** uses synchronous requests, mostly for when we need to load two in a row */
+function getDivContentsSync(div_id, url) {
+    //writelog('getDivContentsSync: ' + div_id + " " + url);
+    if (xmlreq.readyState != 0) xmlreq.abort();
+    xmlreq.open("GET", url, false);
+    xmlreq.setRequestHeader('Accept-Charset','utf-8');
+    xmlreq.send(null);
+    loadDiv(div_id);
+    //writelog('getDivContentsSync done');
+return false;
+}
+
+var expectedHash = '';                              // set remembered hash to none
+function beCurrent() {
+    writelog('beCurrent start');
+    var lochash = unFocus.History.getCurrent();     // get current hash, double-encoded
+    writelog('beCurrent lochash/getCurrent() = ' + lochash + ' | expectedHash = ' + expectedHash);
+
+    if (lochash != expectedHash) {                  // if remembered hash is not same as current...
+        //writelog("lochash  " + lochash + "\nexpected " + expectedHash);
+        if (lochash == '') {                          // if state is top...
+            setPane('none', '', '', true);
+        } else {                                      // for anything else...
+            var path = lochash.split('/');
+            var category = path[0];
+            var param = path.slice(1, path.length).join('/');  // much prettier in Python...
+            //writelog('location: ' + lochash + ' expected: ' + expectedHash);
+            //writelog(path + ' | ' + category + ' | ' + param);
+            var selLink = document.getElementById('cnx_browse_link_' + category);
+            /* we don't have info about which pane is set by a particular param, so we do both */
+            setPane('both', category, param, selLink);
+        }
+        expectedHash = lochash;                     // set remembered hash to current
+    }
+    writelog('beCurrent done');
+}
+
+/** pane takes 'browse' or 'refine' and removes 'selected' class from any anchor elements in that elt */
+function clearLinks(pane) {
+    //writelog('clearLinks start');
+    var panelinks = pane.getElementsByTagName('a');
+    if (panelinks) {
+        var plen = panelinks.length;
+        for (var i = 0; i < plen; i++) {
+            if (panelinks[i].className == 'selected') panelinks[i].className = '';
+        }
+    }
+    //writelog('clearLinks done');
+}
+
+/** pane is one of 'refine' or 'view' for normal switching, or 'both' or 'non' for reloading both frames
+   category is 'author', 'title', 'subject', etc of the panes we have
+   param is what we pass to the pane; basically a subpath
+*/
+function setPane(pane, category, param, linked) {
+    writelog("setPane: " + pane + " " + category + " " + param + " " + linked);
+    if (paramPath) {  // we're on a non-AJAX linked page and going into AJAX mode
+        //...so instead of tacking a fragment to the current URL, go to the top
+        window.location = portal_url + '/content/#' + category + '/' + param;
+        return false;
+    }
+
+    var pageTitle = "Connexions - Browse"
+    if (category) pageTitle += " - " + category.substring(0,1).toUpperCase() + category.substring(1)
+    if (param.length > 0) pageTitle += " > " + param.split('/').join(' > ');
+    document.title =  decodeURIComponent(decodeURIComponent(pageTitle.replace(/\*/g,'%')));  // yes, twice is intentional
+
+    var newhash = '';
+    if (category) newhash = category + '/' + param;
+    newhash = decodeURI(newhash);
+    // IE uses a hidden frame where the hash is put in a JS single-quoted string, so it can't handle a single quote...
+    newhash = newhash.replace(/\'/g, '%27')
+    expectedHash = newhash;
+    writelog("addHistory | newhash: " + newhash + " | current: " + unFocus.History.getCurrent());
+    unFocus.History.addHistory(newhash);
+    writelog("after addHistory" + " | current: " + unFocus.History.getCurrent());
+
+    var browsep = document.getElementById('cnx_browse');
+    var refinep = document.getElementById('cnx_refine');
+    var viewp = document.getElementById('cnx_view');
+    var arg = '';
+    if (param) {
+        arg = '?param=' + param;
+    }
+    //writelog("setPane: " + pane + " " + category + " " + param);
+
+    if (pane == 'refine') {
+        // swap for empty div on "view" and loading div on "refine"
+        document.getElementById('cnx_refine_full').innerHTML = document.getElementById('cnx_refine_loading').innerHTML;
+        document.getElementById('cnx_view_full').innerHTML = document.getElementById('cnx_view_empty').innerHTML;
+
+        getDivContents('cnx_refine_full', portal_url+'/content/pane_' + category + arg);
+
+        document.getElementById("arrow-2-3").style.display = 'none';
+        document.getElementById("arrow-2-3-selected").style.display = 'inline';
+
+        browsep.className = 'portlet';
+        refinep.className = 'portlet selected';
+        viewp.className = 'portlet unselected'; // <-- this one so that a class of 'portlet selected'
+                                                // doesn't stick if you're calling setPane('refine')
+                                                // after having already called setPane('view')
+
+        if (linked) clearLinks(browsep);
+    } else if (pane == 'view') {
+        // swap for loading div on "view"
+        document.getElementById('cnx_view_full').innerHTML = document.getElementById('cnx_view_loading').innerHTML;
+        getDivContents('cnx_view_full', portal_url+'/content/pane_detail_' + category + arg);
+
+        browsep.className = 'portlet';
+        refinep.className = 'portlet';
+        viewp.className = 'portlet selected';
+        if (linked) clearLinks(refinep);
+
+    } else if (pane == 'both') {
+        // reload both panes, mostly for history
+        document.getElementById('cnx_refine_full').innerHTML = document.getElementById('cnx_refine_loading').innerHTML;
+        document.getElementById('cnx_view_full').innerHTML = document.getElementById('cnx_view_loading').innerHTML;
+        getDivContentsSync('cnx_refine_full', portal_url+'/content/pane_' + category + arg);
+        getDivContentsSync('cnx_view_full', portal_url+'/content/pane_detail_' + category + arg);
+        initialSettings();  // reload highlights/arrows like a full reload
+        if (linked) clearLinks(browsep);
+    } else if (pane == 'none') {
+        document.getElementById('cnx_refine_full').innerHTML = document.getElementById('cnx_refine_empty').innerHTML;
+        document.getElementById('cnx_view_full').innerHTML = document.getElementById('cnx_view_empty').innerHTML;
+        clearLinks(browsep);
+        initialSettings();  // reload highlights/arrows like a full reload
+    }
+
+    if (linked) {
+        writelog("linked: " + linked);
+        linked.className = 'selected';
+    }
+    writelog("setPane done");
+}
+
+  //-->
+   </script>
+   </metal:js>
+</head>
+
+<body>
+    <metal:block metal:fill-slot="main">
+      <tal:console replace="nothing">Javascript output:
+        <div id="console" style="width:100%; min-height:200px;background-color:white;border:thin black solid;"></div>
+        <a href="" onclick="clearlog();return false;">Clear</a><br/>
+      </tal:console>
+      
+      <p i18n:translate="description_rhaptos_objects" id="cnx_commons_intro">
+	The content in 
+	<span tal:replace="portal/Title" i18n:name="portal_title">[Portal]</span>
+	comes in two formats: 
+	<img tal:replace="structure here/module_icon.gif" i18n:name="module_icon"/>
+	modules, which are like small "knowledge chunks," and 
+	<img tal:replace="structure here/repository_icon.gif" i18n:name="course_icon"/> 
+	collections, groups of modules structured into books or course notes, or for other uses.  Our 
+	<span i18n:name="creative_commons_link">
+	  <a href="http://creativecommons.org/licenses/by/3.0/" 
+            tal:attributes="href here/getDefaultLicense"
+	    i18n:translate="label_open_license">open license</a>
+	</span> 
+	allows for free use and reuse of all our content.
+      </p>
+      
+      <h1 class="topheading cnx_commons_header"
+        i18n:translate="heading_search_content">Search for Content</h1>
+      
+        <metal:block metal:use-macro="here/search/macros/search" />
+      
+      <h1 class="topheading cnx_commons_header" i18n:translate="heading_browse_content">Browse Content</h1>
+
+     <table id="browse_panels" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 2em;">
+       <tbody>
+         <tr>
+           <td valign="top" id="cnx_browse_cell">
+
+      <div id="cnx_browse" class="portlet">
+	<h5 i18n:translate="heading_step_one_browse">1. Browse</h5>
+	<div class="portletBody">
+	<div class="portletContent odd">
+
+        <ul tal:define="categories python:(('subject','Subject'),
+                                           ('titles','Title'),
+                                           ('author','Author'),
+                                           ('keyword','Keyword'),
+                                           ('popularity','Popularity'),
+                                           ('language','Language'),
+                                           ('date','Revision Date'),
+                                           ('institution','Institution'),
+                                           ('collections','All Collections'))">
+          <li tal:repeat="cat categories">
+              <a href="/content/browse_content/subject"
+                 onclick="setPane('refine','subject','',this);;return false;;"
+                 tal:define="pane python:cat[0]; human python:cat[1]"
+                 tal:attributes="href string:$portal_url/content/browse_content/$pane;
+                                 class python:category == pane and 'selected' or nothing;
+                                 onclick string:setPane('refine','$pane','',this);;return false;;;
+                                 id string:cnx_browse_link_$pane"
+                 tal:content="human" i18n:translate="">
+                   Subject Category
+              </a>
+          </li>
+        </ul>
+	</div>
+	</div>
+      </div>
+
+         </td>
+	 <td valign="top" class="arrow">
+	   <img src="/arrow.gif" id="arrow-1-2" />
+	   <img src="/arrow-selected.gif" id="arrow-1-2-selected" style="display: none;"/>
+	 </td>
+         <td valign="top" id="cnx_refine_cell">
+
+      <div id="cnx_refine" class="portlet">
+	<h5 i18n:translate="heading_step_two_refine">2. Refine</h5>
+	<div class="portletBody">
+	<div class="portletContent odd">
+
+        <div id="cnx_refine_empty" style="display:none">    <!-- never shown, but contents copied to full -->
+          <em>Click a link at left first.</em>
+        </div>
+        <div id="cnx_refine_loading" style="display:none">    <!-- never shown, but contents copied to full -->
+          <em>Loading...</em>
+        </div>
+        <div id="cnx_refine_full">    <!-- gets replaced dynamically -->
+          <div tal:condition="options/box2 | nothing">
+             <div metal:use-macro="options/box2/macros/pane"></div>
+          </div>
+          <div tal:condition="not:options/box2 | default">
+            <em>Click a link at left first.</em>
+          </div>
+        </div>
+
+        </div>
+        </div>
+      </div>
+
+         </td>
+	 <td valign="top" class="arrow">
+	   <img src="/arrow.gif" id="arrow-2-3" />
+	   <img src="/arrow-selected.gif" id="arrow-2-3-selected" style="display: none;" />
+	 </td>
+         <td valign="top" id="cnx_view_cell">
+
+      <div id="cnx_view" class="portlet">
+	<h5 i18n:translate="heading_step_three_view">3. View</h5>
+	<div class="portletBody">
+	<div class="portletContent odd">
+
+
+          <div id="cnx_view_empty" style="display:none"> <!-- never shown, but contents copied to full -->
+            <em>Click a link at left first.</em>
+          </div>
+          <div id="cnx_view_loading" style="display:none"> <!-- never shown, but contents copied to full -->
+            <em>Loading...</em>
+          </div>
+          <div id="cnx_view_full">                       <!-- gets replaced dynamically -->
+            <div tal:condition="options/box3 | nothing"
+                tal:define="paneParams options/boxparams | nothing">
+              <div metal:use-macro="options/box3/macros/pane"></div>
+            </div>
+            <div tal:condition="not:options/box3 | default">
+              <em>Click a link at left first.</em>
+            </div>
+          </div>
+
+	</div>
+	</div>
+      </div>
+
+           </td>
+         </tr>
+       </tbody>
+     </table>
+
+    </metal:block>
+  </body>
+</html>
+</div>

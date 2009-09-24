@@ -1,0 +1,80 @@
+<!-- essentially new, but very simple -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 highlight python:params and len(params) >= 1 and params[0] or None;">
+
+<span id="cnx_browse_active_pane" tal:condition="not:params"></span>
+
+<h2 i18n:translate="heading_date">Revision Date</h2>
+
+<ul>
+ <li>
+   <a href="/content/browse_content/date/latest" i18n:translate="text_revised_latest"
+      onclick="setPane('view','date','latest',this);return false;"
+      tal:attributes="class python:highlight == 'latest' and 'selected' or nothing">
+    All recent activity</a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/new" i18n:translate="text_revised_new"
+      onclick="setPane('view','date','new',this);return false;"
+      tal:attributes="class python:highlight == 'new' and 'selected' or nothing">
+    New content only</a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/revised" i18n:translate="text_revised_revised"
+      onclick="setPane('view','date','revised',this);return false;"
+      tal:attributes="class python:highlight == 'revised' and 'selected' or nothing">
+    New revisions only</a>
+ </li>
+</ul>
+
+<tal:comment replace="nothing">
+<div class="cnx_or">
+or
+</div>
+
+<ul>
+ <li>
+   <a href="/content/browse_content/date/today" i18n:translate="text_revised_today"
+      onclick="setPane('view','date','today',this);return false;"
+      tal:attributes="class python:highlight == 'today' and 'selected' or nothing">
+    Today
+   </a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/week" i18n:translate="text_revised_week"
+      onclick="setPane('view','date','week',this);return false;"
+      tal:attributes="class python:highlight == 'week' and 'selected' or nothing">
+    This week
+   </a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/month" i18n:translate="text_revised_month"
+      onclick="setPane('view','date','month',this);return false;"
+      tal:attributes="class python:highlight == 'month' and 'selected' or nothing">
+    This month
+   </a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/year" i18n:translate="text_revised_year"
+      onclick="setPane('view','date','year',this);return false;"
+      tal:attributes="class python:highlight == 'year' and 'selected' or nothing">
+    This year
+   </a>
+ </li>
+ <li>
+   <a href="/content/browse_content/date/ever" i18n:translate="text_revised_ever"
+      onclick="setPane('view','date','ever',this);return false;"
+      tal:attributes="class python:highlight == 'ever' and 'selected' or nothing">
+    Ever
+   </a>
+ </li>
+</ul>
+</tal:comment>
+
+</div>

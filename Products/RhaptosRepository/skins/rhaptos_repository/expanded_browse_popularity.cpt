@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+  
+  <link rel="stylesheet" href="content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+  
+  <body>
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/expanded_browse_popularity_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     recent viewinfo/recent;
+                     param_string viewinfo/param_string;
+                     headerfragment viewinfo/headerfragment;
+                     length python:len(results);
+                     global found length;">
+
+      <h1 class="topheading" i18n:translate="heading_browse_popular_content">
+        Browse by Popularity:
+        <span i18n:name="headerfragment">
+          <span i18n:translate="" tal:content="headerfragment" /></span>
+      </h1>
+
+      <div class="cnx_header_underlink" id="def" tal:define="start here/portal_hitcount/getStartDate;
+                              range here/portal_hitcount/getIncrementDateRange"
+	i18n:translate="text_popularity_statistics_dates">
+        Statistics gathered from 
+	<tal:date tal:condition="recent"
+	  tal:replace="python:context.toLocalizedTime(range[0])" 
+	  i18n:name="begin_date_recent">[date]</tal:date>
+	<tal:date tal:condition="not:recent" 
+	  tal:replace="python:context.toLocalizedTime(start)"
+	  i18n:name="begin_date_not_recent">[date]</tal:date>
+	to <tal:date tal:replace="python:context.toLocalizedTime(range[1])"
+	  i18n:name="end_date">[date]</tal:date>
+      </div>
+ 
+      <div tal:define="returnhref python:'/content/browse_content/popularity/'+param_string">
+        <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
+      </div>
+
+      <!--
+      <tal:if tal:condition="recent">  
+        <strong i18n:translate="text_most_popular_last_week">Most popular last week</strong> ·
+        <a href="browse_popularity" 
+          i18n:translate="text_most_popular_all_time">Most popular of all time</a>
+      </tal:if>
+
+      <tal:if tal:condition="not:recent">
+        <a tal:condition="not:recent" 
+          href="browse_popularity?recent:bool=True" 
+          i18n:translate="text_most_popular_last_week">Most popular last week</a> ·
+        <strong i18n:translate="text_most_popular_all_time">Most popular of all time</strong>
+      </tal:if>-->
+      
+        <tal:block tal:condition="found">
+          <tal:block metal:use-macro="here/search_macros/macros/search_results"/>
+        </tal:block>
+
+    </div>
+  </body>
+</html>

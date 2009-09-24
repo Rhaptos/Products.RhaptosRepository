@@ -1,0 +1,9 @@
+[default]
+title=Browse by Title
+
+[actions]
+action.success..Go=traverse_to:string:results_helper
+action.success..WorkspaceAdd=traverse_to:string:addObjectsToWorkspace
+action.failure=redirect_to:string:expanded_browse_titles
+action.success..stats=traverse_to:string:results_stats.xml
+action.success..=traverse_to:string:results_helper

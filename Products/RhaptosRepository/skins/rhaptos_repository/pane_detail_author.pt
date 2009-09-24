@@ -1,0 +1,138 @@
+<!-- essentially, the old by_author -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="panetype string:author;
+                 template nocall:options/box3 | nocall:template;
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 params python:params and len(params) == 2 and params+['by'] or params;
+                 letter   python:params and params[0];
+                 selected python:params and len(params) > 1 and params[1];
+                 mode     python:params and len(params) > 2 and params[2] or 'by';
+                 batch_start python:params and len(params) > 3 and params[3].strip('at') or 0;
+                 linkbase string:${context/portal_url}/content/browse_content/author;">
+
+<tal:test tal:condition="selected">
+<tal:data tal:define="member selected;
+                      m python:here.desecured.getMemberById(member);
+                      sortkey string:Title;
+                      reverse nothing;
+                      acdict python:here.getAuthorContent(member, sortkey, reverse);
+                      bycontent acdict/content;
+                      containers acdict/containers;
+                      forks acdict/forks;
+                      m_content acdict/m_content;
+                      by          python:mode == 'by' and 1 or 0;
+                      contain     python:mode == 'containers' and 2 or 0;
+                      derivedfrom python:mode == 'derivedfrom' and 3 or 0;
+                      maintains   python:mode == 'maintains' and 4 or 0;
+                      which python:(by or contain or derivedfrom or maintains)-1;
+                      results python:[bycontent, containers, forks, m_content];
+                      raw_results python:results[which];
+                      sorton request/sorton | string:portal_type;
+                      results python:sorton!='title' and context.content.sortSearchResults(list(raw_results),sorton) or raw_results;
+                      Batch python:modules['Products.CMFPlone'].Batch;
+                      b_start batch_start | request/b_start | python:0;
+                      b_size request/b_size | python:context.content.default_browse_batch_size;
+                      batch python:Batch(results, int(b_size), int(b_start), orphan=5, quantumleap=0);">
+
+<span id="cnx_browse_active_pane"></span>
+
+<h2><tal:name replace="python:m.getProperty('fullname')">Author Name</tal:name></h2>
+
+<div style="font-weight: bold"><a href="" tal:attributes="href string:${context/portal_url}/member_profile/${member}"
+          i18n:translate="label_view_profile">View author profile</a></div>
+
+<div class="cnx_author_sublinks">
+        <tal:block
+          tal:condition="python:len(bycontent) &gt; 0">
+          <a href="/content/browse_content/author/alice/by"
+            onclick="setPane('view','author','alice/by');return false;"
+            tal:omit-tag="python:len(bycontent) == 0"
+            tal:define="qs string:$letter/$selected/by"
+            tal:attributes="href string:$linkbase/$qs;
+                            onclick string:setPane('view','author','$qs');;return false;;;
+                            class python:by and 'selected' or None"
+            i18n:translate="text_content_by">
+            <strong tal:omit-tag="python:not by">Content By</strong></a> 
+          <span tal:condition="python:containers or forks or m_content">|</span>
+        </tal:block>
+        <tal:block 
+          tal:condition="python:len(containers) &gt; 0">
+          <a href="/content/browse_content/author/alice/containers"
+            onclick="setPane('view','author','alice/containers');return false;"
+            tal:define="qs string:$letter/$selected/containers"
+            tal:attributes="href string:$linkbase/$qs;
+                            onclick string:setPane('view','author','$qs');;return false;;;
+                            class python:contain and 'selected' or None"
+            i18n:translate="text_other_collections_using">
+            Other Collections Using</a>  
+          <span tal:condition="python:forks or m_content">|</span>
+        </tal:block>
+        <tal:block
+          tal:condition="python:len(forks) &gt; 0">
+          <a href="/content/browse_content/author/alice/derivedfrom"
+            onclick="setPane('view','author','alice/derivedfrom');return false;"
+            tal:define="qs string:$letter/$selected/derivedfrom"
+            tal:attributes="href string:$linkbase/$qs;
+                            onclick string:setPane('view','author','$qs');;return false;;;
+                            class python:derivedfrom and 'selected' or None"
+            i18n:translate="text_derived_from">
+            Derived From</a>
+          <span tal:condition="python:m_content">|</span>
+        </tal:block>
+        <a href="/content/browse_content/author/alice/maintains"
+          onclick="setPane('view','author','alice/maintains');return false;"
+          tal:condition="python:len(m_content) &gt; 0"
+          tal:define="qs string:$letter/$selected/maintains"
+          tal:attributes="href string:$linkbase/$qs;
+                          onclick string:setPane('view','author','$qs');;return false;;;
+                          class python:maintains and 'selected' or None"
+          i18n:translate="text_also_maintains">
+          Also Maintains</a>
+</div>
+
+<div class="cnx_expand_link cnx_top">
+  <a href="#" i18n:translate="label_browse_expandinfo" metal:define-macro="expandlink"
+     tal:define="base string:/content/expanded_browse_authors;
+                 query python:context.expanded_query(letter=letter, author=selected,
+                                                            subset=mode, b_start=b_start)"
+     tal:attributes="href python:'%s?%s' % (base, query)">Expand this Information</a>
+</div>
+
+<metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+
+<table tal:condition="batch">
+  <tr>
+    <th>Type</th>
+    <th>Title</th>
+  </tr>
+  <tr tal:repeat="brain batch">
+     <td><img tal:replace="structure python:path('here/%s' % brain.getIcon)" /></td>
+     <td><a tal:attributes="href python:'/'.join([context.content.absolute_url(),brain.objectId,brain.version])" tal:content="brain/Title">[title]</a></td>
+  </tr>
+</table>
+
+<p tal:condition="not:batch">No results found.</p>
+
+<div tal:condition="python:len(batch) > 10" class="cnx_expand_link cnx_bottom">
+  <metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+  <div style="position:relative;top:.5em">
+    <a href="#" metal:use-macro="template/macros/expandlink">Expand this Information</a>
+    &#183;
+    <a href="" tal:attributes="href string:${context/portal_url}/member_profile/${member}"
+       i18n:translate="text_authorprofile">Author Profile</a>
+  </div>
+</div>
+
+</tal:data>
+</tal:test>
+
+<tal:test tal:condition="not:selected">
+  <em>Click a link at left first</em>
+</tal:test>
+
+</div>

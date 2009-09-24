@@ -1,0 +1,5 @@
+[actions]
+action.success..search=redirect_to:string:state.kwargs['template']
+action.success..Go=redirect_to:python:state.kwargs['template']
+action.success..=redirect_to:python:state.kwargs['template']
+action.failure=redirect_to:string:python:state.kwargs['template']

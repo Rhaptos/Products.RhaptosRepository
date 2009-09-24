@@ -1,0 +1,458 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: RhaptosRepository 0.50\n"
+"POT-Creation-Date: 2005-08-24 01:37+0000\n"
+"PO-Revision-Date: $Date$\n"
+"Last-Translator: Per Thorsteinsson <s001552@student.dtu.dk>\n"
+"Language-Team: i18n@cnx.rice.edu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: da\n"
+"Language-Name: Danish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone\n"
+
+#: /skins/rhaptos_repository/browse_courses.pt
+#. <th i18n:translate="">&nbsp;Course&nbsp;</th>
+msgid "&nbsp;Course&nbsp;"
+msgstr "&nbsp;Kursus&nbsp;"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <input class="context" i18n:attributes="value" tal:attributes=" name string:add${addLoc}" type="submit" value="Add"/>
+#: ../skins/rhaptos_repository/similarity.pt
+#. <input class="context" i18n:attributes="value" tal:attributes="      name string:add${addLoc}" type="submit" value="Add"/>
+# name string:add${addLoc}" value="Add" i18n:attributes="value"/>
+# Original: "Add"
+msgid "Add"
+msgstr "Tilføj"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <input class="standalone searchButton" i18n:attributes="value" onClick="location.href='advanced_search'" tal:attributes="tabindex tabindex/next" tal:replace="nothing" type="button" value="Advanced"/>
+# onClick="location.href='advanced_search'"
+# tal:attributes="tabindex tabindex/next"
+# tal:replace="nothing"/>
+# Original: "Advanced"
+msgid "Advanced"
+msgstr "Avanceret"
+
+
+# Æ æ ø å
+msgid "Parameters"
+msgstr "Parametre"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <input class="context searchButton" i18n:attributes="value" tal:attributes="tabindex tabindex/next" type="reset" value="Reset"/>
+# tal:attributes="tabindex tabindex/next"/>
+# Original: "Reset"
+msgid "Reset"
+msgstr "Nulstil"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <input class="context searchButton" i18n:attributes="value" tal:attributes="tabindex tabindex/next" type="submit" value="Search"/>
+# tal:attributes="tabindex tabindex/next"/>
+# tal:attributes="tabindex tabindex/next"/>
+# Original: "Search"
+msgid "Search"
+msgstr "Søg"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <input alt="Select/Unselect all items" class="noborder" i18n:attributes="title alt" name="selectButton" onClick="toggleSelect(this); return false;" title="Select/Unselect all items" type="checkbox"/>
+# name="selectButton"
+# title="Select/Unselect all items"
+# alt="Select/Unselect all items"
+# i18n:attributes="title alt"
+# onClick="toggleSelect(this); return false;"
+# />
+# Original: "Select/Unselect all items"
+msgid "Select/Unselect all items"
+msgstr "Vælg/Afvælg all objekter"
+
+
+msgid "Titles"
+msgstr "Titler"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <span i18n:translate="add_selected_content_to">
+#.  Add selected content to:
+#. </span>
+# Original: "Add selected content to:"
+msgid "add_selected_content_to"
+msgstr "Tilføj valgte indhold til:"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <a class="grey" i18n:translate="authors" tal:attributes="href string:showAuthors?mod_id=$id">
+#.  Authors
+#. </a>
+# Original: "Authors"
+msgid "authors"
+msgstr "Forfattere"
+
+
+#: ../skins/rhaptos_repository/showAuthors.pt
+#. <span i18n:translate="authors_of">
+#.  Authors of
+#. </span>
+# Original: "Authors of"
+msgid "authors_of"
+msgstr "Forfattere af"
+
+
+#: ../skins/rhaptos_repository/portlet_newest_content.pt
+#. <h5 i18n:translate="box_newestContent">
+#.  RecentlyRevised
+#. </h5>
+# Original: "RecentlyRevised"
+msgid "box_newestContent"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <h5 i18n:translate="by_author">
+#.  By Author
+#. </h5>
+# Original: "By Author"
+msgid "by_author"
+msgstr "Efter Forfatter"
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <h5 i18n:translate="by_keyword">
+#.  By Keyword
+#. </h5>
+# Original: "By Keyword"
+msgid "by_keyword"
+msgstr "Efter Nøgleord"
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <h5 i18n:translate="by_popularity">
+#.  By Popularity
+#. </h5>
+# Original: "By Popularity"
+msgid "by_popularity"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <h5 i18n:translate="by_title">
+#.  By Title
+#. </h5>
+# Original: "By Title"
+msgid "by_title"
+msgstr "Efter Titel"
+
+
+#: ../skins/rhaptos_repository/browse_courses.pt
+#. <th i18n:translate="course">
+#.  Course
+#. </th>
+# Original: "Course"
+msgid "course"
+msgstr "kursus"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <span i18n:translate="courses">
+#.  courses
+#. </span>
+# Original: "courses"
+msgid "courses"
+msgstr "kurser"
+
+
+#: ../skins/rhaptos_repository/browse_courses.pt
+#. <h1 i18n:translate="courses_being_offered_with">
+#.  Courses being offered with
+#.  <span tal:replace="portal/Title">
+#.   [Portal]
+#.  </span>
+#.  :
+#. </h1>
+# Original: "Courses being offered with <span tal:replace=\"portal/Title\">[Portal]</span> :"
+msgid "courses_being_offered_with"
+msgstr "Kurser der udbydes med ${portal}:"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <span i18n:translate="for:">
+#.  for:
+#. </span>
+#. <span i18n:translate="for:">
+#.  modules
+#. </span>
+# Original: "for:"
+msgid "for:"
+msgstr "for:"
+
+
+#: ../skins/rhaptos_repository/browse_authors.pt
+#. <h1 class="topheading" i18n:translate="heading_browse_authors">
+#.  Browse by Author
+#. </h1>
+# Original: "Browse by Author"
+msgid "heading_browse_authors"
+msgstr "Browse efter forfatter"
+
+
+#: ../skins/rhaptos_repository/browse_keywords.pt
+#. <h1 class="topheading" i18n:translate="heading_browse_keywords">
+#.  Browse by Keyword
+#. </h1>
+# Original: "Browse by Keyword"
+msgid "heading_browse_keywords"
+msgstr "Browse efter nøgleord"
+
+
+#: ../skins/rhaptos_repository/browse_titles.pt
+#. <h1 class="topheading" i18n:translate="heading_browse_titles">
+#.  Browse by Title
+#. </h1>
+# Original: "Browse by Title"
+msgid "heading_browse_titles"
+msgstr "Browse efter titel"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <h1 i18n:translate="heading_search_repository" style="border-bottom: 0px">
+#.  Search the
+#.  ${portal}
+#.   repository
+#. </h1>
+# Original: "Search the ${portal} repository"
+msgid "heading_search_repository"
+msgstr "Søg i ${portal} depotet"
+
+
+#: ../skins/rhaptos_repository/browse_courses.pt
+#. <th i18n:translate="institution">
+#.  Institution
+#. </th>
+# Original: "Institution"
+msgid "institution"
+msgstr "&nbsp;Institution&nbsp;"
+
+
+#: ../skins/rhaptos_repository/browse_courses.pt
+#. <th i18n:translate="instructor">
+#.  Instructor
+#. </th>
+# Original: "Instructor"
+msgid "instructor"
+msgstr "&nbsp;Instruktør&nbsp;"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <a class="grey" i18n:translate="keywords" tal:attributes="href string:showKeywords?mod_id=$id">
+#.  Keywords
+#. </a>
+# Original: "Keywords"
+msgid "keywords"
+msgstr "Nøgleord"
+
+
+#: ../skins/rhaptos_repository/showKeywords.pt
+#. <span i18n:translate="keywords_for">
+#.  Keywords for
+#. </span>
+# Original: "Keywords for"
+msgid "keywords_for"
+msgstr "Nøgleord for"
+
+
+#: /skins/rhaptos_repository/search.pt
+#. <span i18n:translate="">modules</span>
+msgid "modules"
+msgstr "moduler"
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <a href="browse_popularity?recent:bool=True" i18n:translate="most_popular_last_week">
+#.  Most popular last week
+#. </a>
+# Original: "Most popular last week"
+msgid "most_popular_last_week"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/browse_content.pt
+#. <a href="browse_popularity" i18n:translate="most_popular_of_all_time">
+#.  Most popular of all time
+#. </a>
+# Original: "Most popular of all time"
+msgid "most_popular_of_all_time"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <option i18n:translate="my_workspace" value="__home__">
+#.  My workspace
+#. </option>
+# Original: "My workspace"
+msgid "my_workspace"
+msgstr "Mit arbejdsrum"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <th i18n:translate="search_a" style="text-align: right">
+#. 	    Displaying results
+#.  ${b_start}
+#.   -
+#.  ${b_end}
+#.   of
+#.  ${b_length}
+#.   object(s).
+#.  <br/>
+#.             Search took
+#.  ${b_time}
+#.   seconds.
+#. </th>
+# Displaying results ${b_start} - ${b_end} of ${b_length} object(s).<br />
+# Search took ${b_time} seconds.
+# </th>
+# Original: "Displaying results ${b_start} - ${b_end} of ${b_length} object(s). <br/> Search took ${b_time} seconds."
+msgid "search_a"
+msgstr "Viser resultater ${b_start} - ${b_end} af ${b_length} objekt(er) <br/> Søgning tog ${b_time} sekunder."
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <span i18n:translate="search_b">
+#.           Search terms are matched against:
+#.  <ul>
+#.   <li>
+#.    object id
+#.   </li>
+#.   <li>
+#.    title
+#.   </li>
+#.   <li tal:replace="nothing">
+#.    abstract
+#.   </li>
+#.   <li>
+#.    keywords
+#.   </li>
+#.   <li>
+#.    author names
+#.   </li>
+#.   <li>
+#.    full body text
+#.   </li>
+#.  </ul>
+#. 	  You may surround phrases with quotation marks to search for them as a unit. Most other punctuation
+#. characters are removed from search terms.
+#. </span>
+# Search terms are matched against:
+# <ul>
+# <li>object id</li>
+# <li>title</li>
+# <li>keywords</li>
+# <li>author names</li>
+# <li>full body text</li>
+# </ul>
+# </span>
+# Original: "Search terms are matched against: <ul> <li>object id</li> <li>title</li> <li tal:replace=\"nothing\">abstract</li> <li>keywords</li> <li>author names</li> <li>full body text</li> </ul> You may surround phrases with quotation marks to search for them as a unit. Most other punctuation characters are removed from search terms."
+msgid "search_b"
+msgstr "Søgnings-betingelser matches mod: <ul> <li>objekt-id</li> <li>titel</li> <li>nøgleord</li> <li>forfatter-navne</li> <li>fulde body tekst</li> </ul>"
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <div class="listingBar" i18n:translate="search_b_x" style="text-align: left; padding: 2px 4px" tal:condition="request/words | nothing">
+#.  No content was found about
+#.  ${search_terms}
+#.  , but that doesn't mean you can't write your own.
+#. </div>
+# No content was found about ${search_terms}, but that doesn't mean you can't <a href="/help/qstart/">write your own</a>.</div>
+# Original: "No content was found about ${search_terms} , but that doesn't mean you can't write your own."
+msgid "search_b_x"
+msgstr "Intet indhold blev fundet omkring ${search_terms}, men det betyder ikke at du ikke kan <a href=\"/help/qstart/\">skrive dit eget</a>."
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <span i18n:translate="searched_for">
+#.  Searched for
+#. </span>
+# Original: "Searched for"
+msgid "searched_for"
+msgstr "Søgte efter"
+
+
+#: ../skins/rhaptos_repository/similarity.pt
+#. <span i18n:translate="searched_for_content_similar_to">
+#.  Searched for content similar to
+#. </span>
+# Original: "Searched for content similar to"
+msgid "searched_for_content_similar_to"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/showKeywords.pt
+#. <span i18n:translate="showKeywords_pt_1">
+#.  Click a keyword to search for other content with
+#. that keyword.
+#. </span>
+# Original: "Click a keyword to search for other content with that keyword."
+msgid "showKeywords_pt_1"
+msgstr "Klik på et nøgleord for at søge efter andet indhold med dette nøgleord."
+
+
+#: ../skins/rhaptos_repository/search.pt
+#. <a class="grey" i18n:translate="similar_content" tal:attributes="href string:similarity?objectId=$id">
+#.  Similar Content
+#. </a>
+#: ../skins/rhaptos_repository/similarity.pt
+#. <a class="grey" i18n:translate="similar_content" tal:attributes="href string:?objectId=$id">
+#.  Similar Content
+#. </a>
+# Original: "Similar Content"
+msgid "similar_content"
+msgstr "Lignende indhold"
+
+
+#: ../skins/rhaptos_repository/similarity.pt
+#. <h1 i18n:translate="similarity_pt_1" style="border-bottom: 0px">
+#.  Content similar to
+#.  <a tal:attributes="href object/url" tal:content="object/Title">
+#.   [title]
+#.  </a>
+#. </h1>
+# Original: "Content similar to <a tal:attributes=\"href object/url\" tal:content=\"object/Title\">[title]</a>"
+msgid "similarity_pt_1"
+msgstr ""
+
+
+#: ../skins/rhaptos_repository/browse_authors.pt
+#. <p i18n:translate="text_see_glossary" style="text-align: center; font-size: 85%">
+#. 	See the
+#.  ${portal}
+#.   glossary for our definitions of
+#.  ${module_image}
+#.  <a href="/help/glossary#module">
+#.   module
+#.  </a>
+#.   and
+#.  ${course_image}
+#.  <a href="/help/glossary#course">
+#.   course
+#.  </a>
+#.  .
+#. </p>
+# Original: "See the ${portal} glossary for our definitions of ${module_image}  <a href=\"/help/glossary#module\">module</a> and ${course_image}  <a href=\"/help/glossary#course\">course</a> ."
+msgid "text_see_glossary"
+msgstr "Se ${portal} ordliste for vores definition af ${module_image}  <a href=\"/help/glossary#module\">modul</a> og ${course_image}  <a href=\"/help/glossary#course\">kursus</a>"
+
+#- Removed msgids:
+# 
+
+#- Added msgids:
+# 
