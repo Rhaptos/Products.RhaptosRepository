@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Products.RhaptosRepository"
+      directory="profiles/default"
+      description="Extension profile for Products.RhaptosRepository."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+</configure>
+

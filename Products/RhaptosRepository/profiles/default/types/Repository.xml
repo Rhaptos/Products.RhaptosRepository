@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<object name="Repository" meta_type="Factory-based Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title"></property>
+ <property
+    name="description">An version repository for the Rhaptos system</property>
+ <property name="content_icon">repository_icon.gif</property>
+ <property name="content_meta_type">Repository</property>
+ <property name="product">RhaptosRepository</property>
+ <property name="factory">manage_addRepository</property>
+ <property name="immediate_view"></property>
+ <property name="global_allow">True</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types"/>
+ <property name="allow_discussion">False</property>
+ <alias from="(Default)" to="browse_content"/>
+ <alias from="view" to="browse_content"/>
+ <action title="Browse" action_id="view" category="object" condition_expr=""
+    url_expr="string:${object_url}/browse_content" visible="True">
+  <permission value="View"/>
+ </action>
+</object>
