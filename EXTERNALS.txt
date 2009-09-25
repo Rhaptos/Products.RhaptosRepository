@@ -25,10 +25,10 @@ https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPatc
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPDFLatexTool/branches/generic-setup-refactor Products.RhaptosPDFLatexTool
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosPrint/branches/generic-setup-refactor Products.RhaptosPrint
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosRepository/branches/generic-setup-refactor Products.RhaptosRepository
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSimilarityTool/trunk Products.RhaptosSimilarityTool
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSite/trunk Products.RhaptosSite
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosWorkgroup/trunk Products.RhaptosWorkgroup
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.UniFile/trunk Products.UniFile
-https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.XMLTemplateMaker/trunk Products.XMLTemplateMaker
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSimilarityTool/branches/generic-setup-refactor Products.RhaptosSimilarityTool
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosSite/branches/generic-setup-refactor Products.RhaptosSite
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.RhaptosWorkgroup/branches/generic-setup-refactor Products.RhaptosWorkgroup
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.UniFile/branches/generic-setup-refactor Products.UniFile
+https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.XMLTemplateMaker/branches/generic-setup-refactor Products.XMLTemplateMaker
 https://software.cnx.rice.edu/svn/buildout/rhaptos/packages/Products.ZAnnot/trunk Products.ZAnnot
 
