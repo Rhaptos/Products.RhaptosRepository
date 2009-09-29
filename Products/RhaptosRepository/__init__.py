@@ -62,5 +62,3 @@ def initialize(context):
         icon='www/VersionFolder.gif',
     )
 
-from Extensions import Install  # check syntax of install method
-del Install
