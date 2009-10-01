@@ -11,8 +11,8 @@ Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 # Monkeypatch on PloneLanguageTool
 import languageConstants
 
-import Repository
-import VersionFolder
+#import Repository
+#import VersionFolder
 from Extensions.ObjectResult import ObjectResult
 from Products.RhaptosModuleStorage.Extensions.DBModule import DBModuleSearch
 
@@ -38,7 +38,7 @@ allow_class(ObjectResult)
 allow_module('Products.RhaptosModuleStorage.Extensions')
 allow_module('Products.RhaptosModuleStorage.Extensions.DBModule')
 allow_class(DBModuleSearch)
-
+"""
 contentConstructors = (Repository.manage_addRepository,)
 contentClasses = (Repository.Repository,)
 
@@ -61,4 +61,4 @@ def initialize(context):
                       VersionFolder.manage_addVersionFolder),
         icon='www/VersionFolder.gif',
     )
-
+"""
