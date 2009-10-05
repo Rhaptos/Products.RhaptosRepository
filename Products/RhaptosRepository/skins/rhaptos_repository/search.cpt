@@ -87,7 +87,8 @@
       <script type="text/javascript" src="/results_functions.js"> </script>
 
       <form action="/content/search" name="search" id="simple_search" class="search_options"
-            tal:attributes="style string:display: ${nonoptdisplay};">
+            tal:attributes="style string:display: ${nonoptdisplay};
+                            action string:$portal_url/content/search;">
         
         <div id="search_form">
         <table width="100%">
