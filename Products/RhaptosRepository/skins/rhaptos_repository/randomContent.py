@@ -27,7 +27,7 @@ if len(counts):
 
     if len(objects):
         objectId = random.choice(objects)
-        return context.REQUEST.RESPONSE.redirect('/content/%s/latest/' % objectId)
+        return context.REQUEST.RESPONSE.redirect('%s/content/%s/latest/' % (context.portal_url(),objectId))
     else:
         return None
 else: return None
