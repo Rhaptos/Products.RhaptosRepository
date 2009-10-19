@@ -83,8 +83,12 @@
           default_search_weights context/content/default_search_weights;
 	  ">
           
-      <script type="text/javascript" src="/search_functions.js"> </script>
-      <script type="text/javascript" src="/results_functions.js"> </script>
+      <script type="text/javascript" 
+          tal:attributes="src string:$portal_url/search_functions.js;" 
+          src="/search_functions.js"> </script>
+      <script type="text/javascript" 
+          tal:attributes="src string:$portal_url/results_functions.js;"
+          src="/results_functions.js"> </script>
 
       <form action="/content/search" name="search" id="simple_search" class="search_options"
             tal:attributes="style string:display: ${nonoptdisplay};

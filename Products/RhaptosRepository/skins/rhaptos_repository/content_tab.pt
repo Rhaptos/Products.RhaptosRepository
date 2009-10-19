@@ -19,7 +19,8 @@
     <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
   </metal:block>
 
-  <link rel="stylesheet" href="/content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+  <link rel="stylesheet" href="/content_browse.css" type="text/css" metal:fill-slot="css_slot" 
+        tal:attributes="href string:$portal_url/content_browse.css"/>
 
   <metal:js metal:fill-slot="javascript_head_slot">
   <script type="text/javascript" charset="iso-8859-1" src="/historyManager.js"
@@ -364,8 +365,8 @@ function setPane(pane, category, param, linked) {
 
          </td>
 	 <td valign="top" class="arrow">
-	   <img src="/arrow.gif" id="arrow-1-2" />
-	   <img src="/arrow-selected.gif" id="arrow-1-2-selected" style="display: none;"/>
+	   <img tal:attributes="src string:$portal_url/arrow.gif;" src="/arrow.gif" id="arrow-1-2" />
+	   <img tal:attributes="src string:$portal_url/arrow-selected.gif;" src="/arrow-selected.gif" id="arrow-1-2-selected" style="display: none;"/>
 	 </td>
          <td valign="top" id="cnx_refine_cell">
 
@@ -395,8 +396,8 @@ function setPane(pane, category, param, linked) {
 
          </td>
 	 <td valign="top" class="arrow">
-	   <img src="/arrow.gif" id="arrow-2-3" />
-	   <img src="/arrow-selected.gif" id="arrow-2-3-selected" style="display: none;" />
+	   <img tal:attributes="src string:$portal_url/arrow.gif;" src="/arrow.gif" id="arrow-2-3" />
+	   <img tal:attributes="src string:$portal_url/arrow-selected.gif;" src="/arrow-selected.gif" id="arrow-2-3-selected" style="display: none;" />
 	 </td>
          <td valign="top" id="cnx_view_cell">
 
