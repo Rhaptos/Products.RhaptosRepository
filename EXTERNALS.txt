@@ -27,6 +27,7 @@ https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosPrint/branche
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosRepository/branches/generic-setup-refactor Products.RhaptosRepository
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosSimilarityTool/branches/generic-setup-refactor Products.RhaptosSimilarityTool
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosSite/branches/generic-setup-refactor Products.RhaptosSite
+https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosTest/trunk Products.RhaptosTest
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosWorkgroup/branches/generic-setup-refactor Products.RhaptosWorkgroup
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.UniFile/branches/generic-setup-refactor Products.UniFile
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.XMLTemplateMaker/branches/generic-setup-refactor Products.XMLTemplateMaker
