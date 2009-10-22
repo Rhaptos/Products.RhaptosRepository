@@ -15,7 +15,7 @@ from Globals import InitializeClass, DTMLFile
 from Acquisition import aq_base
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.CMFCore.utils import UniqueObject, getToolByName, _getViewFor
-from Products.CMFCore import CMFCorePermissions
+from Products.CMFCore import permissions
 from Products.CMFCore.DynamicType import DynamicType
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 from Products.ZCatalog.ZCatalog import ZCatalog
@@ -74,7 +74,7 @@ factory_type_information = (
      'actions': ({'id': 'view',
                   'name': 'Browse',
                   'action': 'browse_content',
-                  'permissions': (CMFCorePermissions.View,)},
+                  'permissions': (permissions.View,)},
                  )
      },
     )
