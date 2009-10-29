@@ -43,13 +43,22 @@ class TestRhaptosRepository(RhaptosTestCase):
         self.version_folder_storage = VersionFolderStorage('test_version_folder_storage')
         self.storage = StorageManager('test_storage_manager')
         self.storage.registerStorage(self.version_folder_storage)
-        self.storage.setStorageForType('Document', None)
         self.storage.setDefaultStorage('test_version_folder_storage')
+        self.storage.setStorageForType('Document', None)
         self.repo = Repository('test_repository', title='Test Repository')
 
     def test_storage(self):
         self.assertEqual(self.storage.getDefaultStorage(), self.version_folder_storage)
-        # TODO: Test setStorageForType and getStorageForType.
+        tmp_version_folder_storage = VersionFolderStorage('tmp_version_folder_storage')
+        self.storage.registerStorage(tmp_version_folder_storage)
+        self.storage.setStorageForType('Document', 'tmp_version_folder_storage')
+        self.assertEqual(self.storage.getStorageForType('Document').getId(), 'tmp_version_folder_storage')
+
+        # TODO:  These next two lines fail because the docstring for
+        # setStorageForType is out of sync with the code itself.  This test
+        # remains true to the docstring, so fails on the code.
+#        self.storage.setStorageForType('Document', None)
+#        self.assertEqual(self.storage.getStorageForType('Document').getId(), 'test_version_folder_storage')
 
     def test_repository(self):
         self.assertEqual(self.repo.countRhaptosObjects(), 0)
