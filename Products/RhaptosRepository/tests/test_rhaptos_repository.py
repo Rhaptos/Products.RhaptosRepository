@@ -24,7 +24,10 @@ $Id: $
 """
 
 
+from Products.RhaptosTest import config
 import Products.RhaptosRepository
+config.products_to_load_zcml = [('configure.zcml', Products.RhaptosRepository),]
+config.products_to_install = ['RhaptosRepository']
 
 from Products.CMFDefault.Document import Document
 from Products.RhaptosRepository.Repository import Repository
@@ -35,10 +38,7 @@ from Products.RhaptosTest.base import RhaptosTestCase
 
 class TestRhaptosRepository(RhaptosTestCase):
 
-    products_to_load_zcml = [('configure.zcml', Products.RhaptosRepository),]
-
-    def setUp(self):
-        RhaptosTestCase.setUp(self)
+    def afterSetUp(self):
         self.doc = Document('foo bar')
         self.version_folder_storage = VersionFolderStorage('test_version_folder_storage')
         self.storage = StorageManager('test_storage_manager')
@@ -46,6 +46,9 @@ class TestRhaptosRepository(RhaptosTestCase):
         self.storage.setDefaultStorage('test_version_folder_storage')
         self.storage.setStorageForType('Document', None)
         self.repo = Repository('test_repository', title='Test Repository')
+
+    def beforeTearDown(self):
+        pass
 
     def test_storage(self):
         self.assertEqual(self.storage.getDefaultStorage(), self.version_folder_storage)
