@@ -34,10 +34,21 @@ config.products_to_install = [
 ]
 config.extension_profiles = ['Products.RhaptosRepository:default']
 
-from Products.CMFDefault.Document import Document
-from Products.RhaptosRepository.Repository import Repository
+from OFS.SimpleItem  import SimpleItem
 from Products.RhaptosRepository.VersionFolder import VersionFolderStorage
+from Products.RhaptosRepository.interfaces.IVersionStorage import IStorageManager
+from Products.RhaptosRepository.interfaces.IVersionStorage import IVersionStorage
 from Products.RhaptosTest.base import RhaptosTestCase
+
+
+class DummyStorage(SimpleItem):
+    __implements__ = (IVersionStorage)
+
+    def __init__(self, id):
+        self.id = id
+
+    def getId(self):
+        return self.id
 
 
 class TestRhaptosRepository(RhaptosTestCase):
@@ -51,31 +62,111 @@ class TestRhaptosRepository(RhaptosTestCase):
         product = self.portal.manage_addProduct['RhaptosRepository']
         product.manage_addRepository('content')
         self.repo = self.portal.content
-        self.version_folder_storage = VersionFolderStorage('version_folder_storage')
-        self.repo.registerStorage(self.version_folder_storage)
-        self.repo.setDefaultStorage('version_folder_storage')
+#        self.version_folder_storage = VersionFolderStorage('version_folder_storage')
+#        self.repo.registerStorage(self.version_folder_storage)
+#        self.repo.setDefaultStorage('version_folder_storage')
 
         # PloneTestCase already gives us a folder, so within that folder,
-        # create a document to version:
+        # create a document to version.
         self.folder.invokeFactory('Document', 'doc')
         self.doc = self.folder.doc
 
     def beforeTearDown(self):
         pass
 
-    def test_storage(self):
-        self.repo.setStorageForType('Document', None)
-        self.assertEqual(self.repo.getDefaultStorage(), self.version_folder_storage)
-        tmp_version_folder_storage = VersionFolderStorage('tmp_version_folder_storage')
-        self.repo.registerStorage(tmp_version_folder_storage)
-        self.repo.setStorageForType('Document', 'tmp_version_folder_storage')
-        self.assertEqual(self.repo.getStorageForType('Document').getId(), 'tmp_version_folder_storage')
+    def test_storage_interface(self):
+        # Make sure that the repository implements the expected interface.
+        self.failUnless(IStorageManager.isImplementedBy(self.repo))
 
-        # FIXME:  These next two lines fail because the docstring for
-        # setStorageForType is out of sync with the code itself.  This test
-        # remains true to the docstring, so fails on the code.
-#        self.repo.setStorageForType('Document', None)
-#        self.assertEqual(self.repo.getStorageForType('Document').getId(), 'test_version_folder_storage')
+    def test_storage_register_incorrect_interface(self):
+        # Make sure that registerStorage raises a TypeError if the storage
+        # doesn't implement IVersionStorage.
+        self.assertRaises(TypeError, self.repo.registerStorage, 'foo', None)
+
+    def test_storage_register(self):
+        # Make sure that registerStorage actually registers a storage.
+        storage = DummyStorage('foo')
+        self.repo.registerStorage(storage)
+        self.failUnless('foo' in self.repo.listStorages())
+
+    def test_storage_register_dupe_ids(self):
+        # Make sure that registerStorage raises a ValueError when registering
+        # two storages with the same ID.
+        storage1 = DummyStorage('foo')
+        storage2 = DummyStorage('foo')
+        self.repo.registerStorage(storage1)
+        self.assertRaises(ValueError, self.repo.registerStorage, storage2)
+
+    def test_storage_get_nonexistent_id(self):
+        # Make sure that getStorage raises a KeyError when trying to get a
+        # non-existent storage.
+        self.assertRaises(KeyError, self.repo.getStorage, 'foo')
+
+    def test_storage_acquisition_wrappers(self):
+        # Make sure that the acquisition wrappers are correctly being set on
+        # storages.
+        storage = DummyStorage('foo')
+        self.repo.registerStorage(storage)
+        self.assertEqual(self.repo, self.repo.getStorage('foo').aq_parent)
+
+    def test_storage_default(self):
+        # We haven't set a default storage, so make sure that getDefaultStorage
+        # returns None.
+        self.assertEqual(self.repo.getDefaultStorage(), None)
+
+        # Make sure that we can set the default storage...
+        storage = DummyStorage('foo')
+        self.repo.registerStorage(storage)
+        self.repo.setDefaultStorage('foo')
+        self.assertEqual(self.repo.getDefaultStorage().aq_base, storage)
+
+        # ...and reset the default storage to None.
+        self.repo.setDefaultStorage(None)
+        self.assertEqual(self.repo.getDefaultStorage(), None)
+
+        # Make sure that removing the default storage resets the default
+        # storage to None.
+        self.repo.setDefaultStorage('foo')
+        self.assertEqual(self.repo.getDefaultStorage().aq_base, storage)
+        self.repo.removeStorage('foo')
+        self.assertEqual(self.repo.getDefaultStorage(), None)
+
+    def test_storage_set_for_type(self):
+        # Make sure that setStorageForType raises a KeyError when trying to set
+        # an unregistered storage for a type.
+        self.assertRaises(KeyError, self.repo.setStorageForType, 'Document', 'foo')
+
+        # When a storage for a type isn't set, and the default storage isn't
+        # set, and we get the storage for the type, make sure we get None.
+        self.assertEqual(self.repo.getStorageForType('Document'), None)
+
+        # When a storage for a type isn't set, and the default storage is set,
+        # and we get the storage for the type, make sure we get the default
+        # storage.
+        storage1 = DummyStorage('foo')
+        self.repo.registerStorage(storage1)
+        self.repo.setDefaultStorage('foo')
+        self.assertEqual(self.repo.getStorageForType('Document').aq_base, storage1)
+
+        # Make sure that we can set and get a storage for a type.
+        storage2 = DummyStorage('bar')
+        self.repo.registerStorage(storage2)
+        self.repo.setStorageForType('Document', 'bar')
+        self.assertEqual(self.repo.getStorageForType('Document').aq_base, storage2)
+
+        # When we remove the storage for the type, then get the storage for the
+        # type, make sure we get the default storage.
+        self.repo.removeStorage('bar')
+        self.assertEqual(self.repo.getStorageForType('Document').aq_base, storage1)
+
+        # When a storage for a type is set then removed, and when the default
+        # storage isn't set, and we get the storage for the type, make sure we
+        # get None.
+        self.repo.setDefaultStorage(None)
+        self.repo.registerStorage(storage2)
+        self.repo.setStorageForType('Document', 'bar')
+        self.repo.removeStorage('bar')
+        self.assertEqual(self.repo.getStorageForType('Document'), None)
 
     def test_repository(self):
         # Make sure that our repository is initially empty:
