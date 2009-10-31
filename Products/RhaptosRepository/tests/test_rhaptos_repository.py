@@ -27,11 +27,15 @@ $Id: $
 from Products.RhaptosTest import config
 import Products.RhaptosRepository
 config.products_to_load_zcml = [('configure.zcml', Products.RhaptosRepository),]
-config.products_to_install = ['RhaptosRepository']
+config.products_to_install = [
+    'Archetypes', 'CMFCore', 'CMFDefault', 'MailHost', 'MimetypesRegistry',
+    'PortalTransforms', 'RhaptosCollection', 'RhaptosHitCountTool',
+    'RhaptosModuleEditor', 'RhaptosRepository', 'ZAnnot', 'ZCTextIndex',
+]
+config.extension_profiles = ['Products.RhaptosRepository:default']
 
 from Products.CMFDefault.Document import Document
 from Products.RhaptosRepository.Repository import Repository
-from Products.RhaptosRepository.StorageManager import StorageManager
 from Products.RhaptosRepository.VersionFolder import VersionFolderStorage
 from Products.RhaptosTest.base import RhaptosTestCase
 
@@ -39,32 +43,48 @@ from Products.RhaptosTest.base import RhaptosTestCase
 class TestRhaptosRepository(RhaptosTestCase):
 
     def afterSetUp(self):
-        self.doc = Document('foo bar')
-        self.version_folder_storage = VersionFolderStorage('test_version_folder_storage')
-        self.storage = StorageManager('test_storage_manager')
-        self.storage.registerStorage(self.version_folder_storage)
-        self.storage.setDefaultStorage('test_version_folder_storage')
-        self.storage.setStorageForType('Document', None)
-        self.repo = Repository('test_repository', title='Test Repository')
+        self.loginAsPortalOwner()
+        # XXX:  This following chunk of code was copied and adapted from
+        # setuphandlers.  We shouldn't have to do this stuff manually.
+        # setuphandlers should get run when we install the RhaptosRepository
+        # product.
+        product = self.portal.manage_addProduct['RhaptosRepository']
+        product.manage_addRepository('content')
+        self.repo = self.portal.content
+        self.version_folder_storage = VersionFolderStorage('version_folder_storage')
+        self.repo.registerStorage(self.version_folder_storage)
+        self.repo.setDefaultStorage('version_folder_storage')
+
+        # PloneTestCase already gives us a folder, so within that folder,
+        # create a document to version:
+        self.folder.invokeFactory('Document', 'doc')
+        self.doc = self.folder.doc
 
     def beforeTearDown(self):
         pass
 
     def test_storage(self):
-        self.assertEqual(self.storage.getDefaultStorage(), self.version_folder_storage)
+        self.repo.setStorageForType('Document', None)
+        self.assertEqual(self.repo.getDefaultStorage(), self.version_folder_storage)
         tmp_version_folder_storage = VersionFolderStorage('tmp_version_folder_storage')
-        self.storage.registerStorage(tmp_version_folder_storage)
-        self.storage.setStorageForType('Document', 'tmp_version_folder_storage')
-        self.assertEqual(self.storage.getStorageForType('Document').getId(), 'tmp_version_folder_storage')
+        self.repo.registerStorage(tmp_version_folder_storage)
+        self.repo.setStorageForType('Document', 'tmp_version_folder_storage')
+        self.assertEqual(self.repo.getStorageForType('Document').getId(), 'tmp_version_folder_storage')
 
-        # TODO:  These next two lines fail because the docstring for
+        # FIXME:  These next two lines fail because the docstring for
         # setStorageForType is out of sync with the code itself.  This test
         # remains true to the docstring, so fails on the code.
-#        self.storage.setStorageForType('Document', None)
-#        self.assertEqual(self.storage.getStorageForType('Document').getId(), 'test_version_folder_storage')
+#        self.repo.setStorageForType('Document', None)
+#        self.assertEqual(self.repo.getStorageForType('Document').getId(), 'test_version_folder_storage')
 
     def test_repository(self):
+        # Make sure that our repository is initially empty:
         self.assertEqual(self.repo.countRhaptosObjects(), 0)
+        self.assertEqual(self.repo.hasRhaptosObject(self.doc.getId()), False)
+        self.assertFalse(self.repo.getRhaptosObjectLanguageCounts())
+
+        # Make sure that hasRhaptosObject returns False for None objects:
+        self.assertFalse(self.repo.hasRhaptosObject(None))
 
     def test_version_folder_storage(self):
         self.assertEqual(1, 1)
