@@ -36,6 +36,7 @@ config.extension_profiles = ['Products.RhaptosRepository:default']
 
 from OFS.SimpleItem  import SimpleItem
 from Products.RhaptosRepository.VersionFolder import VersionFolderStorage
+from Products.RhaptosRepository.interfaces.IRepository import IRepository
 from Products.RhaptosRepository.interfaces.IVersionStorage import IStorageManager
 from Products.RhaptosRepository.interfaces.IVersionStorage import IVersionStorage
 from Products.RhaptosTest.base import RhaptosTestCase
@@ -168,14 +169,29 @@ class TestRhaptosRepository(RhaptosTestCase):
         self.repo.removeStorage('bar')
         self.assertEqual(self.repo.getStorageForType('Document'), None)
 
-    def test_repository(self):
-        # Make sure that our repository is initially empty:
+    def test_repository_interface(self):
+        # Make sure that the repository implements the expected interface.
+        self.failUnless(IRepository.isImplementedBy(self.repo))
+
+    def test_repository_empty(self):
+        # Make sure that our repository is initially empty.
         self.assertEqual(self.repo.countRhaptosObjects(), 0)
         self.assertEqual(self.repo.hasRhaptosObject(self.doc.getId()), False)
         self.assertFalse(self.repo.getRhaptosObjectLanguageCounts())
 
-        # Make sure that hasRhaptosObject returns False for None objects:
+    def test_repository_has_object(self):
+        # Make sure that hasRhaptosObject returns False for None objects.
         self.assertFalse(self.repo.hasRhaptosObject(None))
+
+        # Make sure that hasRhaptosObject raises a KeyError for a non-existent
+        # ID.
+        self.assertRaises(KeyError, self.repo.getRhaptosObject, 'foo')
+
+    def test_repository_get_history(self):
+        # Make sure that getHistory returns None for None and unpublished
+        # objects.
+        self.assertEqual(None, self.repo.getHistory(None))
+        self.assertEqual(None, self.repo.getHistory('foo'))
 
     def test_version_folder_storage(self):
         self.assertEqual(1, 1)
