@@ -32,7 +32,9 @@ config.products_to_install = [
     'PortalTransforms', 'RhaptosCollection', 'RhaptosHitCountTool',
     'RhaptosModuleEditor', 'RhaptosRepository', 'ZAnnot', 'ZCTextIndex',
 ]
-config.extension_profiles = ['Products.RhaptosRepository:default']
+config.extension_profiles = [
+    'Products.RhaptosCollection:default', 'Products.RhaptosRepository:default',
+]
 
 from OFS.SimpleItem  import SimpleItem
 from Products.RhaptosRepository.VersionFolder import VersionFolderStorage
@@ -56,7 +58,7 @@ class TestRhaptosRepository(RhaptosTestCase):
 
     def afterSetUp(self):
         self.loginAsPortalOwner()
-        # XXX:  This following chunk of code was copied and adapted from
+        # FIXME:  This following chunk of code was copied and adapted from
         # setuphandlers.  We shouldn't have to do this stuff manually.
         # setuphandlers should get run when we install the RhaptosRepository
         # product.
@@ -68,9 +70,13 @@ class TestRhaptosRepository(RhaptosTestCase):
 #        self.repo.setDefaultStorage('version_folder_storage')
 
         # PloneTestCase already gives us a folder, so within that folder,
-        # create a document to version.
+        # create a document and a collection to version.
         self.folder.invokeFactory('Document', 'doc')
         self.doc = self.folder.doc
+
+        # FIXME:  Somehow, get Collection to be an installable type.
+#        self.folder.invokeFactory('Collection', 'col')
+#        self.col = self.folder.col
 
     def beforeTearDown(self):
         pass
@@ -193,8 +199,39 @@ class TestRhaptosRepository(RhaptosTestCase):
         self.assertEqual(None, self.repo.getHistory(None))
         self.assertEqual(None, self.repo.getHistory('foo'))
 
+    def test_version_folder_storage_interface(self):
+        # Make sure that the version folder storage implements the expected
+        # interface.
+        version_folder_storage = VersionFolderStorage('version_folder_storage')
+        self.repo.registerStorage(version_folder_storage)
+        self.version_folder_storage = self.repo.version_folder_storage
+        self.failUnless(IVersionStorage.isImplementedBy(self.version_folder_storage))
+
+    def test_version_folder_storage_generate_id(self):
+        # Make sure that the version folder storage generates unique IDs.
+        version_folder_storage = VersionFolderStorage('version_folder_storage')
+        self.repo.registerStorage(version_folder_storage)
+        self.version_folder_storage = self.repo.version_folder_storage
+        for count in range(1, 9999):
+            id = 'col1' + str(count).rjust(4, '0')
+            self.assertEqual(self.version_folder_storage.generateId(), id)
+
+    def test_version_folder_storage_get_version_info(self):
+        # Make sure that getVersionInfo returns None for non-versioned objects.
+        version_folder_storage = VersionFolderStorage('version_folder_storage')
+        self.repo.registerStorage(version_folder_storage)
+        self.repo.setDefaultStorage('version_folder_storage')
+        self.version_folder_storage = self.repo.version_folder_storage
+        self.assertEqual(self.version_folder_storage.getVersionInfo(self.doc), None)
+
+        # Publish a document to be versioned.  FIXME: This doesn't work because
+        # 'Collection' isn't an installable type.
+#        self.repo.publishObject(self.col, 'initial commit')
+
     def test_version_folder_storage(self):
-        self.assertEqual(1, 1)
+        version_folder_storage = VersionFolderStorage('version_folder_storage')
+        self.repo.registerStorage(version_folder_storage)
+        self.version_folder_storage = self.repo.version_folder_storage
 
     def test_storage_manager(self):
         self.assertEqual(1, 1)
