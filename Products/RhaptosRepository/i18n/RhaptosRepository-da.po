@@ -372,10 +372,10 @@ msgstr "Søgnings-betingelser matches mod: <ul> <li>objekt-id</li> <li>titel</li
 #.  ${search_terms}
 #.  , but that doesn't mean you can't write your own.
 #. </div>
-# No content was found about ${search_terms}, but that doesn't mean you can't <a href="/help/qstart/">write your own</a>.</div>
+# No content was found about ${search_terms}, but that doesn't mean you can't <a href="/help/">write your own</a>.</div>
 # Original: "No content was found about ${search_terms} , but that doesn't mean you can't write your own."
 msgid "search_b_x"
-msgstr "Intet indhold blev fundet omkring ${search_terms}, men det betyder ikke at du ikke kan <a href=\"/help/qstart/\">skrive dit eget</a>."
+msgstr "Intet indhold blev fundet omkring ${search_terms}, men det betyder ikke at du ikke kan <a href=\"/help/\">skrive dit eget</a>."
 
 
 #: ../skins/rhaptos_repository/search.pt

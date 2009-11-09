@@ -483,7 +483,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         # storage events (mostly collection printing, at the moment)
         storage.notifyObjectRevised(pubobj, origobj)
         
-        # notice of change to all containing collections
+        # notice of change to all containing collections, latest version only
         container_objs = self.catalog(containedModuleIds=pubobj.objectId)
         for col in container_objs:
             colobj = col.getObject()

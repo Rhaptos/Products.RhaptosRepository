@@ -368,7 +368,7 @@ msgstr ""
 #.  ${search_terms}
 #.  , but that doesn't mean you can't write your own.
 #. </div>
-# No content was found about ${search_terms}, but that doesn't mean you can't <a href="/help/qstart/">write your own</a>.</div>
+# No content was found about ${search_terms}, but that doesn't mean you can't <a href="/help/">write your own</a>.</div>
 # Original: "No content was found about ${search_terms} , but that doesn't mean you can't write your own."
 msgid "search_b_x"
 msgstr ""

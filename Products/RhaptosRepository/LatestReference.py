@@ -13,6 +13,16 @@ from Acquisition import aq_parent
 
 from Products.References import Reference, _dictify
 
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.traversing.interfaces import ITraverser
+from zope.app.publication.browser import setDefaultSkin
+from zope.component import ComponentLookupError
+import Products.Five.security
+from zExceptions import NotFound
+
+
+_marker = {}
+
 def addLatestReference(self, id, title, path='', REQUEST=None):
     '''Add a reference to *path*. The target does not need to exist.'''
     ob = LatestReference(id)
@@ -49,10 +59,31 @@ class LatestReference(Reference):
     _dontRelayToTarget= _dictify(_dontRelayToTarget).has_key
 
     ## change to fix Zope 2.9 TALES path expression problem (see LatestReference.Zope29.README)
-    def __bobo_traverse__(self, request, name):
+    def __bobo_traverse__(self, REQUEST, name):
         parent = aq_parent(self)
         proxy = self.__of__(parent)
-        return getattr(proxy, name)
+        val = getattr(proxy, name, _marker)
+        if val is not _marker:
+            return val
+        else:
+            # try for a Zope 3-type view. see code in Five/traversable.py
+            target = self.getTarget()
+            
+            if not IBrowserRequest.providedBy(REQUEST):
+                # Try to get the REQUEST by acquisition
+                REQUEST = getattr(self, 'REQUEST', None)
+                if not IBrowserRequest.providedBy(REQUEST):
+                    REQUEST = FakeRequest()
+                    setDefaultSkin(REQUEST)
+            Products.Five.security.newInteraction()
+            try:
+                # note use of 'target' instead of 'self'...
+                return ITraverser(target).traverse(path=[name], request=REQUEST).__of__(target)
+            except (ComponentLookupError, LookupError,
+                    AttributeError, KeyError, NotFound):
+                pass
+        
+        raise AttributeError, "name"
 
 
 InitializeClass(LatestReference)

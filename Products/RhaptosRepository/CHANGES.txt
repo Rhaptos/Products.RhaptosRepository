@@ -1,3 +1,10 @@
+RhaptosRepository-0.77
+  - collection-structure-redesign-1 (Oct. 22, 2009)
+    - Updated links to help files
+    - LatestReference changed to look up Zope 3-style views instead of just attrs on
+       Reference traversal.
+
+
 RhaptosRepository-0.76
   - content-actions-move (17 Aug 2009)
     - store and retrieve Google Analytics tracking code on VersionFolders
@@ -297,7 +304,7 @@ RisaRepository-0.46.1
 RisaRepository-0.46
   - removed unnecessary spaces in links to module and course definitions 
     in browse_keywords.pt
-  - changed absolute url to relative (/help/qstart/) in 
+  - changed absolute url to relative (/help/qstart) in 
     browse_content.pt
 
 RisaRepository-0.45
