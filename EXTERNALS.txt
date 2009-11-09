@@ -32,4 +32,5 @@ https://software.cnx.rice.edu/svn/rhaptos/packages/Products.RhaptosWorkgroup/bra
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.UniFile/branches/generic-setup-refactor Products.UniFile
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.XMLTemplateMaker/branches/generic-setup-refactor Products.XMLTemplateMaker
 https://software.cnx.rice.edu/svn/rhaptos/packages/Products.ZAnnot/trunk Products.ZAnnot
+https://software.cnx.rice.edu/svn/rhaptos/packages/Products.Lineup/trunk Products.Lineup
 
