@@ -26,8 +26,6 @@
   <script type="text/javascript" charset="iso-8859-1" src="/historyManager.js"
           tal:attributes="src string:$portal_url/historyManager.js;"> </script>
   <script type="text/javascript" language="Javascript"
-          tal:content="string:var portal_url='${context/portal_url}';"> </script>
-  <script type="text/javascript" language="Javascript"
           tal:content="string:var paramPath='$paramPath';"> </script>
   <script type="text/javascript">
 <!--
