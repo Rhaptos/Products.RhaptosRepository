@@ -1,0 +1,28 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:genericsetup="http://namespaces.zope.org/genericsetup">
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Products.RhaptosModuleStorage"
+      directory="profiles/default"
+      description="Extension profile for Products.RhaptosModuleStorage."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <!-- Adapters -->
+  <adapter
+      for=".interfaces.rating.IMemberData"
+      provides=".interfaces.rating.IRateable"
+      factory=".adapters.Rateable"
+      />
+
+  <!-- Interface marking -->
+  <content class="Products.RhaptosModuleStorage.ModuleView.ModuleView">
+    <implements interface="Products.CNXMLDocument.newinterfaces.ICNXMLContainer" />
+  </content>
+
+  <content class="Products.RhaptosModuleStorage.ModuleView.ModuleView">
+    <implements interface="Products.CNXMLDocument.newinterfaces.ICNXMLAbstract" />
+  </content>
+
+</configure>

@@ -1,0 +1,4 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','upgrade')(app.plone, 0,30)
+ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','setFullnames')(app.plone)
+get_transaction().commit()

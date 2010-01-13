@@ -1,0 +1,20 @@
+Static Implementation Tests
+===========================
+ 	
+Let's just make sure that our static views are working as expected.
+	
+The first thing we need to do is to make sure the interfaces are
+being correctly implemented::
+ 	
+
+    >>> from zope.interface.verify import verifyClass
+ 	
+    >>> from Products.RhaptosModuleStorage.event import ModuleRatedEvent
+    >>> from Products.RhaptosModuleStorage.interfaces.event import IModuleRatedEvent
+    >>> verifyClass(IModuleRatedEvent, ModuleRatedEvent)
+    True
+
+    #>>> from Products.RhaptosRepository.interfaces.IVersionStorage import IVersionStorage
+    #>>> from Products.RhaptosModuleStorage.ModuleVersionFolder import ModuleVersionStorage
+    #>>> verifyClass(IVersionStorage, ModuleVersionStorage)
+    #False

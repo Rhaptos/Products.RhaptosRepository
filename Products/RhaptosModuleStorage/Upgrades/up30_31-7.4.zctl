@@ -1,0 +1,3 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','drop_tsearch')(app)
+get_transaction().commit()

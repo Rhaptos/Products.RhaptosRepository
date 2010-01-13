@@ -1,0 +1,7 @@
+<rolemap>
+  <permissions>
+    <permission name="Rate Module" acquire="True">
+      <role name="Member"/>
+    </permission>
+  </permissions>
+</rolemap>

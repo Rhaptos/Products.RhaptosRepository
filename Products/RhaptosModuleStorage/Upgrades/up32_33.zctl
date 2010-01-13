@@ -1,0 +1,4 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','addREQuoteFunc')(app.plone)
+ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','addSemiList')(app.plone)
+get_transaction().commit()

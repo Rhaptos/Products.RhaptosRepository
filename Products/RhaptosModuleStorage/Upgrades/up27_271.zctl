@@ -1,0 +1,4 @@
+# must be run after new code is installed
+catalog = app.plone.content.catalog
+catalog.refreshCatalog()
+get_transaction().commit()

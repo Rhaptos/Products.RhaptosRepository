@@ -1,0 +1,1 @@
+RATE_MODULE_PERMISSION = 'Rate Module'

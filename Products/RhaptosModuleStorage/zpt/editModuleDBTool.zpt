@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" tal:omit-tag="">
+  <span tal:replace="structure here/manage_page_header">Header</span>
+  <span tal:define="manage_tabs_message options/manage_tabs_message | nothing"
+    tal:replace="structure here/manage_tabs">Tabs</span>
+
+
+  <form method="post" tal:attributes="action request/URL1">
+
+    <p class="form-help"> Set the location of the CVSROOT and the CVS
+      module from which to perform operations.
+      <strong>Warning:</strong> Changing these settings will break any
+      existing checked-out content
+    </p>
+    <table cellspacing="0" cellpadding="2" border="0">
+      	  <tr>
+	    <td>
+	      <div class="form-label"><label for="connection">DB Connection</label></div>
+	    </td>
+	    <td>
+	  <select name="connection">
+	    <option tal:repeat="c here/SQLConnectionIDs" 
+                    tal:attributes="value python:c[0]; selected python:test(here.db==c[0], 'selected', nothing)" 
+                    tal:content="python:c[1]">[connection]</option>
+	  </select> 
+	    </td>
+	  </tr>
+	  <tr>
+	    <td align="left" valign="top">
+	      <div class="form-element">
+		<input name="manage_editModuleDBTool:method" type="submit" 
+		  class="form-element" value="Save Changes" />
+	      </div>
+	    </td>
+	  </tr>
+      </table>
+  </form>
+  
+  <span tal:replace="structure here/manage_page_footer">Footer</span>
+</html>
