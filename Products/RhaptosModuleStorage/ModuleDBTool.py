@@ -73,6 +73,7 @@ class ModuleDBTool(UniqueObject, SimpleItem):
     sqlWrapText = ZSQLFile('sql/wrapText', globals(), __name__='sqlWrapText')
     sqlInsertModuleTag = ZSQLFile('sql/insertTag', globals(), __name__='sqlInsertModuleTag')
     sqlRegisterRating = ZSQLFile('sql/registerRating', globals(), __name__='sqlRegisterRating')
+    sqlDeregisterRating = ZSQLFile('sql/deregisterRating', globals(), __name__='sqlDeregisterRating')
     sqlGetRating = ZSQLFile('sql/getRating', globals(), __name__='sqlGetRating')
     sqlGetModuleFile = ZSQLFile('sql/getModuleFile', globals(), __name__='sqlGetModuleFile')
     sqlGetModuleFileSize = ZSQLFile('sql/getModuleFileSize', globals(), __name__='sqlGetModuleFileSize')
@@ -147,7 +148,7 @@ class ModuleDBTool(UniqueObject, SimpleItem):
         parentObj = object.getParent()
         parent = parentObj and parentObj.ident or None
         self.sqlInsertNewVersion(moduleid=object.objectId,
-				 portal_type=object.portal_type,
+                                 portal_type=object.portal_type,
                                  version=object.version,
                                  name=object.title,
                                  created=object.created.HTML4(),

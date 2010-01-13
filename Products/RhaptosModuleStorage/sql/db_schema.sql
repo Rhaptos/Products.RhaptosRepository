@@ -403,4 +403,14 @@ BEGIN
 END
 ' LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION deregister_rating(integer, integer) RETURNS boolean AS '
+DECLARE
+    id ALIAS FOR $1;
+    rating ALIAS FOR $2;
+BEGIN
+    UPDATE moduleratings SET totalrating=totalrating-rating,votes=votes-1 WHERE module_ident=id;
+    RETURN FOUND;
+END
+' LANGUAGE plpgsql;
+
 COMMIT;

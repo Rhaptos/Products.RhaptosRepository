@@ -614,14 +614,20 @@ class ModuleVersionStub(SimpleItem, PropertyManager):
         member = pm.getAuthenticatedMember()
         adapted = getAdapter(member, IRateable)
         if adapted.hasRating(self.id):
-            if REQUEST is not None:
-                msg = _("You have already rated this module")
-                getToolByName(self, 'plone_utils').addPortalMessage(msg)
-                REQUEST.RESPONSE.redirect(REQUEST.HTTP_REFERER)
-            return
+            # if REQUEST is not None:
+            #     msg = _("You have already rated this module")
+            #     getToolByName(self, 'plone_utils').addPortalMessage(msg)
+            #     REQUEST.RESPONSE.redirect(REQUEST.HTTP_REFERER)
+            # return
+            current_rating = adapted.getRating(self.id)
+            self.portal_moduledb.sqlDeregisterRating(moduleid=self.id, 
+                                                     version=self.latest.version, 
+                                                     rating=current_rating)
 
         adapted.rate(self.id, value)
-        self.portal_moduledb.sqlRegisterRating(moduleid=self.id, version=self.latest.version, rating=value)
+        self.portal_moduledb.sqlRegisterRating(moduleid=self.id, 
+                                               version=self.latest.version, 
+                                               rating=value)
         notify(ModuleRatedEvent(self))
            
         if REQUEST is not None:
