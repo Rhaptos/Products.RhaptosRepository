@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_skins" meta_type="Plone Skins Tool">
+  <object name="rhaptos_repository" meta_type="Filesystem Directory View"
+      directory="Products.RhaptosRepository/skins/rhaptos_repository"/>
+  <skin-path name="*">
+    <layer name="rhaptos_repository" insert-after="custom"/>
+  </skin-path>
+</object>
+

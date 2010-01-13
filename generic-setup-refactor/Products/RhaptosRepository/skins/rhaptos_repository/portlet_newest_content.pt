@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="rhaptos">
+
+<body>
+
+<!-- The newest content portlet -->
+
+    <div metal:define-macro="portlet"
+      tal:define="results here/getNewestObjects"
+      tal:condition="results">
+
+    <dl class="portlet" id="portlet-newestContent">
+        <dt class="portletHeader">
+          <span class="portletTopLeft"></span>
+          <span i18n:translate="box_title_newest_content">Recently&#160;Revised</span>
+          <span class="portletTopRight"></span>
+        </dt>
+        <tal:block tal:repeat="obj results">
+          <dd class="portletItem" 
+            tal:define="oddrow repeat/obj/odd"
+            tal:attributes="class python:test(oddrow, 'portletItem even', 'portletItem odd')">
+            <a tal:attributes="href obj/url"><img tal:replace="structure python:path('here/%s' % obj.getIcon)" /></a> <a tal:attributes="href obj/url">
+              <span tal:replace="obj/Title">[Fresh Content]</span>
+            </a>
+            <div class="portletDetails"
+              tal:content="python:here.toLocalizedTime(obj.revised)">[Thu Nov 11 15:49:58 CST 2004]</div>
+          </dd>
+        </tal:block>
+        
+        <dd class="portletMore even">
+          <strong>
+            <a href="/content/browse_latest" i18n:translate="box_text_more">More...</a>
+          </strong>
+          
+          <span class="portletBottomLeft"></span>
+          <span class="portletBottomRight"></span>
+
+        </dd>
+      </dl>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<rss  version="2.0" xmlns:tal="http://xml.zope.org/namespaces/tal" >
+<channel tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+                        start request/start | python:1;
+                        b_start python:int(start)-1;
+                        b_size request/number | python:10;
+                        portal_type request/portal_type | nothing;
+                        results python:here.getNewestObjects(number=b_size, portal_type=portal_type); 
+                        length python:len(results); 
+                        batch python:Batch(results, int(b_size), int(b_start), orphan=5);
+                        global found length;
+			utool nocall:here/portal_url;
+			portal utool/getPortalObject;
+			ptitle portal/Title;
+                        licensesource string:http://i.creativecommons.org/l/%(perms)s/%(version)s/80x15.png">
+      
+      <title tal:content="string:${portal/Title}: Recently Added Or Revised Content">Connexions: Recently Added Or Revised Content</title>
+      <link tal:content="string:${here/absolute_url}/">[The search url here]</link>
+      <description tal:content="portal/Description">[Open Search portal description]</description>
+      <openSearch:totalResults xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/" xmlns:tal="http://xml.zope.org/namespaces/tal" tal:content="length">0</openSearch:totalResults>
+      <openSearch:startIndex xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/" xmlns:tal="http://xml.zope.org/namespaces/tal" tal:content="batch/start">1</openSearch:startIndex>
+      <openSearch:itemsPerPage xmlns:openSearch="http://a9.com/-/spec/opensearchrss/1.0/" xmlns:tal="http://xml.zope.org/namespaces/tal" tal:content="b_size">10</openSearch:itemsPerPage>
+      <image >
+          <url tal:content="string:${here/portal_url}/opensearch.png" />
+          <title>Recently Added Content</title>
+          <link tal:content="string:${here/absolute_url}/recent.rss?${request/QUERY_STRING}">The search url here</link>
+      </image>
+      <copyright tal:content="here/opensearch-copyright">[Copyright for the content] </copyright>
+      <generator>Rhaptos Collaborative Content System http://software.cnx.rice.edu/</generator>
+
+        <tal:block tal:condition="found">
+            <tal:block tal:repeat="o batch">
+            <item>
+              <title tal:content="o/Title">Title</title>
+              <link tal:content="string:${here/portal_url}/content/${o/objectId}/latest/">link</link>
+              <guid tal:content="string:${here/portal_url}/content/${o/objectId}/${o/version}/">permalink</guid>
+              <description>
+                &lt;b&gt;&lt;i&gt;<tal:authors tal:repeat="a python:zip(path('o/authors'),path('o/authornames'))">
+                &lt;a href="<tal:url tal:replace="python:here.portal_url()+'/member_profile/'+a[0]"/>"&gt;<tal:string tal:replace="python:a[1]" />&lt;/a&gt;<tal:comma tal:condition="not: repeat/a/end" >, </tal:comma>
+                </tal:authors>
+                <tal:authors  tal:condition="python:0" tal:replace="python:', '.join(path('o/authors'))" />&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+              <tal:abstract tal:condition="o/abstract" tal:define="abs o/abstract" tal:replace="python:here.truncate(abs,200)" />&lt;br/&gt;
+              <tal:licenseimages tal:define="split python:o.license.split('/');
+                                             perms python:split[4];
+                                             version python:split[5]">
+              &lt;img style="border: 0px"
+                  src="<tal:url tal:replace="python:licensesource % {'perms':perms, 'version':version}" />"/&gt;
+              </tal:licenseimages>
+                &lt;a href="<tal:url tal:replace="o/license"/>"&gt;Some Rights Reserved&lt;/a&gt;
+
+                </description>
+                <pubDate tal:content="o/revised/rfc822" />
+                </item>
+              </tal:block>
+        </tal:block>
+</channel>
+</rss>

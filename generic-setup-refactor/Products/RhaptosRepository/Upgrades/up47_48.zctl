@@ -1,0 +1,4 @@
+cat=app.plone.content.catalog
+cat.addColumn('license')
+cat.refreshCatalog()
+get_transaction().commit()

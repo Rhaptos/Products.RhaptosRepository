@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+  <body>
+
+    <link rel="stylesheet" type="text/css" href="content_browse.css" metal:fill-slot="css_slot" />
+
+    <metal:block fill-slot="base">
+      <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+    </metal:block>
+
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/similarity_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     object python:here.content.getRhaptosObject(request.objectId).latest;
+                     length python:len(results); 
+                     global found length;
+                     loggedIn not:here/portal_membership/isAnonymousUser">
+
+      <h1 i18n:translate="heading_similar_content">Content similar to:
+        <span i18n:name="portal_title" tal:content="object/Title">[title]</span></h1>
+      
+      <div class="cnx_header_underlink" i18n:translate="label_view_similar_content"
+           tal:define="w python:5;
+                       title object/Title;
+                       firstwords python:' '.join(title.split()[0:w]);
+                       ellipsis python:test(len(title.split()) > w,'...','')">
+        View <a tal:attributes="href object/url" i18n:name="portal_title"
+          tal:content="python:'%s%s' % (firstwords, ellipsis)">[title]</a>
+      </div>
+      
+      <div class="cnx_search_browse_nav">
+        <a href="/content/" i18n:translate="label_browse_for_content"
+          >Browse Content</a> | 
+        <a href="/content/search">
+          Search for Content
+        </a>
+      </div>
+
+      <!--if no content is found-->
+      <tal:block tal:condition="not:found">
+	<div class="listingBar">&#160;</div>
+	<p i18n:translate="text_no_similar_content">No other content was found to be similar to this object.</p>
+      </tal:block>
+
+      <!--if content is found-->
+      <tal:block tal:condition="found">
+        <form metal:use-macro="here/search_macros/macros/search_results"/>
+      </tal:block>
+
+  </div>
+
+  </body>
+</html>

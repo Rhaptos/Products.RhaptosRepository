@@ -1,0 +1,69 @@
+<!-- owes much to old browse_course_institutions -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="alphabet python:['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                                  'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Other',
+                                  'Unspecified'];
+                 pss modules/Products/PythonScripts/standard;
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 selected python:params and len(params) >= 1 and params[0] or 'A';
+                 highlight python:params and len(params) >= 2 and params[1] or None;
+                 highlight python:highlight and pss.url_unquote(highlight).decode('utf-8');
+                 lookFor python:selected != 'Unspecified' and selected or None;
+                 other python:selected == 'Other';
+                 linkbase string:${context/portal_url}/content/browse_content/institution;
+                 content python:context.getInstitutions(begins=lookFor, nonroman=other);">
+
+<span id="cnx_browse_active_pane"
+      tal:condition="python:selected and not params or len(params) &lt;= 1">
+</span>
+
+<h2>Institutions*</h2>
+
+<div class="cnx_alphabet">
+<tal:a tal:repeat="letter alphabet">
+      <a tal:content="letter"
+     onclick="setPane('refine', 'institution', 'A');return false;"
+     tal:attributes="href string:$linkbase/$letter;
+                     class python:selected == letter and 'selected alpha' or None;
+                     onclick python:test(letter!='Unspecified','setPane(\'refine\',\'institution\',\'%s\');;return false;;'%letter,'setPane(\'both\',\'institution\',\'Unspecified/-\');;return false;;')">
+    A
+  </a>
+</tal:a>
+</div>
+
+<tal:test tal:condition="selected">
+
+<h3 tal:content="lookFor">[A]</h3>
+<ul tal:repeat="elt content">
+  <li tal:define="raw         python:elt[0];
+                  institution python:raw and raw or '-';
+                  name        python:raw and raw.encode('utf-8') or 'Unspecified';
+                  num_c       python:elt[1];
+                  pss modules/Products/PythonScripts/standard">
+      <a href="/content/browse_content/institution/R/Rice"
+         onclick="setPane('view','institution','Rice',this);return false;"
+         tal:define="toPass python:pss.url_quote(institution.encode('utf-8')).replace('/','%2F').replace('%','*')"
+         tal:attributes="href python:'/'.join([linkbase, selected, toPass]);
+                         onclick string:setPane('view','institution','$selected/$toPass',this);;return false;;;
+                         class python:highlight == institution and 'selected' or nothing"
+         tal:content="name">
+        Rice University
+      </a>
+      <div i18n:translate="label_browse_authors_link_to_content" class="cnx_details">
+        <img tal:condition="nothing" tal:replace="structure context/repository_icon.gif" /> Collections:
+          <strong tal:content="num_c" i18n:name="collection_count">[0]</strong>
+     </div>
+  </li>
+</ul>
+<p tal:condition="not:content">No institutions found.</p>
+
+<p class="cnx_footnote">* Only Collections have Institutions</p>
+
+</tal:test>
+
+</div>

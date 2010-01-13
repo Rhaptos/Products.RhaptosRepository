@@ -1,0 +1,24 @@
+<p xmlns="http://www.w3.org/1999/xhtml" 
+   xmlns:tal="http://xml.zope.org/namespaces/tal"
+   xmlns:metal="http://xml.zope.org/namespaces/metal" 
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+   tal:define="utool nocall:here/portal_url;
+    portal utool/getPortalObject;
+    ptitle portal/Title"
+  i18n:domain="rhaptos"
+  i18n:translate="text_opensearch_copyright">
+<a tal:attributes="href utool" i18n:name="portal_logo"><img tal:attributes="alt ptitle; title ptitle; src string:${utool}/square-logo.png" align="right" border="0" /></a>
+All works are available from <a
+    i18n:name="portal_title"
+    tal:attributes="href utool"
+    tal:content="ptitle">[Portal title]</a>, in a variety of formats.
+Each work is individually licensed as indicated, under its own 
+<span i18n:name="creatve_commons_license_logo">
+<img align="left"
+    i18n:attributes="alt text_creative_commons_license" 
+    alt="Creative Commons License" border="0" 
+    src="http://creativecommons.org/images/public/somerights20.gif" /></span>
+<span i18n:name="creative_commons_license_link">
+<a href="http://creativecommons.org/licenses/" i18n:translate="text_creative_commons_license">Creative Commons License</a></span>.
+<br/>
+</p>

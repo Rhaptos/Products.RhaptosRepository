@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:tal="http://xml.zope.org/namespaces/tal"
+                       tal:define="utool nocall:here/portal_url;
+                       portal utool/getPortalObject;
+                       ptitle portal/Title">
+  <Url type="application/rss+xml"
+       template="http://cnx.org/opensearch?words={searchTerms}&amp;b_size={count}&amp;start={startIndex}"
+       tal:define="qstr string:/opensearch?words={searchTerms}&amp;b_size={count}&amp;start={startIndex}"
+       tal:attributes="template python:context.absolute_url()+qstr" />
+  <Url type="text/html" method="get"
+       template="http://cnx.org/content/search?words={searchTerms}"
+       tal:define="qstr string:/content/search?words={searchTerms}"
+       tal:attributes="template python:context.absolute_url()+qstr" />
+  <ShortName tal:content="ptitle">[Portal Title]</ShortName>
+  <LongName tal:content="ptitle">[Portal Title]</LongName>
+  <Description tal:content="portal/Description">[Portal Description]
+  </Description>
+  <Tags>educational open content</Tags>
+  <Image tal:content="string:${utool}/square-logo.png" />
+  <Query role="example" searchTerms="DSP" />
+  <Developer tal:content="ptitle">[Portal Title]</Developer>
+  <Contact tal:content="portal/email_from_address">[portal email contact]</Contact>
+  <Attribution>Creative Commons Attribution License
+   </Attribution>
+  <SyndicationRight>open</SyndicationRight>
+</OpenSearchDescription>
+

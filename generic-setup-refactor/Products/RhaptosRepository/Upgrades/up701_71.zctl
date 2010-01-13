@@ -1,0 +1,14 @@
+# upgrade for 'ramcache' devset; here, we're just installing a 'roles' metadata field
+# on the content catalog, through a newly-idempotent install script
+# this may take a while due to having to update the metadata on everything.
+# ADDITIONAL STEP: go to /portal/content/catalog -> Advanced and refresh catalog from
+# main URL (not a manage URL! -- like cnx.org)
+
+from AccessControl.SecurityManagement import newSecurityManager
+from Products.CMFCore.tests.base.security import AnonymousUser, OmnipotentUser
+user = OmnipotentUser().__of__(app)
+newSecurityManager(None, user)
+
+app.plone.portal_quickinstaller.reinstallProducts(['RhaptosRepository'])
+
+get_transaction().commit()

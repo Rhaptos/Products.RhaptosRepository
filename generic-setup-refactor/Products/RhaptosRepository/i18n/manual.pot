@@ -1,0 +1,153 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2005-08-24 02:06+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone\n"
+
+#: /skins/RisaRepository/browse_courses.pt
+#. <th i18n:translate="">&nbsp;Course&nbsp;</th>
+msgid "&nbsp;Course&nbsp;"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <input class="context" i18n:attributes="value" tal:attributes=" name string:add${addLoc}" type="submit" value="Add"/>
+#: ../skins/RisaRepository/similarity.pt
+#. <input class="context" i18n:attributes="value" tal:attributes="      name string:add${addLoc}" type="submit" value="Add"/>
+# Original: "Add"
+# name string:add${addLoc}" value="Add" i18n:attributes="value"/>
+msgid "Add"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <input class="standalone searchButton" i18n:attributes="value" onClick="location.href='advanced_search'" tal:attributes="tabindex tabindex/next" tal:replace="nothing" type="button" value="Advanced"/>
+# Original: "Advanced"
+# onClick="location.href='advanced_search'"
+# tal:attributes="tabindex tabindex/next"
+# tal:replace="nothing"/>
+msgid "Advanced"
+msgstr ""
+
+
+msgid "Parameters"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <input class="context searchButton" i18n:attributes="value" tal:attributes="tabindex tabindex/next" type="reset" value="Reset"/>
+# Original: "Reset"
+# tal:attributes="tabindex tabindex/next"/>
+msgid "Reset"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <input class="context searchButton" i18n:attributes="value" tal:attributes="tabindex tabindex/next" type="submit" value="Search"/>
+# Original: "Search"
+# tal:attributes="tabindex tabindex/next"/>
+msgid "Search"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <input alt="Select/Unselect all items" class="noborder" i18n:attributes="title alt" name="selectButton" onClick="toggleSelect(this); return false;" title="Select/Unselect all items" type="checkbox"/>
+# Original: "Select/Unselect all items"
+# name="selectButton"
+# title="Select/Unselect all items"
+# alt="Select/Unselect all items"
+# i18n:attributes="title alt"
+# onClick="toggleSelect(this); return false;"
+# />
+msgid "Select/Unselect all items"
+msgstr ""
+
+
+msgid "Titles"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <a class="grey" i18n:translate="authors" tal:attributes="href string:showAuthors?mod_id=$id">
+#.  Authors
+#. </a>
+# Original: "Authors"
+msgid "authors"
+msgstr ""
+
+
+#: ../skins/RisaRepository/browse_courses.pt
+#. <th i18n:translate="course">
+#.  Course
+#. </th>
+# Original: "Course"
+msgid "course"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <span i18n:translate="courses">
+#.  courses
+#. </span>
+# Original: "courses"
+msgid "courses"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <span i18n:translate="for:">
+#.  for:
+#. </span>
+#. <span i18n:translate="for:">
+#.  modules
+#. </span>
+# Original: "for:"
+msgid "for:"
+msgstr ""
+
+
+#: ../skins/RisaRepository/browse_courses.pt
+#. <th i18n:translate="institution">
+#.  Institution
+#. </th>
+# Original: "Institution"
+msgid "institution"
+msgstr ""
+
+
+#: ../skins/RisaRepository/browse_courses.pt
+#. <th i18n:translate="instructor">
+#.  Instructor
+#. </th>
+# Original: "Instructor"
+msgid "instructor"
+msgstr ""
+
+
+#: ../skins/RisaRepository/search.pt
+#. <a class="grey" i18n:translate="keywords" tal:attributes="href string:showKeywords?mod_id=$id">
+#.  Keywords
+#. </a>
+# Original: "Keywords"
+msgid "keywords"
+msgstr ""
+
+
+#: /skins/RisaRepository/search.pt
+#. <span i18n:translate="">modules</span>
+msgid "modules"
+msgstr ""
+

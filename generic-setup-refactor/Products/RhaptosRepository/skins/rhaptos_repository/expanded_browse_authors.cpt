@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+
+  <link rel="stylesheet" href="content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+
+  <body>
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/expanded_browse_authors_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     queries viewinfo/queries;
+                     subset viewinfo/subset;
+                     author viewinfo/author;
+                     m viewinfo/m;
+                     bycontent viewinfo/bycontent;
+                     containers viewinfo/containers;
+                     forks viewinfo/forks;
+                     m_content viewinfo/m_content;
+                     returnhref viewinfo/returnhref">
+
+      <h1 class="topheading" i18n:translate="header_browsebyauthor">
+        Browse by Author:
+        <span i18n:name="fullname" tal:content="m/fullname" />
+      </h1>
+
+      <div class="cnx_header_underlink">
+        <a href="" tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
+          i18n:translate="label_view_profile">View author profile</a>
+      </div>
+
+      <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
+
+      <ul id="topic-list"
+          tal:define="base_url string:${template/id}?author=${author}"
+          tal:condition="python:not (subset=='by' and not (forks or containers or m_content))">
+        <li tal:condition="python:bycontent" tal:define="selected python:subset=='by'">
+	<a tal:attributes="href string:${base_url}&subset=by&${queries};
+                             class python:test(selected,'selected',None)"
+             i18n:translate="label_content_by_author">
+            <span i18n:name="content_by">Content by</span>
+            <span tal:replace="m/fullname" i18n:name="author_name">[name]</span></a>
+
+        </li>
+        <li tal:condition="python:containers" tal:define="selected python:subset=='containers'">
+	<a tal:attributes="href string:${base_url}&subset=containers&${queries};
+                             class python:test(selected,'selected',None)"
+            i18n:translate="label_collections_containing_by_author">
+            <span i18n:name="collections_containing">Other authors' collections containing modules by</span>
+            <span tal:replace="m/fullname" i18n:name="author_name">[name]</span></a>
+        </li>
+        <li tal:condition="python:forks" tal:define="selected python:subset=='derivedfrom'">
+	<a tal:attributes="href string:${base_url}&subset=derivedfrom&${queries};
+                             class python:test(selected,'selected',None)"
+            i18n:translate="label_based_on_by_author">
+            <span i18n:name="content_based_on">Content based on works by</span>
+            <span tal:replace="m/fullname" i18n:name="author_name">[name]</span> (derived copies)</a>
+        </li>
+        <li tal:condition="python:m_content" tal:define="selected python:subset=='maintains'">
+          <a tal:attributes="href string:${base_url}&subset=maintains&${queries};
+                             class python:test(selected,'selected',None)"
+            i18n:translate="label_maintained_by_author">
+            <span i18n:name="content_maintained_by">Content maintained by</span>
+            <span tal:replace="m/fullname" i18n:name="author_name">[name]</span></a>
+        </li>
+      </ul>
+      <tal:block tal:define="length python:len(results);
+                             global found length;"
+                 tal:condition="found">
+          <tal:block metal:use-macro="here/search_macros/macros/search_results"/>
+      </tal:block>
+    </div>
+  </body>
+</html>

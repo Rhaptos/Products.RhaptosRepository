@@ -1,0 +1,7 @@
+<dtml-comment>
+connection_id:devrep
+arguments:date="now" interval="1 week"
+</dtml-comment>
+
+SELECT CAST (<dtml-sqlvar date type=string> AS timestamp(0)) AS datetime,
+EXTRACT ( days from CAST (<dtml-sqlvar interval type=string> AS interval)) AS days

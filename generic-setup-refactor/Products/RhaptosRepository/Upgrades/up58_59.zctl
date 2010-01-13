@@ -1,0 +1,8 @@
+from Testing.makerequest import makerequest
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+
+app=makerequest(app)
+
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','catalogModuleStubs')(app.plone)
+
+get_transaction().commit()

@@ -1,0 +1,4 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addGetHistoryCount')(app.plone)
+
+get_transaction().commit()

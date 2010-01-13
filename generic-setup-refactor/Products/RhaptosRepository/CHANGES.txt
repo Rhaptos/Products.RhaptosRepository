@@ -1,0 +1,629 @@
+RhaptosRepository-0.77
+  - collection-structure-redesign-1 (Oct. 22, 2009)
+    - Updated links to help files
+    - LatestReference changed to look up Zope 3-style views instead of just attrs on
+       Reference traversal.
+
+
+RhaptosRepository-0.76
+  - content-actions-move (17 Aug 2009)
+    - store and retrieve Google Analytics tracking code on VersionFolders
+
+RhaptosRepository-0.75
+  - contentperf-pdf (28 Jul 2009)
+    - Added parameter to call to Collection.notifyContentsRevised()
+  - #9346: Made langCodesByEnglishSort robust to unexpected language codes
+
+RhaptosRepository-0.74
+  - Module Edit Workflow (June, 2009)
+    - Modify checkout destination in search_macros to match new one in context-less content add
+  - #9232 (in its own devset) - naked & in Lens entry comments
+
+RhaptosRepository-0.73
+ - Siyavula Release (May 14, 2009)
+  - Show icon on endorsed content
+  - Use new approved icon
+  - Display namespace tags in lens view
+  - Add Reviewed Status sort for Open Lenses
+  - Styling changes
+
+RhaptosRepository-0.72.2
+ - cnxml-0.6 hot fix, third rollout (06 Mar 2009)
+  - #4844 - Fixed extra trailing slash on URLs in oai_macros.pt
+  - recent.rss CC license image fixed (#7306)
+
+RhaptosRepository-0.72.1
+ - cnxml-0.6 hot fix, second rollout (15 Feb 2009)
+  - Fix #8217 - limit search words to 12 terms
+
+RhaptosRepository-0.72
+  - cnxml-0.6 (30 Jan 2009)
+    - trailing slash added to oai identifier URL's
+    - Added cnx metadata option (cnx_dc) to dublin core feed
+    - Add the 3.0 version of the attribution license to the list of licenses, and make it the 
+      default. This fixes several places where version 2.0, or a choice between 1.0 and 2.0, 
+      was hardcoded. getDefaultLicense.py is still not in a license tool like it should be, but 
+      it's moved from RMS to RhaptosContent, and there's now a getLicenseData method both on 
+      content and on the ModuleDBTool that pulls license data from the postgres database.
+
+RhaptosRepository-0.71.1
+  - restores new import line that got stepped on by the ramcache merge
+
+RhaptosRepository-0.71
+  - ramcache (26 Nov 2008) [requires QuickInstaller reinstall; requires manual step]
+    - refactor content catalog setup to allow for idempotent upgrade (as well as install)
+      or metadata fields. (But not indexes just yet, since we didn't touch them.)
+    - add to setup/upgrade method a number of catalog fields that we have but were not there
+    - add new metadata field for 'roles'
+    - modernize install: replace old, long, skins code with 'install_subskins', add logging,
+      remove unused re-configuration
+    - in install make repository creation idempotent, doing upgrade of fields if existing
+
+RhaptosRepository-0.70.1
+ - ATOM Feed
+   - Added CSS changes for Atom Feed
+
+RhaptosRepository-0.70
+  - MyCNX phase 2
+    - #6572: go-back-to-stored-location link to lens listing, through the search_macros page
+    - add another slot to the macro in search_macros (for #6572)
+
+RhaptosRepository-0.69
+  - fixup use of unicode search terms
+  - moved logic for reprint/carry-forward-if-locked from Repository into Collection (due to #6343)
+    - VersionFolder.notifyObjectRevised utilized to do this. (previously was unused.)
+
+RhaptosRepository-0.68
+  - MyCNX lands
+    - search history moves
+    - fix search_form_handler.py bug: no from_keys on stopped_terms if empty
+
+RhaptosRepository-0.67.4
+  - Trigger deletion of old multimedia zip upon collection publication
+
+RhaptosRepository-0.67.3
+  - Expose subject property in OAI ims1_2_1 feed - presence test was failing
+    for no apparent reason
+
+RhaptosRepository-0.67.2
+  - Add portal_url property to recent.rss, can be either Module or Collection,
+    to limit results to the appropriate type.
+  - Add portal_url to random content links.
+
+RhaptosRepository-0.67.1
+  - fix for fix for OAI Titles being blank.
+
+RhaptosRepository-0.67
+  - postplone25: merge browseWork branch changes, fix #4108
+  - postplone25: remove excess logging; fix #4135
+  - extend getCollections to allow getting all collections (letter=Any)
+  - OAI SeachRecords sets now labelled w/ SearchRecords verb
+  - OAI SearchRecords now accepts 'weights' (docs on rhaptos.org)
+  - OAI badVerb error message lists valid verbs
+
+RhaptosRepository-0.66
+  - assemble-on-demand: hooks for collection printing
+  - fix #4184: use python: hack to get around path expression access issue for 
+    language attribute in OAI access.
+
+RhaptosRepository-0.65
+  - upgrade to Plone 2.5
+
+RhaptosRepository-0.64.5
+  - fix #4012: Refactor session-based recent searches to use cookies instead.
+    Existing search history generated many conflict errors in TemporaryStorage,
+    and using cookies doesn't cause any storage activity. Replaces and behaves
+    exactly like the original, and may even be a little faster, since this one
+    calculates 'format_search_string' on set instead of display.
+
+RhaptosRepository-0.64.4
+  - fix #4008: recent searches portlet was using non-virtual server path 
+    information to build the URL. Apply same fix as 0.64.1
+
+RhaptosRepository-0.64.3
+  - fix #4005: The workgroup-Top/Bottom-through-method-call was lost during
+    form refactoring of advancedsearch, apparently. We used to push the form to
+    different URLs starting with Top/ or Bottom/ depending on the button, using
+    the :method technique. The FormControllerization of the form dropped that, but
+    left the location on the field name, breaking both top and bottom submit. Now,
+    it a better way, using the 'button' element to allow having variable values for
+    the submit element without having different button labels.
+
+RhaptosRepository-0.64.2
+  - fix #4001: use of relative method in search forms on content browse tab page
+  - stop disabled advanced_search form from appearing in content_tab page
+
+RhaptosRepository-0.64.1
+  - fixup bad use of PATH_INFO: not virtual path friendly
+
+RhaptosRepository-0.64
+  landing advancedsearch resultset improvement branch
+  - improved reporting of search terms to user
+  - stopword consistency improvements
+  - cache object for results sets
+  - new implementation of storages lookup (performance for content viewing)
+  - remove statistics view, rename statistics_table to statistics
+  - statistics spreadsheet
+  - merge advanced_search into search, using js to toggle view (disabled)
+  - keywords field in advanced search
+  - number of views sorting
+  - fixup intersect logic for field_queries
+  - restructure ObjectResult wrapper, for cache usage
+  - portal_type (module vs. course) sorting
+  - whole-word keyword matching: substring matching is 1/10 weight
+  - individual person role searches (editor, translator, maintainer, author)
+  
+RhaptosRepository-0.63
+  landing lenses0 branch
+  - hook publish to provide notifications to the lens tool of new content versions
+  - search modified to be able to add content to lenses as well as workspaces
+  - search made to work outside of 'content'
+  - search_macros extended to look for a companion list and show data from it
+    instead of the normal search data. Used to lens tags/comments.
+  - search_macros extended to disable content provided in a different list
+  - search param inCourse renamed to inContext, and the inContext form takes
+    arbitrary form :method name.
+  - Lenses added to the universal add drop-down, but disabled
+  - browse modified to use org names where possible
+
+RhaptosRepository-0.62.7
+  - fix JS for results browsing size switching to not fail when there
+    are already get params (or at least a ?) present. No upgrade.
+
+RhaptosRepository-0.62.6
+  - opensearch and recent RSS feeds now work when returning courses
+  - remove double creation of keyword index
+
+RhaptosRepository-0.62.5
+  - Browse chunking in third pane
+  - Hashed URLs for bookmarkability under JS/AJAX
+  - Don't show the h2 for 'Unspecified' Institutions on the middle
+    institution pane and open up the third pane automatically for
+    'Unspecified' (nlt0201)
+  - Make headers of expanded browse pages consistent
+  - Add title for expanded_browse_popularity
+
+RhaptosRepository-0.62.4
+  - remove quotes from search term for keyword index. Now it might match.
+
+RhaptosRepository-0.62.3
+  - Display information about the most important unobvious search
+    match when nothing is highlighted (nlt0087)
+  - Don't show author subcategory links if they are empty (nlt0228)
+  - Set the default batch size to 50 for detail panes (nlt0166)
+  - Link to the author profile in the header of
+    expanded_browse_authors per Manpreet's comments in nlt0131
+  - Move the Search/Browse navigation above the header and remove the
+    extra glossary call per Manpreet's comments in nlt0206
+  - Make similarity view more like search output
+  - Pass accurate language parameters to expanded browse (nlt0224)
+  - Tiny tweaks from nlt0206, nlt0220, nlt0182, nlt0036
+  - More consistent styling for tops of search/browse pages
+  - Encode keywords as they pass to and from expanded browse 
+
+RhaptosRepository-0.62.2
+  - make OpenSearch work with the new search architecture
+
+RhaptosRepository-0.62.1
+  - search results display security fix
+  - file cleanup of old browse_content.pt
+
+RhaptosRepository-0.62
+  - March 2007 site redesign (newlook)
+  - major search refactoring and improvements
+  - new content browse structures
+
+RhaptosRepository-0.61.1
+  - Bug fix due to missing quotes around a string in browse_course_institutions
+
+RhaptosRepository-0.61
+  - i18n Translation Support
+
+RhaptosRepository-0.60
+  - upgrade opensearch support to version 1.1, and fix missing image from
+    search.creativecommons.org
+
+RhaptosRepository-0.59.1
+  - fix catalog use for searchRepositoryByDate (exposed by OAI)
+
+RhaptosRepository-0.59
+  - implement browse by langauge
+  - index Module Version Stub objects in content/catalog
+  - use content/catalog for all browse_*, both modules and courses
+  - Fix for bug 2350: make browse_latest table wider in IE
+  - Removed now unnecessary forced white-space behavior
+
+RhaptosRepository-0.58
+  - Major refactoring of the way Repository.py acts and the way
+  objects are stored.
+  - Added StorageManager.py to manage the different backend storages
+  of different object types.
+  - Different storages can be added and registered with the
+  repository.
+  - Objects have different storages based on the portal_type 
+
+RhaptosRepository-0.57
+  - Added a new function to Repository.py called getContentByRole()
+  - Added new page template: browse_latest for displaying an extended
+    view of the recent content portlet and added links to point to it
+  - Added a new function to VersionFolder called getHistoryCount which
+    will return the number of versions an object has
+  - Added getHistoryCount, submitter, and maintainers to the course
+    catalog
+  - Added information about maintainership to the by_author page
+  - Removed the portlets from the right side of the page when viewing
+    a browse content page
+
+RhaptosRepository-0.56
+  - Implement ListSets verb for OAI (Throw not supported error)
+  - Fixup ListMetadataFormats verb for OAI 
+  - Add language support to OAI output (both DC and IMS metadata)
+
+RhaptosRepository-0.55
+  - remove border on search form's Modules checkbox
+  - add link that actually looks like link to authors' profiles in browse_course_authors.pt
+  - allow VersionFolder to be copied (by fake RegisterClass) for delete backup
+  - update OAI IMS Metadata xml: added more fields out
+  - add new recent content RSS feed
+
+RhaptosRepository-0.54
+  - Conversion to new Connexions logo
+
+RhaptosRepository-0.53
+  - Changed author names to link to the new member profile page
+
+RhaptosRepository-0.52
+  - Renamed RISA to Rhaptos
+
+RisaRepository-0.51
+  - Marked up code for translation
+  - Added the Danish translation
+
+RisaRepository-0.50
+  - Use Title() accessor for compaitbility with recent Archetypes
+  - New LatestReference class subclass References
+  - New method ZRepository.isLatestVersion()
+  - New BTreeFolder2 storage
+  - Removed references to Connexions
+
+RisaRepository-0.49
+  - Use Title in compareTitles to fix unicode problem
+
+RisaRepository-0.48
+  - Implement OpenSearch for A9 integration
+  - allow defining batchsize (b_size) for searches
+  - handle random content when nothing makes it through the filter
+  - add a truncate() method to ellipsize large text blocks.
+
+RisaRepository-0.47
+  - Remove old crufty code: ZRisaCollection and LinkMap
+
+RisaRepository-0.46.1
+  - Fix OAI (again) to work with plone2
+
+RisaRepository-0.46
+  - removed unnecessary spaces in links to module and course definitions 
+    in browse_keywords.pt
+  - changed absolute url to relative (/help/qstart) in 
+    browse_content.pt
+
+RisaRepository-0.45
+  - Work with Plone2
+  - merge modules and courses for browse_* interfaces
+  - Use CMFish getIcon instead of icon
+  - Remove meta_type and icon munging from search results
+  - Begin adding unit tests and making them pass
+  - Add method for counting RisaObjects 
+  - **Brand new content pages**
+
+RisaRepository-0.44.2
+  - Brown paper bag release: fix browse_keywords to work with newer RMS
+
+RisaRepository-0.44.1
+ - add deleteRisaObject method
+ - fixed OAI to use new RMS API
+
+RisaRepository-0.44
+  - Remove inital articles 'A', 'An' and 'The' from titles for browse by title.
+  - Catch one more search term error (unbalanced double qoutes) and deal
+
+RisaRepository-0.43
+  - Split out similarity results page
+  - New getRisaObjects() method
+  - Actually include keywords in course searching
+
+RisaRepository-0.42
+  - changed searchRepository to take a list of terms, rather than a string
+  - cleaned up use of cmp rather than __cmp__ in searchRepositoryByDate
+
+RisaRepository-0.41
+  - Use new DB schema for roles
+  - Bug 1341: now return a 404 instead of an AttributeError for non-existent module
+  - Refactored searchRepository() method and introduced no skin script
+    search_form_handler() to handle searching from forms
+
+RisaRepository-0.40
+  - Fix browse authors page
+
+RisaRepository-0.39
+  - Added blurb about modules to browse modules pages
+
+RisaRepository-0.38
+  - Compatibility fixes for python2.3/Zope2.7
+  - Moved LinkMap functions to LinkMapTool Product
+  - Moved CVS VersionControl to CVSTool Product
+  - Moved DBAccess/ZRisaModule to ModuleDBToo Product
+  - Merged RisaRepository and ZRepository
+  - New publishing API
+  - Generalized ZRisaCollection into ModuleFolder (old stuff still
+  around for backward compat)
+  - Removed ZRisaObject
+
+RisaRepository-0.37.2
+  - Added IMS Metadata support to OAI metadata
+
+RisaRepository-0.37.1
+  - Fix for course searching breaking after course updates
+
+RisaRepository-0.37
+  - Added OAI PMH support
+  - Code restructuring of VersionControl support
+     * no longer hardcodes CVS root and module name
+
+RisaRepository-0.36.2
+  - Fix security problem with EIP (maintainer role not showing up)
+
+RisaRepository-0.36.1
+  - Fix security problem with getContainedObject() and old-style
+  collections
+
+RisaRepository-0.36
+  - New module display method
+  - Fix for Zope 2.7
+  - Misc. cleanups
+  - Expansion of interfaces
+
+RisaRepository-0.35.2
+  - Fixed course view info pages (per 1668)
+
+RisaRepository-0.35.1
+  - Added "Previous" and "Next" links to the bottom of the module
+
+RisaRepository-0.35
+  - Support for new RisaCollection objects instead of
+  RisaCollectionEditors
+  - Fix capital AND/OR/NOT bug in searching
+
+RisaRepository-0.34.6.4
+  - Printing updates
+
+RisaRepository-0.34.6.3
+  - Fix for gallery modules with non-MathML supporting browsers (like
+  Safari)
+
+RisaRepository-0.34.6.2
+  - Fix 'Add' button with no modules selected
+
+RisaRepository-0.34.6.1
+  - Fix 'about' for courses (broken by fork)
+  - Find courses by author as well
+  - Allow searches to return only modules or courses, user's option
+  - Search weights are now all intergers (not floats)
+
+RisaRepository-0.34.6
+  - Fix bug in EIP (broken by fork)
+
+RisaRepository-0.34.5
+  - Colon after "based on" display in footer
+
+RisaRepository-0.34.4
+  - Fix for diffing (missing import)
+  - Formatting of "based on" display in footer
+
+RisaRepository-0.34.3
+  - Bug fix from 0.33.2
+  - Allow apostrophes in commit messages for newly-created modules
+
+RisaRepository-0.34.2
+  - Added parent information to module printing
+
+RisaRepository-0.34.1
+  - Added parent module information to about and history pages
+
+RisaRepository-0.34
+  - New fork functionality: store "parent" objects and authors
+  - Hooks for diff support
+
+RisaRepository-0.33.2
+  - fixed editting acourse setting the correct objectId
+
+RisaRepository-0.33.1
+  - Complete course search implementation: 
+    + added Catalog tab to ZMI
+    + editing course updates catalog
+
+RisaRepository-0.33
+  - Implementation of course searching
+  - Cleanup of search results page
+  - Commonize on 'objectId' attribute instead of 'moduleid' or
+    getObjId()
+
+RisaRepository-0.32.11
+  - Redo browse* fixes in PzgeTemplate, rather than python
+
+RisaRepository-0.32.10
+  - Same fix for browse_keywords
+
+RisaRepository-0.32.9
+  - Fix browse_authors page for authors who have no modules
+
+RisaRepository-0.32.8
+  - In "last edited by" section of footer, handle the case where
+  submitter is none
+
+RisaRepository-0.32.7
+  - More ComputedAttruibutes for compatiblity with RME: title,
+    submitter, _links
+  - EIP link now defaults to 'on' unless doing EIP or module is not latest
+  - Removed references to old editInPlace.xsl file
+  - New footer design: implemented as macro so it can be commonized
+    across pages
+  - Fix bug in history pages for non Mozilla browsers
+
+RisaRepository-0.32.6
+  - Use ComputedAttributes for authors, maintainers, and licensors on
+  ZRisaModule so it has the same interface as other objects (courses,
+  and module editors)
+  - Remove dependence on context.query (yay!!)
+
+RisaRepository-0.32.5
+  - Don't use XML style empty tags if things might get parsed by IE as HTML
+
+RisaRepository-0.32.4
+  - Strip incoming keywords and omit blank ones
+  - Update EIP stylesheet links
+
+RisaRepository-0.32.3
+  - Arrrg.  Fix similarity search for modules without keywords
+
+RisaRepository-0.32.2
+  - List course authors in course RDF instead of using the instructor
+    for that 
+  - Changed 'similar search' back to joining and splitting keywords w/ spaces to avoid
+    a problem with keyowrds with spaces in them and FTI
+
+RisaRepository-0.32.1
+  - Do apostrophe/quote esaping in SQL method, not python (rjr)
+  - Fixed similarily search
+
+RisaRepository-0.32
+  - New implementation of linkmap using ZODB objects
+
+RisaRepository-0.31.1
+  - Fix for EIP so that links will persist
+  - When doing EIP, explicitly unindex temportary folder to avoid
+  catalog bloat
+
+RisaRepository-0.31
+  - Check for AddPortalContent in ZRisaModule.createVersion to prevent
+    non-maintainers from publishing new versions
+  - Make the course table sortable
+
+RisaRepository-0.30.1
+  - Wording change on page template wrapper
+
+RisaRepository-0.30
+  - Fixed EIP for non-Manager users
+
+RisaRepository-0.29
+  - Fixed EIP: use a PortalFolder instead of an OFS.Folder for
+    temporary storage in postUpdate() so that we don't get an error
+    about what's not allowed where
+
+RisaRepository-0.28
+  - Removed joins with risa_ tables since that data is no longer
+  current.  This fixes the problem with modules by new authors not
+  displaying them correctly in the author/maintainer fields
+
+RisaRepository-0.27
+  - Fixed the broken advanced search "links"
+    (s/advanced.html/advanced_search/g), then commented out all the
+    'advanced' buttons, since the "basic" interface does all the searching
+    that the advanced used to. In addition, only the basic interface
+    works for adding modules to a workgroup.
+  - Fixed regression where submitter names weren't being stored on
+  commit or creation
+
+RisaRepository-0.26
+  - Converted to CMF
+  - Brought in search and browse functionality from /query and /browse
+
+RisaRepository-0.25
+  - Changed ZRisaModule.getContextLinks() to accept a URL as the
+    context, and use that rather than parsing cookies
+  - Fixed courseRDF so it doesn't choke if a module has no links in
+    the map
+  - Added an interface for the repository object
+
+RisaRepository-0.24
+  - Do auto-upgrade of ZRisaCollectionVersion so links work
+  - Don't log so much
+  - Don't display EIP link
+
+RisaRepository-0.23
+  - Made more database queries available so we no longer depend on external query folder
+  - Improve storage of course links: actually store them :)
+  - Implement API for getting course links
+  - Made ZRisaObject subclass Acquisition.Implicit for security declarations actually work
+  - Refactored RDF creation
+
+RisaRepository-0.22
+  - Bugfix: course parameters weren't getting displayed
+
+RisaRepository-0.21
+  - Added simple OMDoc support (display only)
+  - Make ZRisaModule slightly less dependent on CNXML
+  - Requires CourseFile-1.0
+  - New ZRisaModuleVersion class to hold specific version of a module (similar to how collections are done, only not persistent)
+  - New ZRisaObjectVersion superclass for versioned objects
+  - Commonized commit methods
+  - Changed module creation to parallel collection creation
+  - Use a page template wrapper around rendered modules
+
+RisaRepository-0.20
+  - Arg.  Forgot to import types
+
+RisaRepository-0.19
+  - Fixed persistence bug with parameters
+
+RisaRepository-0.18
+  - Newly rewritten ZRisaCollection stores collections in ZODB rather than SQL DB
+  - New ZRisaCollectionVersion class to hold specific version of a collection
+  - SQL Database access methods encapsulated in DBAccess object
+  - Reworked printing system avoids thread-unsafe methods
+  - Support for apostrophes in submission messages
+  - Support for storing collection-specific annotations 
+  - Local role support for collections
+  - Direct access for many module properties, instead of using getData()
+
+RisaRepository-0.17
+  - Add submitter and submitlog information when storing new modules or versions
+  - SQL query fixes/optimizations
+  - Rewritten VersionControl access to use new cvslib python module
+  - New method for student printing
+  - New page templates for 'About' and 'History' of the module
+
+RisaRepository-0.16
+  - Pass module id to stylesheet when doing EIP
+
+RisaRepository-0.15
+  - Right strip whitespace from metadata template before storing in
+  CNXML file so we don't get whitespace explosion
+
+RisaRepository-0.14
+  - Bug fix release: make course parameters again
+
+RisaRepository-0.13
+  - Made RisaCollection an 'addable' product
+  - Removed old implementation of ZRisaCollection
+  - New icon
+
+RisaRepository-0.12:
+  - New object method getActualVersion() always returns numeric
+    version string (and never 'latest')
+  - ZRisaModule passes actual version to stylesheet to override
+    incorrect version embedded in markup
+  - postUpdate handles licensors and licenseURL now
+
+RisaRepository-0.11:
+  - Edit-in-place support
+  - Better security handling
+  - Fixes for doing FTI and license stuff at module creation
+
+RisaRepository-0.10:
+  - Full text indexing support
+  - Better handling of object redirecting to work with virtual hosting
+
+
+RisaRepository-0.9:
+  - Support for licenses/licensors

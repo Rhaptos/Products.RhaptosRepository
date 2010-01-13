@@ -1,0 +1,4 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','swapUnicodeAwareLexicon')(app.plone.content)
+import transaction; transaction.commit()
+print "Now log in to the rhaptos site via a manager account and reindex the content catalog (http://your.server.here/content/catalog/manage_catalogAdvanced 'Update Catalog'  button, or http://cooker.cnx.rice.edu:8080/content/catalog/refreshCatalog )"

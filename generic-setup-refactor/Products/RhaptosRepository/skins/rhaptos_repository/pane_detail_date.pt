@@ -1,0 +1,82 @@
+<!-- starts from the old browse_latest -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="panetype string:date;
+                 template nocall:options/box3 | nocall:template;
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 batch_start python:params and len(params) >= 2 and params[1].strip('at') or 0;
+                 selected python:params and len(params) >= 1 and params[0] or None;
+                 results python:here.pane_detail_date_results(selected);
+                 Batch python:modules['Products.CMFPlone'].Batch;
+                 b_start batch_start | request/b_start | python:0;
+                 b_size request/b_size | python:context.content.default_browse_batch_size;
+                 batch python:Batch(results, int(b_size), int(b_start), orphan=5, quantumleap=0);">
+
+<tal:test tal:condition="selected">
+
+<span id="cnx_browse_active_pane"></span>
+
+<h2>
+  <tal:name condition="python:selected == 'latest'" i18n:translate="text_revised_latest">
+      All recent activity</tal:name>
+
+  <tal:name condition="python:selected == 'new'" i18n:translate="text_revised_new">
+      New content only</tal:name>
+  <tal:name condition="python:selected == 'revised'" i18n:translate="text_revised_revised">
+      New revisions only</tal:name>
+
+  <tal:name condition="python:selected == 'today'" i18n:translate="text_revised_today">
+      Today</tal:name>
+  <tal:name condition="python:selected == 'week'" i18n:translate="text_revised_week">
+      This week</tal:name>
+  <tal:name condition="python:selected == 'month'" i18n:translate="text_revised_month">
+      This month</tal:name>
+  <tal:name condition="python:selected == 'year'" i18n:translate="text_revised_year">
+      This year</tal:name>
+  <tal:name condition="python:selected == 'ever'" i18n:translate="text_revised_ever">
+      Ever</tal:name>
+</h2>
+
+<div class="cnx_expand_link cnx_top">
+  <a href="#" i18n:translate="label_browse_expandinfo" metal:define-macro="expandlink"
+     tal:define="base string:/content/expanded_browse_date;
+                 query python:context.expanded_query(new=selected, b_start=b_start)"
+     tal:attributes="href python:'%s?%s' % (base, query)">Expand this Information</a>
+</div>
+
+<metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+
+<table width="100%">
+  <tr>
+    <th>Type</th>
+    <th>Title</th>
+    <th class="cnx_date_column">Date</th>
+  </tr>
+  <tr tal:repeat="brain batch">
+     <td><img tal:replace="structure python:path('here/%s' % brain.getIcon)" /></td>
+     <td><a tal:attributes="href brain/url" tal:content="brain/Title">[title]</a></td>
+     <td tal:define="timestring python:here.toLocalizedTime(brain.revised, True)"
+         tal:content="timestring" class="cnx_date_column">
+        2007-02-26 01:18am
+     </td>
+  </tr>
+</table>
+
+<div tal:condition="python:len(batch) > 10" class="cnx_expand_link cnx_bottom">
+  <metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+  <div style="position:relative;top:.5em">
+    <a href="#" metal:use-macro="template/macros/expandlink">Expand this Information</a>
+  </div>
+</div>
+
+</tal:test>
+
+<tal:test tal:condition="not:selected">
+  <em>Click a link at left first</em>
+</tal:test>
+
+</div>

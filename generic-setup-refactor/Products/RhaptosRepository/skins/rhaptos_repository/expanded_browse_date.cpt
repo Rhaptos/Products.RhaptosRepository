@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+
+  <link rel="stylesheet" href="content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+
+  <body>
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/expanded_browse_date_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     headerdetail viewinfo/headerdetail;
+                     new_str viewinfo/new_str;
+                     length python:len(results);
+                     global found length;">
+
+      <h1 class="topheading" i18n:translate="heading_browse_date">
+        Browse by Date:
+        <span i18n:name="headerdetail">
+          <span i18n:translate="" tal:content="headerdetail"/>
+        </span>
+      </h1>
+
+      <div tal:define="returnhref python:'/content/browse_content/date/'+new_str">
+        <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
+      </div>
+
+      <tal:block tal:condition="found">
+        <tal:block metal:use-macro="here/search_macros/macros/search_results"/>
+      </tal:block>
+    </div>
+  </body>
+</html>

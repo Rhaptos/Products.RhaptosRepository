@@ -1,0 +1,8 @@
+<dtml-comment>
+connection_id:devrep
+arguments:moduleid interval="1 week" end_date="now"
+</dtml-comment>
+
+SELECT moduleid, version, revised, submitter, submitlog FROM modules
+WHERE <dtml-sqltest moduleid type="string" multiple> 
+AND revised  >= CAST (<dtml-sqlvar end_date type=string> AS TIMESTAMP) - CAST (<dtml-sqlvar interval type=string> AS INTERVAL);

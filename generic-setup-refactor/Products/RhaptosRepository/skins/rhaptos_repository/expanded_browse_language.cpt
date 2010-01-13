@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+
+  <link rel="stylesheet" href="content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+
+  <body>
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/expanded_browse_language_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     langLookup viewinfo/langLookup;
+                     langs viewinfo/langs;
+                     langCode viewinfo/langCode;
+                     siblingLocales viewinfo/siblingLocales;
+                     nativeName viewinfo/nativeName;
+                     engName viewinfo/engName;
+                     variantName viewinfo/variantName;">
+
+      <h1 class="topheading" i18n:translate="heading_browse_language">Browse by Language:
+        <span i18n:name="language_name">
+        <tal:name replace="nativeName">Deutch</tal:name>
+        (<tal:name replace="engName">German</tal:name>)
+        <tal:name content="python:variantName or default"
+          condition="python:len(langs) == 1" i18n:translate="">unspecified</tal:name>
+        [<tal:name replace="langCode">de</tal:name>]
+        </span>
+      </h1>
+
+      <div tal:condition="python:len(langs) == 1 and len(siblingLocales) > 1"
+        tal:define="qs python:'?langs:list='+'&langs:list='.join(siblingLocales)"
+        class="cnx_header_underlink" style="font-weight: normal">
+        <a href="/content/expanded_browse_language"
+          tal:attributes="href string:/content/expanded_browse_language${qs}"
+          i18n:translate="text_all_content_in">
+          All content in <span tal:replace="nativeName" i18n:name="language_name" />
+        </a>
+      </div>
+
+      <div class="cnx_header_underlink unbold"
+         tal:condition="python:len(langs) > 1">
+        <tal:str i18n:translate="text_regional_variants_of">Regional variants:</tal:str>
+        <tal:lang tal:repeat="subcode siblingLocales">
+          <a href="/content/expanded_browse_language"
+            tal:attributes="href string:/content/expanded_browse_language?langs:list=${subcode}"
+            tal:content="python:langLookup[subcode]['variantName'] or default"
+            i18n:translate="">unspecified</a>
+          [<tal:code replace="subcode">de</tal:code>]
+          <tal:sep condition="not:repeat/subcode/end">,</tal:sep>
+        </tal:lang>
+      </div>
+      
+      <div tal:define="returnhref python:'/content/browse_content/language/'+'/'.join(langs)">
+        <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
+      </div>
+
+      <tal:block tal:define="length python:len(results);
+                             global found length;"
+                 tal:condition="found">
+        <tal:block metal:use-macro="here/search_macros/macros/search_results"/>
+      </tal:block>
+    </div>
+  </body>
+</html>

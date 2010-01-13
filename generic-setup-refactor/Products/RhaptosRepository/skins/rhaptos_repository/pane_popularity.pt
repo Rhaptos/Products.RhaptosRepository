@@ -1,0 +1,32 @@
+<!-- essentially new, but very simple -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 highlight python:params and len(params) >= 1 and params[0] or None;">
+
+<span id="cnx_browse_active_pane" tal:condition="not:params"></span>
+
+<h2 i18n:translate="heading_popularity">Popularity</h2>
+
+<ul>
+ <li>
+   <a href="/content/browse_content/popularity/weekly" i18n:translate="text_popular_recent"
+      onclick="setPane('view','popularity','weekly',this);return false;"
+      tal:attributes="class python:highlight == 'weekly' and 'selected' or nothing">
+    Most Popular Last Week
+   </a>
+ </li>
+ <li>
+   <a href="/content/browse_content/popularity/alltime" i18n:translate="text_popular_ever"
+      onclick="setPane('view','popularity','alltime',this);return false;"
+      tal:attributes="class python:highlight == 'alltime' and 'selected' or nothing">
+    Most Popular of All Time
+   </a>
+ </li>
+</ul>
+
+</div>

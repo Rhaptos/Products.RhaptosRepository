@@ -1,0 +1,67 @@
+<!-- largely from the old browse_language -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 linkbase string:${context/portal_url}/content/browse_content/language;
+                 highlight python:params and len(params) >= 1 and params[0].split('-')[0] or [];">
+
+<span id="cnx_browse_active_pane" tal:condition="not:params"></span>
+
+<h2 i18n:translate="heading_language">Language</h2>
+
+<ul tal:define="langLookup python:here.langLookup();
+                getLangAndLocaleData python:here.getLanguageData();
+                langData getLangAndLocaleData/langData;
+                localeData getLangAndLocaleData/localeData;
+                langCodesInEnglishOrder python:here.langCodesByEnglishSort(langData);">
+ <li tal:repeat="l langCodesInEnglishOrder">
+ <tal:row tal:define="nativeName python:langLookup[l]['nativeName'];
+                      engName python:langLookup[l]['englishName'];
+                      subcodes python:langData[l]['variantCodes'];
+                      qs python:'/'.join(subcodes);
+                      anyDashedCodes python:1 in [c.count('-') for c in subcodes];">
+
+   <a href="/content/browse_content/language/de"
+      onclick="setPane('view','language','de',this);return false;"
+      tal:attributes="href string:$linkbase/$qs;
+                      onclick python:'setPane(\'view\',\'language\',\'%s\',this);;return false;;' % qs;
+                      class python:highlight==l and 'selected' or nothing">
+      <span tal:replace="nativeName">Deutsch</span>
+      <span tal:condition="python:nativeName != engName">
+        (<span tal:replace="engName">German</span>)</span></a>
+   [<span tal:replace="python:subcodes[-1]">de</span>] <tal:comment replace="nothing">hmm. likely fragile</tal:comment>
+   <div class="cnx_details">
+      <span i18n:translate="text_modules">Modules</span>:
+      <strong tal:content="python:str(langData[l]['mods'])" />, 
+      <span i18n:translate="text_collections">Collections</span>:
+      <strong tal:content="python:str(langData[l]['cols'])" />
+   </div>
+
+<tal:gone tal:condition="nothing">
+   <div tal:repeat="subcode subcodes"
+        tal:condition="anyDashedCodes">
+     <tal:block tal:define="variantName python:langLookup[subcode]['variantName']">
+       <a href="/content/browse_content/language/de"
+          onclick="setPane('view','language','de');return false;"
+          tal:attributes="href string:$linkbase/$subcode;
+                          onclick python:'setPane(\'view\',\'language\',\'%s\');;return false;;' % subcode">
+         <span tal:condition="variantName" tal:replace="variantName"
+         /><i tal:condition="not:variantName" i18n:translate="">unspecified</i></a>
+       [<span tal:replace="subcode">de</span>]
+       <span i18n:translate="text_modules">Modules</span>:
+       <span tal:replace="python:str(localeData[subcode]['mods'])" />,
+       <span i18n:translate="text_collections">Collections</span>:
+       <span tal:replace="python:str(localeData[subcode]['cols'])" />
+     </tal:block>
+   </div>
+</tal:gone>
+
+ </tal:row>
+ </li>
+</ul>
+
+</div>

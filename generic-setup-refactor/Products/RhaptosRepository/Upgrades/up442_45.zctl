@@ -1,0 +1,9 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+from Testing.makerequest import makerequest
+app=makerequest(app)
+
+app.REQUEST.setServerURL(protocol='http', hostname='yoda.cnx.rice.edu:9080')
+app.REQUEST.set('VirtualRootPhysicalPath', ('', 'plone'))
+
+ExternalMethod('temp','temp','RisaRepository.Upgrade','upgrade')(app.plone)
+get_transaction().commit()
