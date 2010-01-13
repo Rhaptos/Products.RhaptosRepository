@@ -143,6 +143,10 @@ td.right-cell-sort{
   color: #333;
 }
 
+.right-cell-table .star-rating{
+  white-space: nowrap;
+}
+
 /*
 select option.selected{
   color: #e70 !important;

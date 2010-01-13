@@ -1,3 +1,6 @@
+RhaptosRepository-0.78
+  - OAI cnxdc schema fixup (03 Dec 2009)
+
 RhaptosRepository-0.77
   - collection-structure-redesign-1 (Oct. 22, 2009)
     - Updated links to help files

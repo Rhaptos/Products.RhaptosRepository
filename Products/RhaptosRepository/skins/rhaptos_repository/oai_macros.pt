@@ -48,8 +48,7 @@
           </oai_dc:dc>
           
 
-          <cnx_dc:dc xmlns:cnx_dc="http://www.openarchives.org/OAI/2.0/_dc/" 
-                     xmlns:cnxdc="http://cnx.org/technology/schemas/cnx_dc/" 
+          <cnxdc:dc xmlns:cnxdc="http://cnx.org/technology/schemas/cnx_dc/" 
                      xmlns:dc="http://purl.org/dc/elements/1.1/" 
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                      tal:condition="python:options['metadataPrefix'] == 'cnx_dc'" 
@@ -68,7 +67,7 @@
             <dc:date tal:content="obj/revised/HTML4">[2001-12-14]</dc:date>
             <dc:identifier tal:content="string:${obj/url}/">[url]</dc:identifier>
             <dc:rights tal:content="string:${obj/license}">[rights]</dc:rights>
-          </cnx_dc:dc>
+          </cnxdc:dc>
           <ims1_2_1:lom xmlns:ims1_2_1="http://www.imsglobal.org/xsd/imsmd_v1p2" tal:condition="python:options['metadataPrefix'] == 'ims1_2_1'" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd">
             <ims1_2_1:general>
               <ims1_2_1:title>
