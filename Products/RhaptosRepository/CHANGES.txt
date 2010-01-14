@@ -1,3 +1,6 @@
+RhaptosRepository-0.79
+  - siyavula-phase-3 (11 Jan 2010)
+
 RhaptosRepository-0.78
   - OAI cnxdc schema fixup (03 Dec 2009)
 
