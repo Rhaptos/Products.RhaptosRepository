@@ -239,6 +239,21 @@ END
 		        """)
 
 
+def addReRatings(self):
+    db = self.devrep
+    db.manage_test(query="""
+CREATE OR REPLACE FUNCTION deregister_rating(integer, integer) RETURNS boolean AS '
+DECLARE
+    id ALIAS FOR $1;
+    rating ALIAS FOR $2;
+BEGIN
+    UPDATE moduleratings SET totalrating=totalrating-rating,votes=votes-1 WHERE module_ident=id;
+    RETURN FOUND;
+END
+' LANGUAGE plpgsql;
+		        """)
+
+
 def storageDispatchUpgrade(self):
     # Register ModuleVersion storage
     from Products.RhaptosModuleStorage.ModuleVersionFolder import ModuleVersionStorage
