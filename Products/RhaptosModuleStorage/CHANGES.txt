@@ -1,3 +1,6 @@
+RhaptosModuleStorage-0.46
+  - siyavula-phase-3 (11 Jan 2010)
+
 RhaptosModuleStorage-0.45
   - collection-structure-redesign-1 (Oct. 22, 2009)
     - mark ModuleView as able to render abstract and body separately
