@@ -354,6 +354,7 @@ table tr #stats_view_submode{
   display: block;
   margin-left: -.3em;
   text-decoration: underline;
+  background-image: none;
 }
 
 * html .spreadsheet_button{
