@@ -133,7 +133,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         self.OAI = OAIHandler('OAI')
         self.title = title
         self._create_catalog()
-        self._create_cache()
+        self._create_cache() #results cache needs better invalidation code - consider fake=True if you're getting conflicts on publish
 
     #  Copied from PortalContent 
     def __call__(self):
