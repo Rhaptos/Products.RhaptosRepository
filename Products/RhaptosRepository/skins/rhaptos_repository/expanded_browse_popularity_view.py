@@ -26,9 +26,12 @@ cached_results = content.cache.resultsCacheLookup(searchhash,sorton,recent)
 
 if cached_results is None:  # todo: cache and/or invalidate-based-on actual data range
     stats = context.portal_hitcount.getDailyAverages(recent)
-    raw_results = context.getObjectResultsForIds(stats)
-    results = sorton!='popularity' and content.sortSearchResults(list(raw_results),sorton,recent) or raw_results
-    content.cache.resultsCacheInject(searchhash, (results, {}, sorton, recent))
+    if stats:
+        raw_results = context.getObjectResultsForIds(stats)
+        results = sorton!='popularity' and content.sortSearchResults(list(raw_results),sorton,recent) or raw_results
+        content.cache.resultsCacheInject(searchhash, (results, {}, sorton, recent))
+    else:
+        results = []
 else:
     results=cached_results[0]
 
