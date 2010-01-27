@@ -555,6 +555,7 @@ table tr #stats_view_submode{
 h3 .whats_this{
   font-size: .65em;
   font-weight: normal;
+  text-decoration: underline;
 }
 
 .lens_comments p{
