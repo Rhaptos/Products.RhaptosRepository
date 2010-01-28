@@ -7,6 +7,9 @@
 ##parameters=
 ##title=
 ##
+
+from zLOG import LOG, INFO
+
 REQUEST = context.REQUEST
 
 words = REQUEST.get('words','')
@@ -30,7 +33,12 @@ ignored = ''
 cooked,uncook = context.content.cookSearchTerms(query)
 stopped = uncook.get('',[])
 #generate in order unique list for user display of stopped terms
-stopped_terms = stopped and {}.fromkeys([t for t,i in zip(stopped,range(len(stopped))) if i == stopped.index(t)],'') or []
+
+stopped_terms = {}
+stopped_uniq = [t for t,i in zip(stopped,range(len(stopped))) if i == stopped.index(t)]
+for t in stopped_uniq:
+    stopped_terms[t] = ''
+
 if len(cooked) > term_limit:
     qi = -1
     term_count = 0
