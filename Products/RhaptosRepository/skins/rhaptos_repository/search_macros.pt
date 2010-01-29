@@ -202,7 +202,7 @@
                   tal:attributes="selected python:test(sorton=='getApproved','selected',nothing)" value="getApproved">Review Status</option>
               <option tal:condition="python:was_search or template.id=='similarity'"
                   tal:attributes="selected python:test(sorton=='weight','selected',nothing)" value="weight">Relevance</option>
-              <option tal:attributes="selected python:test(sorton=='popularity','selected',nothing)" value="popularity">Popularity</option>
+              <option tal:attributes="selected python:test(sorton=='popularity','selected',nothing)" value="popularity" tal:condition="context/has_stats">Popularity</option>
               <option tal:condition="python:template.id=='collection_composer'"
                   tal:attributes="selected python:test(sorton=='rating','selected',nothing)" value="rating">Rating</option>
 	      <option tal:condition="python:view_mode=='statistics' or sorton=='views'"
@@ -313,7 +313,7 @@
 
       </tbody>
       </table>
-      <tal:span tal:condition="python:view_mode != 'statistics'">
+      <tal:span tal:condition="python:view_mode != 'statistics' and context.has_stats()">
       <tal:span tal:condition="use_recent|nothing">*</tal:span>Popularity is measured as percentile rank of page views/day over <tal:span tal:condition="python:not use_recent">all time</tal:span> <tal:span tal:condition="python:use_recent" tal:define="statsdates python:here.portal_hitcount.getIncrementDateRange()"><span tal:content="python:statsdates[0].strftime('%m/%d')"></span>&#150;<span tal:content="python:statsdates[1].strftime('%m/%d')"></span></tal:span></tal:span>
     </tal:block>
 
@@ -759,7 +759,7 @@
                 <tal:lang tal:replace="python:here.portal_languages.getNameForLanguageCode(base_lang)">English</tal:lang>
               </td>
               </tr>
-              <tr class="object_extended_metadata">
+              <tr class="object_extended_metadata" tal:condition="context/has_stats">
               <td class="left-cell">
                 <b i18n:translate="text_popularity_header">Popularity: </b>
               </td>

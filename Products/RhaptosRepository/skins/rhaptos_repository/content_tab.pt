@@ -345,6 +345,7 @@ function setPane(pane, category, param, linked) {
                                            ('institution','Institution'),
                                            ('collections','All Collections'))">
           <li tal:repeat="cat categories">
+          <tal:pop tal:condition="python:context.has_stats() and cat[0] == 'popularity' or cat[0] != 'popularity'">
               <a href="/content/browse_content/subject"
                  onclick="setPane('refine','subject','',this);;return false;;"
                  tal:define="pane python:cat[0]; human python:cat[1]"
@@ -355,6 +356,7 @@ function setPane(pane, category, param, linked) {
                  tal:content="human" i18n:translate="">
                    Subject Category
               </a>
+          </tal:pop>
           </li>
         </ul>
 	</div>
