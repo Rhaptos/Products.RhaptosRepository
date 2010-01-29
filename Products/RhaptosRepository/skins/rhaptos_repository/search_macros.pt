@@ -268,10 +268,10 @@
 	      >Detail</a> |
               <b tal:condition="python:view_mode == 'compact'">Compact</b><a tal:condition="python:view_mode != 'compact'"
                 tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=compact'])"
-              >Compact</a> |
+              >Compact</a> <tal:pop tal:condition="context/has_stats">|
               <b tal:condition="python:view_mode == 'statistics'">Statistics</b><a tal:condition="python:view_mode != 'statistics'"
                 tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=statistics'])"
-		>Statistics</a>
+		>Statistics</a></tal:pop>
             </span>
 
           <metal:block metal:use-macro="here/batch_macros_results/macros/navigation" />
