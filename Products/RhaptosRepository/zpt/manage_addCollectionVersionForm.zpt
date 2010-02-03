@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+<h1 tal:replace="structure here/manage_page_header">Header</h1>
+  <h2 tal:define="form_title string:Add RISA Collection Version"
+      tal:replace="structure here/manage_form_title">Form Title</h2>
+
+  <form action="manage_addRisaCollectionVersion" method="post" enctype="multipart/form-data">
+    
+  <table cellspacing="0" cellpadding="2" border="0">
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-label">Id</div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="id" size="40" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-optional">Title</div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="title" size="40" />
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top">
+      </td>
+      <td align="left" valign="top">
+        <div class="form-element">
+          <input class="form-element" type="submit" name="submit" 
+                 value="Add" /> 
+        </div>
+      </td>
+    </tr>
+  </table>
+  </form>
+
+<h1 tal:replace="structure here/manage_page_footer">Footer</h1>
+</html>
+
+
+
+
+
+
+
+
+
+

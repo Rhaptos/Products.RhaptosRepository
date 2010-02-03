@@ -1,0 +1,150 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      i18n:domain="plone">
+
+<tal:comment replace="nothing">
+  Based on CMFPlone's batch_macros, but customized for the rarefied environment of the browse panes.
+    - refine URL to be based on params and do stripping of batchsize
+    - change links to be path based instead of param based
+    - add onclick handlers
+    - change some batch-0 URLs to leave off batch param, just to be cleaner
+</tal:comment>
+
+<body>
+
+<!-- Navigation -->
+<div class="listingBar"
+     metal:define-macro="navigation"
+     tal:define="request request|here/request|container/request|nothing;
+                 batch batch|nothing;
+                 mq python:modules['ZTUtils'].make_query;
+                 url string:${context/portal_url}/content/browse_content/$panetype/;
+                 traverse_subpath params | request/traverse_subpath | python:[];
+                 traverse_subpath python:[x for x in traverse_subpath if not x.startswith('at')];
+                 joinedSubpath python:'/'.join(traverse_subpath);
+                 url python:'%s%s' % (url, joinedSubpath);
+                 currentpage batch/pagenumber;"
+     tal:condition="python: batch.next or  batch.previous">
+
+    <span class="previous"
+      tal:define="p batch/previous | nothing">
+        <span class="inviz" tal:omit-tag="p">
+        <a href=""
+           tal:define="num p/first | python:0"
+           tal:omit-tag="not:p"
+           tal:attributes="href python:num==0 and url or '%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;">
+           &laquo;
+           <span i18n:translate="batch_previous_x_items" tal:omit-tag="">
+               Previous
+               <span i18n:name="number" tal:content="p/length | batch/next/length">n</span>
+           </span>
+        </a>
+        </span>
+    </span>
+
+    <span class="next"
+      tal:define="n batch/next | nothing">
+        <span class="inviz" tal:omit-tag="n">
+        <a href=""
+           tal:define="num n/first | python:0"
+           tal:omit-tag="not:n"
+           tal:attributes="href python:'%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;">
+           <span i18n:translate="batch_next_x_items" tal:omit-tag="">
+               Next
+               <span i18n:name="number" tal:content="n/length | batch/previous/length">n</span>
+           </span>
+           &raquo;
+        </a>
+        </span>
+    </span>
+
+    <!-- Link to first -->
+    <span tal:condition="python: 1 not in batch.navlist">
+        <a href=""
+           tal:attributes="href url;
+                           onclick string:setPane('view','$panetype','$joinedSubpath',0);;return false;;">1</a>
+        <span tal:condition="python: 2 not in (batch.prevlist or batch.leapback)"
+              tal:omit-tag="">
+           ...
+        </span>
+    </span>
+
+    <!-- Pagelist with quantum leap links to previous pages for quick navigation -->
+    <span tal:repeat="linklist batch/leapback"
+          tal:condition="batch/leapback"
+          tal:omit-tag="" >
+        <a href=""
+           tal:define="page linklist;
+                       num python:(linklist-1)*batch.size;"
+           tal:content="page"
+           tal:attributes="href python: '%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;" >
+        </a>
+        ...
+    </span>
+
+    <!-- Pagelist with links to previous pages for quick navigation -->
+    <span tal:repeat="linklist batch/prevlist"
+          tal:condition="batch/prevlist"
+          tal:omit-tag="" >
+        <a href=""
+           tal:define="page linklist;
+                       num python:(linklist-1)*batch.size;"
+           tal:content="page"
+           tal:attributes="href python:'%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;" >
+        </a>
+    </span>
+
+    <!-- Current page -->
+    <span tal:condition="batch/navlist"
+          tal:omit-tag="">
+        [<span tal:content="batch/pagenumber">Current page number</span>]
+    </span>
+
+    <!-- Pagelist with links to next pages for quick navigation -->
+    <span tal:repeat="linklist batch/nextlist"
+          tal:condition="batch/nextlist"
+          tal:omit-tag="" >
+        <a href=""
+           tal:define="page linklist;
+                       num python:(linklist-1)*batch.size;"
+           tal:content="page"
+           tal:attributes="href python: '%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;" >
+        </a>
+    </span>
+
+    <!-- Pagelist with quantum leap links to next pages for quick navigation -->
+    <span tal:repeat="linklist batch/leapforward"
+          tal:condition="batch/leapforward"
+          tal:omit-tag="" >
+        ...
+        <a href=""
+           tal:define="page linklist;
+                       num python:(linklist-1)*batch.size;"
+           tal:content="page"
+           tal:attributes="href python: '%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;">
+        </a>
+    </span>
+
+    <!-- Link to last -->
+    <span tal:condition="python:batch.numpages not in batch.navlist">
+        <span tal:condition="python: batch.numpages - 1 not in (batch.nextlist or batch.leapforward)"
+              tal:omit-tag="">
+        ...
+        </span>
+        <a href=""
+           tal:define="num python:(batch.numpages-1)*batch.size"
+           tal:attributes="href python:'%s/at%s' % (url, num);
+                           onclick string:setPane('view','$panetype','$joinedSubpath/at$num',0);;return false;;"
+           tal:content="batch/numpages">3457</a>
+    </span>
+
+</div>
+
+</body>
+</html>

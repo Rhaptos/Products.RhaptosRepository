@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"
+      xmlns:metal="http://xml.zope.org/namespaces/metal" 
+      xmlns:tal="http://xml.zope.org/namespaces/tal" 
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="rhaptos">
+
+  <metal:block fill-slot="base">
+    <tal:block tal:define="dummy python:request.set('disable_border', 1)" />
+  </metal:block>
+
+  <link rel="stylesheet" href="content_browse.css" type="text/css" metal:fill-slot="css_slot" />
+
+  <body>
+    <div metal:fill-slot="main"
+         tal:define="viewinfo context/expanded_browse_titles_view;
+                     searchhash viewinfo/searchhash;
+                     results viewinfo/results;
+                     letter viewinfo/letter;">
+
+      <h1 class="topheading" i18n:translate="heading_browse_titles">
+        Browse by Title: 
+        "<span i18n:name="browse_letter" tal:content="letter"/>"
+      </h1>
+
+      <div tal:define="returnhref python:'/content/browse_content/titles/'+letter">
+        <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
+      </div>
+
+      <tal:block tal:define="length python:len(results); 
+                             global found length;"
+                 tal:condition="found">
+          <tal:block metal:use-macro="here/search_macros/macros/search_results"/>
+      </tal:block>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<import-steps>
+ <import-step id="rhaptos-repository" version="20090924-01"
+              handler="Products.RhaptosRepository.setuphandlers.setupRepository"
+              title="Setup Rhaptos Repository">
+  <dependency step="typeinfo"/>
+  Setup the Rhaptos Repository
+ </import-step>
+</import-steps>

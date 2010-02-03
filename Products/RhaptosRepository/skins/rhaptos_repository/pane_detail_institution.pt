@@ -1,0 +1,63 @@
+<!-- owes much to old browse_course_institutions -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="panetype string:institution;
+                 template nocall:options/box3 | nocall:template;
+                 pss modules/Products/PythonScripts/standard;
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 batch_start python:params and len(params) >= 3 and params[2].strip('at') or 0;
+                 selected python:params and len(params) >= 2 and params[1] or None;
+                 selected python:selected and pss.url_unquote(selected.replace('*','%'));
+                 lookFor python:selected != '-' and selected or '';
+                 results python:context.content.catalog(atomicInstitution=lookFor.decode('utf-8'),
+                                                        portal_type='Collection', sort_on='sortTitle');
+                 results python:(lookFor=='' and [o for o in results if o.institution=='']) or results;
+                 Batch python:modules['Products.CMFPlone'].Batch;
+                 b_start batch_start | request/b_start | python:0;
+                 b_size request/b_size | python:context.content.default_browse_batch_size;
+                 batch python:Batch(results, int(b_size), int(b_start), orphan=5, quantumleap=0);">
+
+<tal:test tal:condition="selected">
+
+<span id="cnx_browse_active_pane"></span>
+
+<h2 tal:content="python:lookFor or 'Unspecified'" i18n:translate="">Rice University</h2>
+
+<div class="cnx_expand_link cnx_top">
+  <a href="#" i18n:translate="label_browse_expandinfo" metal:define-macro="expandlink"
+     tal:define="base string:/content/expanded_browse_institution;
+                 query python:context.expanded_query(inst=selected, letter=params[0], b_start=b_start)"
+     tal:attributes="href python:'%s?%s' % (base, query)">Expand this Information</a>
+</div>
+
+<metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+
+<table>
+  <tr>
+    <th>Type</th>
+    <th>Title</th>
+  </tr>
+  <tr tal:repeat="o batch">
+     <td><img tal:replace="structure python:path('here/%s' % o.getIcon)" /></td>
+     <td><a tal:attributes="href o/url" tal:content="o/Title">[title]</a></td>
+  </tr>
+</table>
+
+<div tal:condition="python:len(batch) > 10" class="cnx_expand_link cnx_bottom">
+  <metal:block metal:use-macro="here/batch_macros_pane/macros/navigation" />
+  <div style="position:relative;top:.5em">
+    <a href="#" metal:use-macro="template/macros/expandlink">Expand this Information</a>
+  </div>
+</div>
+
+</tal:test>
+
+<tal:test tal:condition="not:selected">
+  <em>Click a link at left first</em>
+</tal:test>
+
+</div>

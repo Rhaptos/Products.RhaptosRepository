@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook
+    xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:c="urn:schemas-microsoft-com:office:component:spreadsheet"
+    xmlns:html="http://www.w3.org/TR/REC-html40"
+    xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:x="urn:schemas-microsoft-com:office:excel"
+    xmlns:x2="http://schemas.microsoft.com/office/excel/2003/xml"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    tal:define="portal context/portal_url/getPortalObject;
+                cachekey request/cachekey | nothing;
+                results python:request.SESSION.get('results',None)">
+  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+      <Author>Connexions</Author>
+      <LastAuthor>Connexions</LastAuthor>
+      <Created tal:content="python:DateTime().HTML4()">2007-05-17T16:35:02Z</Created>
+      <Company>Connexions, http://cnx.org</Company>
+  </DocumentProperties>
+  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+     <AllowPNG/>
+  </OfficeDocumentSettings>
+  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+    <WindowHeight>12405</WindowHeight>
+    <WindowWidth>15180</WindowWidth>
+    <WindowTopX>480</WindowTopX>
+    <WindowTopY>60</WindowTopY>
+    <ProtectStructure>False</ProtectStructure>
+    <ProtectWindows>False</ProtectWindows>
+  </ExcelWorkbook>
+  <Styles>
+    <Style
+        ss:ID="Default"
+        ss:Name="Normal"/>
+    <Style
+        ss:ID="Result"
+        ss:Name="Result">
+      <Font
+          ss:Bold="1"
+          ss:Italic="1"
+          ss:Underline="Single"/>
+    </Style>
+    <Style
+        ss:ID="Result2"
+        ss:Name="Result2">
+      <Font
+          ss:Bold="1"
+          ss:Italic="1"
+          ss:Underline="Single"/>
+      <NumberFormat
+          ss:Format="Currency"/>
+    </Style>
+    <Style
+        ss:ID="Heading"
+        ss:Name="Heading">
+      <Alignment
+          ss:Horizontal="Center"/>
+      <Font
+          ss:Bold="1"
+          ss:Italic="1"
+          ss:Size="16"/>
+    </Style>
+    <Style
+        ss:ID="Heading1"
+        ss:Name="Heading1">
+      <Alignment
+          ss:Horizontal="Center"
+          ss:Rotate="90"/>
+      <Font
+          ss:Bold="1"
+          ss:Italic="1"
+          ss:Size="16"/>
+    </Style>
+    <Style
+        ss:ID="co1"/>
+    <Style
+        ss:ID="ta1"/>
+    <Style
+        ss:ID="ce1">
+      <NumberFormat
+          ss:Format="General Date"/>
+    </Style>
+    <Style
+        ss:ID="ce2">
+      <NumberFormat
+          ss:Format="Short Date"/>
+    </Style>
+    <Style
+        ss:ID="ce3">
+      <Alignment
+          ss:Horizontal="Center"
+          ss:Vertical="Center"/>
+    </Style>
+    <Style
+        ss:ID="ce4">
+      <NumberFormat
+          ss:Format="Percent"/>
+    </Style>
+    <Style
+        ss:ID="ce5">
+      <Alignment
+          ss:WrapText="1"/>
+      <Font
+          ss:FontName="Bitstream Vera Sans1"
+          ss:Size="10"/>
+    </Style>
+    <Style
+        ss:ID="ce6">
+      <Alignment
+          ss:WrapText="1"/>
+      <Font
+          ss:FontName="Bitstream Vera Sans1"
+          ss:Size="10"/>
+      <NumberFormat
+          ss:Format="Percent"/>
+    </Style>
+      <Style ss:ID="s21" ss:Name="Default">
+  </Style>
+      <Style ss:ID="s22">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="s23">
+   <NumberFormat ss:Format="[$-409]m/d/yy\ h:mm\ AM/PM;@"/>
+  </Style>
+  <Style ss:ID="s24">
+   <Borders>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="s26" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+  </Style>
+    <Style ss:ID="s38" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#C0C0C0" ss:Pattern="Solid"/>
+  </Style>
+    <Style ss:ID="s40" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Interior ss:Color="#C0C0C0" ss:Pattern="Solid"/>
+  </Style>
+    <Style ss:ID="s57" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#CCFFCC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s58" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#CCFFCC" ss:Pattern="Solid"/>
+   <NumberFormat ss:Format="Short Date"/>
+  </Style>
+  <Style ss:ID="s59" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#CCFFCC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s60" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#CCFFCC" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="s66">
+   <Interior/>
+  </Style>
+    <Style ss:ID="s67">
+   <NumberFormat ss:Format="[$-F800]dddd\,\ mmmm\ dd\,\ yyyy"/>
+  </Style>
+    <Style ss:ID="s68" ss:Parent="s21">
+   <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+  </Style>
+    <Style ss:ID="m16729414" ss:Parent="s21">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#969696" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="m16729424" ss:Parent="s21">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Bold="1"/>
+   <Interior ss:Color="#C0C0C0" ss:Pattern="Solid"/>
+  </Style>
+    <Style ss:ID="s56" ss:Parent="s21">
+   <Borders>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+   </Borders>
+   <Interior ss:Color="#C0C0C0" ss:Pattern="Solid"/>
+   <NumberFormat ss:Format="[ENG][$-409]d\-mmm\-yyyy;@"/>
+  </Style>
+
+  </Styles>
+  <ss:Worksheet
+      ss:Name="Connexions Statistics">
+    <Table  tal:define="count python:here.content.countRhaptosObjects()"
+        ss:StyleID="ta1">
+   <Column ss:StyleID="s22" ss:AutoFitWidth="0"/>
+   <Column ss:Index="3" ss:AutoFitWidth="0" ss:Width="171"/>
+   <Column ss:AutoFitWidth="0" ss:Width="95.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="100"/>
+   <Column ss:Index="7" ss:StyleID="s23" ss:AutoFitWidth="0" ss:Width="90"/>
+   <Column ss:Width="90"/>
+   <Column ss:StyleID="s22" ss:Width="60.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="61.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="57.75"/>
+   <Column ss:StyleID="s24" ss:AutoFitWidth="0" ss:Width="70.5"/>
+   <Column ss:Width="60.75" ss:Span="1"/>
+   <Column ss:Index="15" ss:Width="54"/>
+   <Column ss:StyleID="s24" ss:AutoFitWidth="0"/>
+
+      <Row ss:Height="12.1032">
+        <Cell ss:StyleID="s26">
+          <Data ss:Type="String">Connexions Content Information</Data>
+        </Cell>
+        <Cell ss:StyleID="s68" ss:Index="4">
+          <Data ss:Type="String">Downloaded:</Data>
+        </Cell>
+        <Cell ss:MergeAcross="1"  ss:StyleID="s67">
+          <Data tal:content="python:DateTime().ISO8601()[:-6]"
+              ss:Type="DateTime">2007-05-16T16:50:00.000</Data>
+        </Cell>
+        <Cell ss:Index="10" ss:MergeAcross="7" ss:StyleID="m16729414">
+          <Data
+              ss:Type="String">Statistics</Data>
+        </Cell>
+      </Row>
+      <Row tal:define="statsdates python:here.portal_hitcount.getIncrementDateRange()"
+          ss:Height="12.1032">
+	  <Cell>
+	  <Data tal:condition="python:request.template=='search'"
+	  tal:content="python:'Search result for: %s' % here.format_search_string(request.SESSION['searches'][0][2],'')"
+              ss:Type="String">Search result for: Schmidt-Jones</Data>
+	  <Data tal:condition="python:request.template!='search'"
+	  tal:content="string:Browse"
+              ss:Type="String">Search result for: Schmidt-Jones</Data>
+        </Cell>
+        <Cell ss:StyleID="s38" ss:Index="10">
+          <Data
+              ss:Type="String">week of:</Data>
+        </Cell>
+        <Cell ss:StyleID="s56">
+          <Data tal:content="python: statsdates[0].ISO8601()[:-6]"
+              ss:Type="DateTime">2007-05-07T00:00:00.000</Data>
+        </Cell>
+        <Cell ss:StyleID="s56">
+          <Data tal:content="python: statsdates[1].ISO8601()[:-6]"
+              ss:Type="DateTime">2005-05-14T00:00:00.000</Data>
+        </Cell>
+	<Cell ss:StyleID="s40"/>
+        <Cell ss:Index="14"
+            ss:MergeAcross="3"
+            ss:StyleID="m16729424">
+          <Data
+              ss:Type="String">All Time</Data>
+        </Cell>
+      </Row>
+      <Row  ss:StyleID="s66" ss:Height="12.1032">
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Id</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Version</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Title</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Authors</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Subject</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Language</Data></Cell>
+        <Cell ss:StyleID="s58"><Data ss:Type="String">Created</Data></Cell>
+        <Cell ss:StyleID="s58"><Data ss:Type="String">Revised</Data></Cell>
+        <Cell ss:StyleID="s59"><Data ss:Type="String">Revisions</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Total Views (week)</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Views/Day (week)</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Percentile (week)</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Rank (week)</Data></Cell>
+        <Cell ss:StyleID="s60"><Data ss:Type="String">Total Views</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Views/Day</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Percentile</Data></Cell>
+        <Cell ss:StyleID="s57"><Data ss:Type="String">Rank</Data></Cell>
+      </Row>
+
+      <Row tal:condition="not:results"
+           ss:Height="13.0104">
+        <Cell>
+          <Data ss:Type="String">Results expired from cache; please reload previous page and try again. (Cache key: <span tal:replace="cachekey" />)</Data>
+        </Cell>
+      </Row>
+      <Row tal:condition="results"
+           tal:repeat="resobj python:results"
+           ss:Height="13.0104">
+        <tal:inner tal:define="o python:here.content.getRhaptosObject(resobj.objectId, resobj.version)">
+        <Cell>
+          <Data tal:content="o/objectId"
+              ss:Type="String">m0001</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="o/version"
+              ss:Type="Number">2.14</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="o/Title"
+              ss:Type="String">Life, the universe and everything</Data>
+        </Cell>
+        <Cell>
+          <Data
+	  ss:Type="String"><tal:span tal:repeat="author o/authors"
+	  ><tal:person tal:define="m python:here.desecured.getMemberById(author)"
+	  ><tal:badauthor tal:on-error="string:(${author})"
+	  ><tal:inside tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+			  ><tal:comma tal:condition="not:repeat/author/end"
+		           >, </tal:comma></tal:badauthor></tal:person></tal:span></Data>
+        </Cell>
+        <Cell>
+          <Data
+              ss:Type="String"><tal:span tal:define="subjects python:same_type(o.subject,'') and [o.subject] or o.subject" tal:repeat="subj subjects"><span tal:replace="subj">[subject]</span><tal:comma tal:condition="not:repeat/subj/end">, </tal:comma></tal:span></Data>
+        </Cell>
+        <Cell>
+          <Data tal:define="base_lang python:o.language and o.language.split('-')[0] or ''"
+	  tal:content="python:here.portal_languages.getNameForLanguageCode(base_lang)"
+              ss:Type="String">English</Data>
+        </Cell>
+        <Cell
+            ss:StyleID="ce1">
+          <Data tal:content='python:o.created.ISO8601()[:-6]'
+              ss:Type="DateTime">2007-05-12T00:00:00.000</Data>
+        </Cell>
+        <Cell
+            ss:StyleID="ce1">
+          <Data tal:content='python:o.revised.ISO8601()[:-6]'
+              ss:Type="DateTime">2007-05-12T00:00:00.000</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="o/getHistoryCount"
+              ss:Type="Number">21</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:here.portal_hitcount.getHitCountForObject(o.objectId,1)"
+              ss:Type="Number">21875</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:here.portal_hitcount.getDailyAverageForObject(o.objectId,1)"
+              ss:Type="Number">3125</Data>
+        </Cell>
+        <Cell
+            ss:StyleID="ce4">
+          <Data tal:content="python:here.portal_hitcount.getPercentileForObject(o.objectId,1)/100.0"
+              ss:Type="Number">0.9894</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:int(count - count * here.portal_hitcount.getPercentileForObject(o.objectId,1)/100.0)"
+              ss:Type="Number">47</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:here.portal_hitcount.getHitCountForObject(o.objectId,0)"
+              ss:Type="Number">21875</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:here.portal_hitcount.getDailyAverageForObject(o.objectId,0)"
+              ss:Type="Number">3125</Data>
+        </Cell>
+        <Cell
+            ss:StyleID="ce4">
+          <Data tal:content="python:here.portal_hitcount.getPercentileForObject(o.objectId,0)/100.0"
+              ss:Type="Number">0.9894</Data>
+        </Cell>
+        <Cell>
+          <Data tal:content="python:int(count - count * here.portal_hitcount.getPercentileForObject(o.objectId,0)/100.0)"
+              ss:Type="Number">213</Data>
+        </Cell>
+        </tal:inner>
+      </Row>
+    </Table>
+    <x:WorksheetOptions>
+      <Selected/>
+      <Panes>
+        <Pane>
+          <Number>3</Number>
+          <ActiveRow>3</ActiveRow>
+        </Pane>
+     </Panes>
+     <ProtectObjects>False</ProtectObjects>
+     <ProtectScenarios>False</ProtectScenarios>
+    </x:WorksheetOptions>
+  </ss:Worksheet>
+  <ss:Worksheet
+      ss:Name="Sheet2">
+    <Table
+        ss:StyleID="ta1">
+      <Column
+          ss:StyleID="Default"
+          ss:Width="64.26"/>
+      <Row
+          ss:Height="12.1032">
+        <Cell
+            ss:Index="1"/>
+      </Row>
+    </Table>
+    <x:WorksheetOptions/>
+  </ss:Worksheet>
+  <ss:Worksheet
+      ss:Name="Sheet3">
+    <Table
+        ss:StyleID="ta1">
+      <Column
+          ss:StyleID="Default"
+          ss:Width="64.26"/>
+      <Row
+          ss:Height="12.1032">
+        <Cell
+            ss:Index="1"/>
+      </Row>
+    </Table>
+    <x:WorksheetOptions/>
+  </ss:Worksheet>
+    <tal:block
+       tal:define="filename request/filename;
+                   dummy python:request.RESPONSE.setHeader('Content-type','application/vnd.ms-excel');
+                   dummy2 python:request.RESPONSE.setHeader('Content-disposition','attachment;;filename=%s.xml' % filename)"
+     />
+</Workbook>

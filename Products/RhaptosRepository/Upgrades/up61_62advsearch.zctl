@@ -1,0 +1,5 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addCatalogStuff')(app.plone.content)
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addTranslators')(app.plone.content)
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addEditors')(app.plone.content)
+get_transaction().commit()

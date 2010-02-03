@@ -1,0 +1,10 @@
+[default]
+title=Search
+
+[actions]
+action.success..search=traverse_to:string:results_helper
+action.success..Go=traverse_to:string:results_helper
+action.success..stats=traverse_to:string:results_stats.xml
+action.success..WorkspaceAdd=traverse_to:string:addObjectsToWorkspace
+action.success..=traverse_to:string:results_helper
+action.failure=traverse_to:string:search

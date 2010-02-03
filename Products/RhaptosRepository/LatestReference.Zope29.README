@@ -1,0 +1,124 @@
+Email from Dieter, with regard to problems in Zope 2.9.
+I eventually took his final suggestion, which seems to work
+
+-----------------------------------
+
+Hello jcc,
+
+J Cameron Cooper wrote at 2007-6-15 18:14 -0500:
+> > ...
+> >It says "for Zope  2.5 to 2.8" I know, but even so we're trying to 
+> >upgrade to Plone 2.5, using Zope 2.9.
+
+This is the second report about one of my products not being
+compatible with Five as delivered with Zope 2.9.
+
+The other is an incompatibility in ZopeProfiler. There, Five
+presents an object (some kind of "Five" proxy) that claims to have
+a "getPhysicalPath" but
+calling "getPhysicalPath" on this object results in an exception.
+
+Of course, I tend to say that these incompatibilities are Five
+bugs -- to be fixed in Five. 
+
+
+The company I work for uses Zope in desktop applications, deployed
+in tens of thousands of installations. Problems in these applications
+would be very costly. Therefore, me and my colleagues started to
+get very conservative. New Zope versions usually need many minor
+releases before they work partially reliably which introduces
+considerable risks for upgrading. Furthermore, the new features
+seemed to be marginal to us. As a consequence, we are still using
+Zope 2.8.
+We may upgrade to Zope 2.11, this will be decided in mid July.
+
+
+As I do Zope work mainly for my employer, most of my products stop
+at saying "support up to Zope 2.8". I do not have other Zope
+versions installed.
+
+> >I've encountered an error (probably related to the Five additions in 
+> >Zope): getting attributes off a referenced object doesn't work in TALES 
+> >path expressions. It works using "dotted syntax" in TALES python 
+> >expressions, in Python Scripts (which have their own proxy wrapper, I 
+> >think), and in regular old Python, such as the debug prompt.
+
+
+"TALES" path expressions are essentially implemented by
+"Products.PageTemplates.Expressions.restrictedTraverse".
+
+The difference between the apparently not working "restrictedTraverse" and 
+the working "attribute lookup" is that "restrictedTraverse"
+first looks for a "__bobo_traverse__" and only when it fails
+falls back to attribute lookup (or subscription).
+Apparently, Five provides a "__bobo_traverse__" but one that
+does not work properly.
+
+"References" work by "ExtensionClass" magic: its "__of__" method
+(usually called by accessing attributes of an "ExtensiconClass")
+returns a proxy that delegates attribute lookups either to the
+"Reference" or to the referenced object.
+"__bobo_traverse__" is in the set of attributes ("_dontRelayToTarget")
+that are delegated to the reference (and not the target).
+
+
+I expect that the following happens:
+
+  "Five" magically provides a "__bobo_traverse__" for "Reference" objects.
+
+  "Reference" does not delegate a "__bobo_traverse__" lookup to
+  the target but uses the one magically supplied by "Five".
+
+  As methods not delegated to the target should work with the
+  reference object itself, such a method gets the reference and
+  not the proxy as "self". The reference's "getattr" does not
+  delegate to the target (it cannot as there is no acquisition context
+  in "__getattr__") but only looks in the reference itself.
+
+  Almost surely, the "__bobo_traverse__" magically provided by
+  "Five" uses attribute lookup as a fallback -- and this fails
+  with "Reference" objects as explained above.
+
+
+Possible solutions:
+
+  * "Five" should not magically provide a "__bobo_traverse__" for
+    classes that do not want one (you know: explicit is better than implicit).
+
+    Especially, "Five" should not provide a "__bobo_traverse__" for
+    "SimpleItem", the base class for all Zope site building objects (from
+    which of course "Reference" derives).
+
+  * Define a "__bobo_traverse__" for "Reference" that knows
+    it is being called with a "Reference" object and not the target
+    and does the right thing.
+    Doing the right thing may not be easy. But, proceeding as
+    if the object's '__of__' has been called and then using
+    'getattr' on it may be near:
+
+	  def __bobo_traverse__(self, request, name):
+	      from Acquisition import aq_parent
+	      parent = aq_parent(self)
+	      proxy = self.__of__(parent)
+	      return getattr(proxy, name)
+
+    Hopefully, "Five" will respect the explicitly defined "__bobo_traverse__".
+
+  * It might be sufficient to remove "__bobo_traverse__" from
+    "_dontRelayToTarget" but I doubt that this will work
+    (at least if "Five" has provided a "__bobo_traverse__".
+
+    It may be necessary to add it to "_dontRelayToReference".
+
+    In this case, the "restrictedTraverse" would in fact
+    check whether the target has a "__bobo_traverse__" and
+    use this one.
+
+    It is likely that things will not work as expected when
+    one would not want to access the target but the reference
+    itself -- e.g. the management of "Reference" objects may
+    break down.
+
+
+
+-- Dieter

@@ -1,0 +1,18 @@
+from Products.ExternalMethod.ExternalMethod import ExternalMethod
+
+# originally called upCatalogIndexes_PA_CMA_KT.zctl
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addParentAuthors')(app.plone.content)
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addContainedModuleAuthors')(app.plone.content)
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addKeywordstext')(app.plone.content)
+
+# originally called upSearchPortlet.zctl
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addSearchPortlet')(app.plone.content)
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','addSearchCache')(app.plone.content)
+
+# originally called upStorageMananger.zctl
+ExternalMethod('temp','temp','RhaptosRepository.Upgrade','fixStorageLists')(app.plone.content)
+
+# originally called upCache.zctl
+app.plone.content._create_cache(fake=True)
+
+get_transaction().commit()

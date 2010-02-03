@@ -1,0 +1,9 @@
+[default]
+title=Similarity
+
+[actions]
+action.success..Go=traverse_to:string:results_helper
+action.success..WorkspaceAdd=traverse_to:string:addObjectsToWorkspace
+action.failure=redirect_to:string:similarity
+action.success..stats=traverse_to:string:results_stats.xml
+action.success..=traverse_to:string:results_helper

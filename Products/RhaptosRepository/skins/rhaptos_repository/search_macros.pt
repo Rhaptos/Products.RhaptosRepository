@@ -1,0 +1,1239 @@
+<div metal:define-macro="no_matches_text" id="results_explanatory_text">
+
+  <tal:block tal:condition="request/DEBUG | nothing">
+    Search took <b
+      tal:content="request/time | nothing" >[Time]</b> seconds.
+  </tal:block>
+    <div class="listingBar">&nbsp;</div>
+    
+    <h5 i18n:translate="text_search_tips_header">
+      Search tips:</h5>
+    <p>The search text you enter is treated as a space separated list of search terms. Terms may be grouped by enclosing them in double quotes ("). Terms are ANDed together.</p>
+    <h5 i18n:translate="text_search_matched_against_header">
+	    Search terms match the following fields:</h5>
+    <ul>
+      <li i18n:translate="text_no_match_object_id">exact module or collection ID (m0000, col10040)</li>
+      <li i18n:translate="text_no_match_title">title</li>
+      <li i18n:translate="text_no_match_authors">author, translator</li>
+      <li i18n:translate="text_no_match_institution">institution (for collections only)</li>
+      <li i18n:translate="text_no_match_subject">subject</li>
+      <li i18n:translate="text_no_match_keywords">keyword</li> 
+      <li i18n:translate="text_no_match_other_roles">editor, maintainer, licensor</li>
+      <li i18n:translate="text_no_match_abstract">summary</li> 
+      <li i18n:translate="text_no_match_full_body">full text</li>
+    </ul>
+    <h5 i18n:translate="text_search_matched_other_tips_header">
+      Other tips:</h5>
+  <ul>
+    <li i18n:translate="text_search_tips_dropped">
+      Very common words (the, and, of, 
+      <i>etc</i>.), single letters, isolated punctuation, and terms that don't match anything in the repository
+      (zzyyxx, asdfqwerty, <i>etc</i>.) will be dropped from the search.
+    </li>
+    <li i18n:translate="text_search_tips_remaining_temrs">
+      All remaining terms are matched -- it's an "AND" search, not an
+      "OR" search.
+    </li>
+    <li i18n:translate="text_search_tips_double_quotes">
+      You may group terms with double quotes.
+    </li>
+    <li i18n:translate="text_search_tips_title_author">
+      The Title and Author options restrict the search terms to
+      matching in the Title and/or Author fields. 
+    </li>
+    <li i18n:translate="text_search_tips_collection_limit">
+      The Collections option limits the search to Collections,
+      excluding Modules from the results.
+    </li>
+    <li i18n:translate="text_search_tips_subject_limit">
+      The Subject option limits the search to the selected Subject,
+      regardless of the search term.
+    </li>
+  </ul>
+  </div>
+  
+
+<!-- Main search and browse results macro!
+     This macro should be mostly self-contained, but does have a
+     couple dependencies:
+
+     1.There must be a list called "results" defined outside of the
+     macro.  This is should be a list of result objects that represent
+     modules or courses.  It is probably the set of objects returned
+     from search_form_handler, similarity_form_handler, or some sort
+     of browse script.  Each of the results must have several
+     attributes for the display to work properly:
+       * objectId - The ID of the module or course
+       * version - The specific version of the module or course
+       Optional attributes:
+       * fields - A dictionary of the fields that represent why the
+                  object is in this list.  For searches, it is the
+                  fields that matched the specific search.  For
+                  browsing, it might be the field that is being
+                  browsed. The keys are fields that match and the
+                  values of the dictionary are the words that matched
+                  that field.
+       * weight - How strongly the object matched the search or
+                  browse, this is probably relevant to the order 
+                  that the results are in.  Weight should simply be an
+                  integer.
+       * matched - The inverse dictionary of "fields".  This should
+                   have the same information but have keys that are
+                   the words that matched and the values of the
+                   dictionary are the list of fields that matched each
+                   word.
+
+     2.The macro needs to be called from inside a form so that the
+     objects can be added to a workgroup or course.  The form must
+     have action="." so that the buttons in this macro can specify
+     where they submit to. (With a few minor tweaks we could allow
+     this to be turned off if there a contexts that you don't want to
+     have the ability to add them, but I don't see that being
+     neccesary at this point in time.
+
+     3.If you are using the results inside another page, like in a
+     course (instead of a workspace) or lens, another variable must
+     be defined, called "inContext" and it must be set to some form
+     of True. If it is either False or not defined, the selector
+     buttons will be displayed.
+     
+     For an inContext scenario, provide another variable called
+     'inContextMethod', which will replace the :method name in the
+     ContextAdd macro's submit button.
+
+     Optional Features:
+     For additional debugging help, we have enabled some extra output
+     to help tell if searching is working correctly or now.  There is
+     no way to enable it with the default UI, it can only be turned on
+     by adding DEBUG=True as an additional query parameter to the URL.
+     This will then display the weight and matched dictionary for each
+     result, along with the actual information that is being used in
+     the search.  If this is going to be used, the weight and matched
+     attributes must be available on the result objects that are
+     passed in.
+     
+     If a variable called 'companion' is provided, it will be used to
+     replace the keywords/abstract/etc (object_basic_metadata other than Author)
+     in the search listing with whatever data the form is set to grab
+     from it (currently tags (getTags) and comment (Description)).
+     It grabs data from 'companion' by its 'getId'==result 'objectId'.
+     
+     Similarly, if 'conflicts' is provided, the same logic as 'companion'
+     will be used to turn off the checkbox, rendering the content in 'conflict'
+     as non-addable. If the conflict object has 'versionStart' and 'versionStop',
+     a message regarding presenct in the acceptable range will be displayed.
+     
+     WARNING: 'conflicts' expects objects and 'companion' expects brains, the only
+     difference being the calling of 'getId'. If you want to use the non-expected type,
+     go and change the map creation to use something like::
+     
+       same_type('',i.getId) and i.getId or i.getId()
+      
+     But I'm calling YAGNI on it at the moment.
+-->   
+
+  <div metal:define-macro="search_results"
+    tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+                start request/start | python:1;
+                b_start request/b_start | python:int(start)-1;
+                b_size request/b_size | python:10;
+                batch python:Batch(results, int(b_size), int(b_start), orphan=3);
+                companion companion | nothing;
+                companionMap python:companion and dict([(i.getId,i) for i in companion]);
+                conflicts conflicts | nothing;
+                conflictsMap python:conflicts and dict([(i.getId(),i) for i in conflicts]);
+                loggedIn not:here/portal_membership/isAnonymousUser;
+                inCourse inCourse | nothing;
+                default_view default_view | string:detail;
+                view_mode python:inCourse and 'compact' or request.has_key('view_mode') and request['view_mode'] or default_view;
+                use_recent python: request.has_key('recent') and bool(request.recent) or False;
+                was_search request/was_search | nothing"
+    tal:attributes="class python:test(companionMap, 'lens_results', 'results')">
+
+  <form action="." name="results_form"
+        method="post"
+        tal:define="virtualPath python:request.get('VIRTUAL_URL_PARTS',(None,None))[1];
+                    virtualPath python:virtualPath and '/%s' % virtualPath;
+                    regularPath request/environ/PATH_INFO;
+                    actionPath python:virtualPath or regularPath"
+        tal:attributes="action actionPath;
+                        id python:test(inCourse,'collection_composer',None);">
+    
+    <tal:block tal:condition="not:inCourse">
+      <metal:block metal:use-macro="here/browse_macro/macros/see_glossary" />
+    </tal:block>
+    
+    <tal:block 
+      tal:define="open_match string:&lt;span class='search_match'&gt;;
+                  close_match string:&lt;/span&gt;;">
+      <table width="100%" class="listing" id="regular_listing"
+        tal:define="sorton sorton | request/sorton | string:getApproved">
+      <tbody>
+        <tr id="results_row_one">
+          <th class="nosort add_workarea_checkbox" tal:condition="loggedIn">
+            <input type="checkbox"
+              class="noborder"
+              name="selectButton"
+              title="Select/Unselect all items"
+              alt="Select/Unselect all items"
+              i18n:attributes="title; alt"
+              onClick="toggleSelect(this,'ids:list',false,'results_form');"
+              />
+          </th>
+          <th colspan="2"
+            i18n:translate="text_displaying_results" valign="middle"
+            tal:attributes="colspan python:test(view_mode.startswith('statistic'),5,2)">
+
+            <tal:block tal:condition="not:inContext | nothing"
+              tal:define="addLoc string:Top">
+              <tal:block metal:use-macro="here/search_macros/macros/WorkspaceAdd" />
+            </tal:block>
+            
+            <tal:block tal:condition="inContext | nothing">
+              <tal:block metal:use-macro="here/search_macros/macros/ContextAdd" />
+	    </tal:block>
+
+          <span id="sort_and_batch">
+          <span id="sort_on">
+            <span i18n:translate="text_change_search_sort">Sort by:</span>
+            <select name="sorton" size='1' onChange="document.getElementById('go_submit_button').click();"
+              id="workspace_form_sorton">
+              <option tal:condition="python:context.portal_type == 'ContentSelectionLens' and context.isOpen()"
+                  tal:attributes="selected python:test(sorton=='getApproved','selected',nothing)" value="getApproved">Review Status</option>
+              <option tal:condition="python:was_search or template.id=='similarity'"
+                  tal:attributes="selected python:test(sorton=='weight','selected',nothing)" value="weight">Relevance</option>
+              <option tal:attributes="selected python:test(sorton=='popularity','selected',nothing)" value="popularity">Popularity</option>
+              <option tal:condition="python:template.id=='collection_composer'"
+                  tal:attributes="selected python:test(sorton=='rating','selected',nothing)" value="rating">Rating</option>
+	      <option tal:condition="python:view_mode=='statistics' or sorton=='views'"
+	      tal:attributes="selected python:test(sorton=='views','selected',nothing)" value="views">Total Views</option>
+              <option tal:attributes="selected python:test(sorton=='language','selected',nothing)" value="language">Language</option>
+              <option tal:attributes="selected python:test(sorton=='revised','selected',nothing)" value="revised">Revision Date</option>
+              <option tal:attributes="selected python:test(sorton=='title','selected',nothing)" value="title">Title</option>
+              <option tal:attributes="selected python:test(sorton=='portal_type','selected',nothing)" value="portal_type" tal:condition="not:inCourse">Type</option>
+              <option tal:attributes="selected python:test(sorton=='rating','selected',nothing)" value="rating" tal:condition="not:inCourse">Rating</option>
+            </select>
+          </span>
+          <span id="b_size" i18n:translate="text_change_search_batching">
+            Results per page:
+            <select name="b_size" size='1' onChange="document.getElementById('go_submit_button').click();"
+              id="workspace_form_b_size">
+              <option tal:attributes="selected python:test(b_size=='10','selected',nothing)" value="10">10</option>
+              <option tal:attributes="selected python:test(b_size=='25','selected',nothing)" value="25">25</option>
+              <tal:cutoff define="short short | nothing" condition="not:short">
+              <option tal:attributes="selected python:test(b_size=='100','selected',nothing)" value="100">100</option>
+              </tal:cutoff>
+            </select>
+          </span>
+          <input class="standalone"
+              id="go_submit_button"
+              tabindex="" 
+              type="submit"
+              value="Go"
+              name="form.button.Go"
+              i18n:attributes="value value_button_go"
+              tal:attributes="tabindex tabindex/next;"
+              />
+        <input type="hidden" 
+          name="template" 
+          tal:attributes="value actionPath" />
+
+            <span tal:condition="request/DEBUG | nothing" class="debug_time">
+              Search took <b i18n:name="b_time"
+                      tal:content="request/time | nothing"></b> seconds.
+              <span tal:condition="request/DEBUG | nothing">
+                <input tal:attributes="value request/DEBUG" type="checkbox" name="DEBUG" value="DEBUG"
+                checked="checked" class="noborder" />DEBUG</span>
+            
+            </span>
+
+            </span>
+          </th>
+        </tr>
+        <tr id="results_row_two">
+          <th tal:condition="loggedIn" class="add_workarea_checkbox"/>
+          <th colspan="2" i18n:translate="text_displaying_results" valign="middle"
+            tal:attributes="colspan python:test(view_mode.startswith('statistic'),5,2)">
+
+           <span name="view_mode" tal:define="template actionPath;
+                                              qs request/QUERY_STRING | python:''"
+              id="workspace_form_view_mode" tal:condition="not:inCourse">View: 
+              <tal:lens_view tal:condition="inLens | nothing">
+                <b tal:condition="python:view_mode == 'lens'">Lens</b><a tal:condition="python:view_mode != 'lens'"
+                  tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=lens'])"
+                  >Lens</a> |
+              </tal:lens_view>
+              <b tal:condition="python:view_mode == 'detail'">Detail</b><a tal:condition="python:view_mode != 'detail'"
+                tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=detail'])"
+	      >Detail</a> |
+              <b tal:condition="python:view_mode == 'compact'">Compact</b><a tal:condition="python:view_mode != 'compact'"
+                tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=compact'])"
+              >Compact</a> |
+              <b tal:condition="python:view_mode == 'statistics'">Statistics</b><a tal:condition="python:view_mode != 'statistics'"
+                tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=statistics'])"
+		>Statistics</a>
+            </span>
+
+          <metal:block metal:use-macro="here/batch_macros_results/macros/navigation" />
+
+        </th></tr>
+
+        <tal:block tal:condition="python:view_mode == 'detail'">
+          <tal:block metal:use-macro="here/search_macros/macros/detailed_results" />
+        </tal:block>
+
+        <tal:block tal:condition="python:view_mode == 'lens'">
+          <tal:block metal:use-macro="here/search_macros/macros/lens_results" />
+        </tal:block>
+        
+        <tal:block tal:condition="python:view_mode == 'compact'">
+          <tal:block metal:use-macro="here/search_macros/macros/simple_results" />
+        </tal:block>
+        
+        <tal:block tal:condition="python:view_mode == 'statistics'">
+          <tal:block metal:use-macro="here/search_macros/macros/statistics_table" />
+        </tal:block>
+        
+        <tr id="results_row_three">
+          <th colspan="3" i18n:translate="text_displaying_results" valign="middle"
+              tal:attributes="colspan python:test(view_mode.startswith('statistic'),6,3)">
+            <tal:block tal:condition="not:inCourse | nothing"
+                       tal:define="addLoc string:Bottom">
+              <tal:block metal:use-macro="here/search_macros/macros/WorkspaceAdd" />
+            </tal:block>
+            <tal:block tal:condition="inCourse | nothing">
+              <tal:block metal:use-macro="here/search_macros/macros/ContextAdd" />
+            </tal:block>
+            <metal:block metal:use-macro="here/batch_macros_results/macros/navigation" />
+          </th>
+        </tr>
+        
+        <script type="text/javascript" src="/results_functions.js"> </script>
+        <script type="text/javascript"> hideId('go_submit_button'); </script>
+
+      </tbody>
+      </table>
+      <tal:span tal:condition="python:view_mode != 'statistics'">
+      <tal:span tal:condition="use_recent|nothing">*</tal:span>Popularity is measured as percentile rank of page views/day over <tal:span tal:condition="python:not use_recent">all time</tal:span> <tal:span tal:condition="python:use_recent" tal:define="statsdates python:here.portal_hitcount.getIncrementDateRange()"><span tal:content="python:statsdates[0].strftime('%m/%d')"></span>&#150;<span tal:content="python:statsdates[1].strftime('%m/%d')"></span></tal:span></tal:span>
+    </tal:block>
+
+    <!-- inputs for preserving the search options -->
+    <tal:search tal:condition="request/was_search | nothing">
+      <tal:block tal:define="words request/words | nothing;
+        allterms request/allterms | nothing;
+        weights request/weights | nothing;
+        portal_types request/portal_types | nothing;
+        portal_types_type request/portal_types_type | nothing;
+        title request/title | nothing;
+        title_type request/title_type | nothing;
+        author request/author | nothing;
+	author_type request/author_type | nothing;
+	roles request/roles | nothing;
+        keyword request/keyword | nothing;
+        keyword_type request/keyword_type | nothing;
+        subject request/subject | nothing;
+        subject_type request/subject_type | nothing;
+        language request/language | nothing;
+	language_type request/language_type | nothing;
+	recent request/recent | nothing;
+	showopts request/showopts | nothing;">
+        
+        <input type="hidden" 
+          name="words" 
+          tal:condition="words"
+          tal:attributes="value words" />
+        <input type="hidden" 
+          name="allterms" 
+          tal:condition="allterms"
+          tal:attributes="value allterms" />
+        <input type="hidden" 
+          name="weights"
+          tal:condition="python:weights and 'title' in weights.keys()"
+          tal:attributes="value python:weights['title'];
+          name string:weights.title:int:record" />
+        <input type="hidden"
+          name="weights"
+          tal:condition="python:weights and 'author' in weights.keys()"
+          tal:attributes="value python:weights['author'];
+          name string:weights.author:int:record" />
+        <input type="hidden" 
+          name="portal_types" 
+          tal:repeat="p portal_types"
+          tal:condition="portal_types"
+          tal:attributes="value p;
+          name string:portal_types:list" />
+        <input type="hidden" 
+          name="portal_types_type" 
+          tal:condition="portal_types_type"
+          tal:attributes="value portal_types_type" />
+        <input type="hidden" 
+          name="title" 
+          tal:condition="title"
+          tal:attributes="value title" />
+        <input type="hidden" 
+          name="title_type" 
+          tal:condition="title_type"
+          tal:attributes="value title_type" />
+        <input type="hidden" 
+          name="author" 
+          tal:condition="author"
+          tal:attributes="value author" />
+        <input type="hidden" 
+          name="author_type" 
+          tal:condition="author_type"
+          tal:attributes="value author_type" />
+        <input type="hidden" 
+          name="roles" 
+          tal:repeat="r roles"
+          tal:condition="roles"
+          tal:attributes="value r;
+          name string:roles:list" />
+        <input type="hidden" 
+          name="keyword" 
+          tal:condition="keyword"
+          tal:attributes="value keyword" />
+        <input type="hidden" 
+          name="keyword_type" 
+          tal:condition="keyword_type"
+          tal:attributes="value keyword_type" />
+        <input type="hidden" 
+          name="subject" 
+          tal:condition="subject"
+          tal:attributes="value subject" />
+        <input type="hidden" 
+          name="subject_type" 
+          tal:condition="subject_type"
+          tal:attributes="value subject_type" />
+        <input type="hidden" 
+          name="language" 
+          tal:condition="language"
+          tal:attributes="value language" />
+        <input type="hidden" 
+          name="recent" 
+          tal:condition="recent"
+          tal:attributes="value recent" />
+        <input type="hidden" 
+          name="language_type" 
+          tal:condition="language_type"
+          tal:attributes="value language_type" />
+        <input type="hidden" id="showopts"
+          name="showopts" 
+          tal:condition="showopts"
+          tal:attributes="value showopts" />
+        <input type="hidden"
+          name="inContext"
+          tal:define="show inContext | inCourse"
+          tal:condition="show"
+          tal:attributes="value string:True" />
+      </tal:block>
+    </tal:search>
+
+      <!-- inputs for preserving browse parameters -->
+    <tal:browse tal:condition="not:request/was_search | nothing">
+      <tal:block tal:define="
+        letter request/letter | nothing;
+        subset request/subset | nothing;
+        author request/author | nothing;
+        subject request/subject | nothing;
+        keyword request/keyword | nothing;
+        recent request/recent | nothing;
+        langs request/langs | nothing;
+        new request/new | nothing;
+        inst request/inst | nothing;
+        dacct request/dacct | nothing;
+        tag request/tag | nothing;
+        prefix request/prefix | nothing;
+        objectId request/objectId | nothing;">
+
+        <input type="hidden" 
+          name="letter" 
+          tal:condition="letter"
+          tal:attributes="value letter" />
+        <input type="hidden" 
+          name="subset" 
+          tal:condition="subset"
+          tal:attributes="value subset" />
+        <input type="hidden" 
+          name="author" 
+          tal:condition="author"
+          tal:attributes="value author" />
+        <input type="hidden" 
+          name="subject" 
+          tal:condition="subject"
+          tal:attributes="value subject" />
+        <input type="hidden" 
+          name="keyword" 
+          tal:condition="keyword"
+          tal:attributes="value keyword" />
+        <input type="hidden"
+          name="new"
+          tal:condition="new"
+          tal:attributes="value new;" />
+        <input type="hidden" 
+          name="langs" 
+          tal:repeat="l langs"
+          tal:condition="langs"
+          tal:attributes="value l;
+          name string:langs:list" />
+        <input type="hidden"
+          name="recent"
+          tal:condition="recent"
+          tal:attributes="value recent;" />
+        <input type="hidden" 
+          name="inst" 
+          tal:condition="inst"
+          tal:attributes="value inst" />
+        <input type="hidden" 
+          name="dacct" 
+          tal:condition="dacct"
+          tal:attributes="value dacct" />
+        <input type="hidden"
+          name="tag"
+          tal:condition="tag"
+          tal:attributes="value tag" />
+        <input type="hidden"
+          name="prefix"
+          tal:condition="prefix"
+          tal:attributes="value prefix" />
+        <input type="hidden" 
+          name="objectId" 
+          tal:condition="objectId"
+          tal:attributes="value objectId" />
+        
+      </tal:block>
+    </tal:browse>
+    
+        <input type="hidden" id="view_mode"
+          name="view_mode" 
+          tal:condition="view_mode"
+          tal:attributes="value view_mode" />
+        
+    <!-- display the abstract elipsizing links if javascript is
+    enabled -->
+    <script type="text/javascript">
+      show('ellip_link');
+    </script>
+    
+    <input type="hidden" name="form.submitted" value="1" />
+
+  </form>    
+  </div>
+
+
+  <metal:block metal:define-macro="detailed_results">
+        <tal:comment replace="nothing">
+           You cannot just use the default fallback of
+           'getattr(resobj,'fields',{})' because some results have a
+           fields attribute, but it is not accessible, so the .keys()
+           call fails.  In all of these cases, the fields attribute is
+           False, so fall back to an empty dictionary anyway.
+        </tal:comment>
+        <tal:block tal:repeat="resobj batch">
+          <tr tal:define="o python:portal.content.getRhaptosObject(resobj.objectId, resobj.version); 
+          fields_dict python:getattr(resobj,'fields',None) or {};
+          f_keys python:fields_dict.keys();
+          oddrow repeat/resobj/odd; 
+          conflicting python:conflictsMap and conflictsMap.get(resobj.objectId, None);
+          companionElt python:companionMap and companionMap[o.objectId];"
+            tal:attributes="class python:test(oddrow, 'even', 'odd')">
+            <td class="add_workarea_checkbox"
+              tal:condition="loggedIn" valign="top">
+              <input type="checkbox" 
+                value="m00000"
+                class="noborder"
+                tal:condition="python:o.portal_type != 'Folder'"
+                tal:attributes="value o/objectId;
+                                checked python:test(length==1 and not conflicting,'checked',nothing);
+                                disabled python:test(conflicting,'disabled',nothing);
+                                name python:test(conflicting,'already_in_lens','ids:list')" />
+            </td>
+            <td class="object_match">
+              <div class="object_name"
+                   tal:define="version companionElt/getVersionStop | string:;
+                               version python:same_type('',version) and version or '.'.join([str(x) for x in version]);
+                               version python:version or 'latest'">
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"><img tal:replace="structure python:path('here/%s' % o.getIcon())" /></a>
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"
+                   tal:define="match python:('title' in f_keys)">
+                 <tal:inside tal:condition="match"
+                             tal:content="structure python:context.wrapMatch(path('o/Title'), fields_dict['title'], open_match, close_match)">Title</tal:inside>
+                 <tal:inside tal:condition="not:match" tal:content="o/Title">Title</tal:inside>
+                </a>
+              <span class="object_id"
+                tal:define="match python:('objectid' in f_keys)">
+                (<span tal:replace="o/objectId" tal:condition="not:match"/><span tal:condition="match" tal:replace="structure python:context.wrapMatch(o.objectId, fields_dict['objectid'],open_match,close_match)">[wrapped id]</span>)</span>
+              </div>
+
+                <span class="presenceWarn"
+                      tal:define="versionStart conflicting/getVersionStart | nothing;"
+                      tal:condition="versionStart">
+                  <tal:innerdefines
+                      tal:define="versionStop  conflicting/getVersionStop | nothing;
+                                  thisVersion resobj/version;
+                                  thisVersion python:[int(x) for x in thisVersion.split('.')];
+                                  inrange python:thisVersion &gt;= versionStart and
+                                                 versionStop == () or thisVersion &lt;= versionStop">
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="inrange">
+                      Already in this lens.
+                    </div>
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="not:inrange">
+                      An earlier version is in this lens.  Use the "Edit tags, comments, etc." button below to add this newest version.
+                    </div>
+                  </tal:innerdefines>
+                </span>
+
+            <div class="object_basic_metadata"
+              tal:define="found_author python:[]">
+              <div tal:define="authors o/authors">
+                <b i18n:translate="text_author_header_singular"
+                  tal:condition="python:len(authors)==1">Author:</b>
+                <b i18n:translate="text_author_header_plural"
+                  tal:condition="python:len(authors)!=1">Authors:</b>
+                <span tal:repeat="author o/authors">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(author)">
+                    <tal:badauthor tal:on-error="string:(${author})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'author' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                            tal:define="full_name python:m.getProperty('fullname');
+                            wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
+                            dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                            tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div class="basic_metadata" tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
+                tal:condition="python:editors and 'editor' in f_keys">
+                <b i18n:translate="text_editor_header_singular"
+                  tal:condition="python:len(editors)==1">Editor:</b>
+                <b i18n:translate="text_editor_header_plural"
+                  tal:condition="python:len(editors)!=1">Editors:</b>
+                <span tal:repeat="editor editors">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(editor)">
+                    <tal:badauthor tal:on-error="string:(${editor})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'editor' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                          tal:define="full_name python:m.getProperty('fullname');
+                          wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
+                          dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                          tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div class="basic_metadata" tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
+                tal:condition="translators">
+                <b i18n:translate="text_translator_header_singular"
+                  tal:condition="python:len(translators)==1">Translator:</b>
+                <b i18n:translate="text_translator_header_plural"
+                  tal:condition="python:len(translators)!=1">Translators:</b>
+                <span tal:repeat="translator translators">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(translator)">
+                    <tal:badauthor tal:on-error="string:(${translator})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'translator' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                          tal:define="full_name python:m.getProperty('fullname');
+                          wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
+                          dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                          tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div class="basic_metadata" tal:define="maintainers o/maintainers"
+                tal:condition="python:'maintainer' in f_keys">
+                <b i18n:translate="text_maintainer_header_singular"
+                  tal:condition="python:len(maintainers)==1">Maintainer:</b>
+                <b i18n:translate="text_maintainer_header_plural"
+                  tal:condition="python:len(maintainers)!=1">Maintainers:</b>
+                <span tal:repeat="maintainer maintainers">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(maintainer)">
+                    <tal:badauthor tal:on-error="string:(${maintainer})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'maintainer' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                          tal:define="full_name python:m.getProperty('fullname');
+                          wrapped_name python:context.wrapMatch(full_name, fields_dict['maintainer'],open_match,close_match);
+                          dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                          tal:content="structure wrapped_name">Maintainername</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Maintainername</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/maintainer/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div class="object_extended_metadata" tal:condition="o/institution | nothing">
+                <b i18n:translate="text_instituation_header">Institution:</b>
+                <tal:block tal:define="match python:('institution' in f_keys)">
+                  <tal:inside tal:condition="match"
+                    tal:content="structure python:context.wrapMatch(o.institution, fields_dict['institution'], open_match, close_match)">Title</tal:inside>
+                  <tal:inside tal:condition="not:match" tal:content="o/institution">Title</tal:inside>
+                </tal:block>
+              </div>
+              <div class="object_extended_metadata" tal:condition="o/keywords | nothing"
+                tal:define="wrap python:'keyword' in f_keys">
+                <b i18n:translate="text_keywords_header">Keywords:</b>
+                <span tal:repeat="keyword o/keywords">
+                  <span tal:condition="not:wrap"
+                    tal:content="keyword">[keyword]</span><span tal:condition="wrap"
+                    tal:replace="structure python:context.wrapMatch(keyword, fields_dict['keyword'], open_match, close_match)">[keyword]</span><tal:comma tal:condition="not:repeat/keyword/end">, </tal:comma></span>
+              </div>
+              <div class="object_extended_metadata" tal:condition="o/abstract| nothing">
+                <tal:abstract
+                  tal:define="match_terms python:('abstract' in f_keys) and fields_dict['abstract'] or '';
+                  abs_tuple python:o.wrapAbstract(match_terms,open_match,close_match)">
+                  <b i18n:translate="text_abstract_header">Summary:</b>
+                  <tal:block tal:condition="python:abs_tuple[0]==abs_tuple[1]">
+                    <span tal:content="structure python:abs_tuple[0]">[Short Abstract]</span>
+                  </tal:block>
+                  <tal:block tal:condition="python:abs_tuple[0]!=abs_tuple[1]">
+                    <span tal:attributes="id string:${o/objectId}-abstract-short">
+                      <span tal:content="structure python:abs_tuple[0]">[Short Abstract]</span>
+                      <a href="/content/col10000/latest/" onclick="return false;"
+                        style="display:none" class="ellip_link"
+                        tal:attributes="onclick string:hideId('${o/objectId}-abstract-short');;showId('${o/objectId}-abstract-long');;return false;;;
+                                        href string:${here/portal_url}/content/${o/objectId}/latest/">[Expand Summary]</a>
+                    </span>
+                    <span tal:attributes="id string:${o/objectId}-abstract-long"
+                      style="display: none">
+                      <span tal:content="structure python:abs_tuple[1]">[Long Abstract]</span>
+                      <a href="/content/col10000/latest/" onclick="return false;"
+                        style="display:none" class="ellip_link"
+                        tal:attributes="onclick string:hideId('${o/objectId}-abstract-long');;showId('${o/objectId}-abstract-short');;return false;;;
+                                        href string:${here/portal_url}/content/${o/objectId}/latest/">[Collapse Summary]</a>
+                    </span>
+                  </tal:block>
+                </tal:abstract>
+              </div>
+              <tal:block
+                tal:define="other_match python:('title' in f_keys) or ('objectid' in f_keys) or ('abstract' in f_keys) or ('subject' in f_keys) or ('keyword' in f_keys) or ('institution' in f_keys);
+                contained_id_match python:('containedIn' in f_keys) and not other_match and not found_author; 
+                author_match python:('author' in f_keys or 'editor' in f_keys or 'translator' in f_keys or 'maintainer' in f_keys) and not found_author and not contained_id_match and not other_match; 
+                language_match python:('language'in f_keys) and not contained_id_match and not other_match and not author_match;
+                fulltext_match python:(len(f_keys)==1) and ('fulltext' in f_keys);">
+                <div class="object_extended_metadata"
+                  tal:condition="contained_id_match">
+                  <span class="search_match fulltext">One of the search terms matched a module ID in this collection.</span>
+                </div>
+                <div class="object_extended_metadata"
+                  tal:condition="author_match">
+                  <span class="search_match fulltext">There was a match in an author ID or e-mail address.</span>
+                </div>
+                <div class="object_extended_metadata"
+                  tal:condition="language_match">
+                  <span class="search_match fulltext">There was a match in the language code.</span>
+                </div>
+                <div class="object_extended_metadata"
+                  tal:condition="fulltext_match">
+                  <span class="search_match fulltext">There was a match in fulltext.</span>
+                </div>
+              </tal:block>
+            </div>
+            </td>
+            <td class="right-cell">
+              <table class="right-cell-table object_extended_metadata">
+              <tbody>
+              <tr tal:condition="o/subject | nothing">
+              <td class="left-cell">
+                <b i18n:translate="text_subject_header">Subject:</b>
+              </td>
+              <td>
+                <span tal:define="subjects python:same_type(o.subject,'') and [o.subject] or o.subject"
+                  tal:repeat="subj subjects">
+                  <span tal:replace="structure python:('subject' in f_keys) and here.wrapMatch(subj, fields_dict['subject'], open_match, close_match) or subj">[subject]</span><tal:comma tal:condition="not:repeat/subj/end">, </tal:comma></span> 
+              </td>
+              </tr>
+              <tr tal:define="base_lang python:o.language and o.language.split('-')[0] or '';"
+                tal:condition="base_lang" class="object_extended_metadata">
+              <td class="left-cell">
+                <b i18n:translate="text_language_header">Language: </b>
+              </td>
+              <td>
+                <tal:lang tal:replace="python:here.portal_languages.getNameForLanguageCode(base_lang)">English</tal:lang>
+              </td>
+              </tr>
+              <tr class="object_extended_metadata">
+              <td class="left-cell">
+                <b i18n:translate="text_popularity_header">Popularity: </b>
+              </td>
+              <td i18n:translate="text_percentile_out_of">
+                <tal:pop i18n:name="percentile"
+                tal:content="python:'%.2f'%here.portal_hitcount.getPercentileForObject(o.objectId,use_recent)">99.97</tal:pop>%<tal:span tal:condition="use_recent|nothing">*</tal:span>
+              </td>
+              </tr>
+              <tr class="object_extended_metadata">
+              <td class="left-cell">
+                <b i18n:translate="text_revised_header">Revised: </b>
+              </td>
+              <td>
+                <span tal:content="python:here.toLocalizedTime(o.revised)" />
+              </td>
+              </tr>
+              <tr tal:define="hist_count o/getHistoryCount" class="object_extended_metadata">
+              <td class="left-cell">
+                <b i18n:translate="text_revisions_header">Revisions: </b>
+              </td>
+              <td>
+                <span tal:content="hist_count" tal:condition="python:hist_count&gt;1"/>
+                    <span
+                  tal:condition="python:hist_count==1" i18n:translate="text_new_object">New</span>
+              </td>
+              </tr>
+
+              <tr tal:condition="python:hasattr(o, 'rating')"
+                  class="object_extended_metadata">
+              <td class="left-cell">
+                <b i18n:translate="text_rating_header">Rating: </b>
+              </td>
+              <td class="star-rating"><metal:rating_macro metal:define-macro="rating_macro"><tal:stardefs tal:define="fullstars python:int(math.modf(round(o.rating() * 2) / 2.0)[1]); halfstar python:math.modf(round(o.rating() * 2) / 2.0)[0]; hasstars python:fullstars or halfstar"><tal:hasstars tal:condition="hasstars"><tal:stars repeat="i python:range(0, fullstars)"><img tal:attributes="src string:${portal_url}/full_star.png"/></tal:stars><img tal:condition="halfstar" tal:attributes="src string:${portal_url}/half_star.png"/><tal:empty_stars repeat="i python:range(0, 5 - (fullstars + (halfstar and 1 or 0)))"><img tal:attributes="src string:${portal_url}/empty_star.png"/></tal:empty_stars></tal:hasstars><tal:nostars tal:condition="not:hasstars" i18n:translate="not_rated_like">Not yet rated</tal:nostars></tal:stardefs></metal:rating_macro></td>
+              </tr>
+
+              <tr tal:condition="request/DEBUG | nothing">
+                <td class="left-cell">
+                  <b i18n:translate="text_weight_header">Weight: </b>
+                </td>
+                <td>
+                  <span tal:content="resobj/weight | nothing"/>
+                </td>
+              </tr>
+              <tr tal:condition="request/DEBUG | nothing">
+                <td class="left-cell">
+                  <b i18n:translate="text_matched_header">matched: </b>
+                </td>
+                <td>
+                  <span tal:content="resobj/matched | nothing"/>
+                </td>
+              </tr>
+              </tbody>
+              </table>
+            </td>
+          </tr>
+        </tal:block>
+</metal:block>
+
+<metal:block metal:define-macro="lens_results">
+  <metal:block metal:use-macro="here/search_macros/macros/simple_results">
+    <metal:metadata_after_title fill-slot="metadata_after_title">
+      <tal:comment condition="nothing">
+        <img tal:condition="companionElt/getApproved|nothing"
+             tal:attributes="src string:${portal_url}/award_star_gold_3.png"
+             title="Approved"/>
+      </tal:comment>
+    </metal:metadata_after_title>
+    <meta:optional_data metal:fill-slot="metadata_top">
+              <div style="font-size: 1.1em; margin-bottom: 0.3em;"
+                   tal:define="moduleId python:context.favorites_last_read(o.objectId)"
+                   tal:condition="moduleId">
+                  <a href="#"
+                     tal:attributes="href string:$portal_url/content/$moduleId?collection=${o/objectId}/$version">
+                    Start from where I last left off &#187;
+                  </a>
+              </div>
+    </meta:optional_data>
+    <meta:optional_data metal:fill-slot="optional_metadata">
+              <div tal:condition="companionMap">
+                <div tal:define="tags companionElt/getTags" tal:condition="tags">
+                  <b i18n:translate="text_header_tags">Lens Tags:</b>
+                  <span tal:content="python:' '.join(tags)">dsp dogs lightbulbs</span>
+                </div>
+                <div tal:define="comment companionElt/getComment" tal:condition="comment" class="lens_comments">
+                  <b i18n:translate="text_header_comment" class="lens_comments_before">Lens Comments:</b>
+                  <span tal:content="comment">I am the very model of a modern major general.</span>
+                </div>
+              
+                <tal:comment condition="nothing">
+                  The crazy formatting below (see the suffix variable) is 
+                  because TALES adds spaces to multiline text. This messes 
+                  up the comma delimiters.
+                </tal:comment>
+                <div tal:condition="companionElt/getNamespaceTags"
+                     class="lens_comments">
+                  <b i18n:translate="text_header_comment" 
+                     class="lens_comments_before">Lens Tags:</b>
+                  <tal:def define="term nocall:context/@@getNamespaceTagTerm;
+                                   label nocall:context/@@getNamespaceTagLabel;
+                                   TAGNAMESPACE_DELIMITER python:'::';
+                                   make_tags_dict nocall:context/@@makeTagsDictFromTagsInUse;
+                                   di_all python:context.getNamespaceTagsInUse(objectify=True);
+                                   tags_dict python:make_tags_dict(di_all)">
+                    <tal:loop repeat="tag companionElt/getNamespaceTags">
+                      <span tal:define="comma python:(not repeat['tag'].end);
+                                        suffix python:comma and ',' or '';
+                                        prefix python:tag.split(TAGNAMESPACE_DELIMITER)[0];
+                                        tag_name python:tag.split(TAGNAMESPACE_DELIMITER)[-1]"
+                            tal:condition="python:tags_dict.has_key(prefix) and tags_dict[prefix].has_key(tag_name)"
+                            tal:content="python:tag_name + suffix" 
+                            tal:attributes="title python:tags_dict[prefix][tag_name]" 
+                            style="cursor: default;">
+                      </span>
+                    </tal:loop>
+                  </tal:def>
+                </div>
+
+              </div>
+    </meta:optional_data>
+    <metal:fill fill-slot="simple_results_optional_metadata_right">
+      <tal:open condition="context/isOpen|nothing">
+        <b tal:condition="companionElt/getApproved|nothing"
+           i18n:translate="approved">Approved</b>
+        <span tal:condition="not:companionElt/getApproved|nothing"
+              class="discreet"
+              i18n:translate="in_review">In Review</span>
+      </tal:open>
+    </metal:fill>
+<!--
+<td class="right-cell">
+              <table class="right-cell-table object_extended_metadata">
+              <tbody>
+-->
+  </metal:block>
+</metal:block>
+
+  <metal:block metal:define-macro="simple_results">
+      <tal:block tal:repeat="resobj batch">
+        <tr tal:define="o python:portal.content.getRhaptosObject(resobj.objectId, resobj.version); 
+          fields_dict python:getattr(resobj,'fields',None) or {};
+          f_keys python:fields_dict.keys();
+          oddrow repeat/resobj/odd;
+          conflicting python:conflictsMap and conflictsMap.get(resobj.objectId, None);
+          companionElt python:companionMap and companionMap[o.objectId];" 
+          tal:attributes="class python:test(oddrow, 'even', 'odd')">
+          <td class="add_workarea_checkbox"
+            tal:condition="loggedIn" valign="top" >
+            <input type="checkbox" 
+              name="ids:list" 
+              value="m00000"
+              class="noborder"
+              tal:condition="python:o.portal_type != 'Folder'"
+              tal:attributes="value o/objectId; checked python:test(length==1,'checked',nothing)" />
+          </td>
+          <td class="object_match"
+              tal:define="version companionElt/getVersionStop | string:;
+                          version python:same_type('',version) and version or '.'.join([str(x) for x in version]);
+                          version python:version or 'latest'">
+               <div class="object_name">
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"><img tal:replace="structure python:path('here/%s' % o.getIcon())" /></a>
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"
+                   tal:define="match python:('title' in f_keys)">
+                 <tal:inside tal:condition="match"
+                             tal:content="structure python:context.wrapMatch(path('o/Title'), fields_dict['title'], open_match, close_match)">Title</tal:inside>
+                 <tal:inside tal:condition="not:match" tal:content="o/Title">Title</tal:inside>
+                </a>
+                <metal:otherdata metal:define-slot="metadata_after_title">
+                </metal:otherdata>
+
+              <span class="object_id"
+                tal:define="match python:('objectid' in f_keys)">
+                (<span tal:replace="o/objectId" tal:condition="not:match"/><span tal:condition="match" tal:replace="structure python:context.wrapMatch(o.objectId, fields_dict['objectid'],open_match,close_match)">[wrapped id]</span>)</span>
+              </div>
+
+                <span class="presenceWarn"
+                      tal:define="versionStart conflicting/getVersionStart | nothing;"
+                      tal:condition="versionStart">
+                  <tal:innerdefines
+                      tal:define="versionStop  conflicting/getVersionStop | nothing;
+                                  thisVersion resobj/version;
+                                  thisVersion python:[int(x) for x in thisVersion.split('.')];
+                                  inrange python:thisVersion &gt;= versionStart and
+                                                 versionStop == () or thisVersion &lt;= versionStop">
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="inrange">
+                      Already in this lens.
+                    </div>
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="not:inrange">
+                      An earlier version is in this lens.  Use the "Edit tags, comments, etc." button below to add this newest version.
+                    </div>
+                  </tal:innerdefines>
+                </span>
+            <div class="object_basic_metadata"
+              tal:define="found_author python:[]">
+              <metal:otherdata metal:define-slot="metadata_top">
+              </metal:otherdata>
+              <div tal:define="authors o/authors">
+                <b i18n:translate="text_author_header_singular"
+                  tal:condition="python:len(authors)==1">Author:</b>
+                <b i18n:translate="text_author_header_plural"
+                  tal:condition="python:len(authors)!=1">Authors:</b>
+                <span tal:repeat="author o/authors">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(author)">
+                    <tal:badauthor tal:on-error="string:(${author})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'author' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                            tal:define="full_name python:m.getProperty('fullname');
+                            wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
+                            dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                            tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
+                tal:condition="python:editors and 'editor' in f_keys">
+                <b i18n:translate="text_editor_header_singular"
+                  tal:condition="python:len(editors)==1">Editor:</b>
+                <b i18n:translate="text_editor_header_plural"
+                  tal:condition="python:len(editors)!=1">Editors:</b>
+                <span tal:repeat="editor editors">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(editor)">
+                    <tal:badauthor tal:on-error="string:(${editor})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'editor' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                          tal:define="full_name python:m.getProperty('fullname');
+                          wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
+                          dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                          tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+              <div tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
+                tal:condition="translators">
+                <b i18n:translate="text_translator_header_singular"
+                  tal:condition="python:len(translators)==1">Translator:</b>
+                <b i18n:translate="text_translator_header_plural"
+                  tal:condition="python:len(translators)!=1">Translators:</b>
+                <span tal:repeat="translator translators">
+                  <tal:person tal:define="m python:here.desecured.getMemberById(translator)">
+                    <tal:badauthor tal:on-error="string:(${translator})">
+                      <a tal:attributes="href string:/member_profile/${m/id}"
+                        tal:define="match python:'translator' in f_keys">
+                        <tal:inside tal:condition="match">
+                          <tal:matched
+                          tal:define="full_name python:m.getProperty('fullname');
+                          wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
+                          dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
+                          tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
+                          ><tal:inside tal:condition="not:match"
+                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
+              </div>
+          <metal:otherbasicdata metal:define-slot="optional_metadata">
+          </metal:otherbasicdata>
+            </div>
+      </td>
+      <td class="right-cell-sort" tal:condition="python:sorton and sorton!='title' and sorton!='weight'">
+        <tal:language tal:condition="python:sorton=='language'"
+          tal:define="base_lang python:o.language and o.language.split('-')[0] or '';">
+          <b i18n:translate="text_language_header">Language: </b>
+          <br />
+          <tal:lang tal:replace="python:here.portal_languages.getNameForLanguageCode(base_lang)">English</tal:lang>
+        </tal:language>
+        <tal:popularity tal:condition="python:sorton=='popularity'">
+          <b i18n:translate="text_popularity_header">Popularity: </b>
+          <span i18n:translate="text_percentile_out_of">
+            <tal:pop i18n:name="percentile"
+              tal:content="python:'%.2f'%here.portal_hitcount.getPercentileForObject(o.objectId,use_recent)">99.97</tal:pop>%<tal:span tal:condition="use_recent|nothing">*</tal:span>
+
+          </span>
+          <br />
+        </tal:popularity>
+        <tal:rating tal:condition="python:sorton=='rating'">
+          <b i18n:translate="text_rating_header">Rating:</b>
+          <div style="white-space: nowrap;">
+          <metal:use-rating use-macro="context/search_macros/macros/rating_macro" />
+          </div>
+        </tal:rating>
+        <tal:date tal:condition="python:sorton=='revised'">
+          <b i18n:translate="text_revised_header">Revised: </b>
+          <span tal:content="python:here.toLocalizedTime(o.revised)" />
+          <br />
+        </tal:date>  
+        <tal:review tal:condition="python:sorton=='getApproved'">
+          <metal:macro define-slot="simple_results_optional_metadata_right"/>
+        </tal:review>
+      </td>
+    </tr>
+  </tal:block>
+</metal:block>
+
+  <metal:block metal:define-macro="statistics_table" tal:define="count python:here.content.countRhaptosObjects()">
+  <tr id="stats_table_header">
+    <th tal:condition="loggedIn" class="add_workarea_checkbox"/>
+    <th id="stats_view_submode" tal:define="template actionPath;
+                                            qs request/QUERY_STRING | python:'';
+                                            statsdates python:here.portal_hitcount.getIncrementDateRange();">
+      <span id="stats_view_submode_intro">Statistics:</span>
+      <b tal:condition="python:not use_recent">All Time</b><a tal:condition="python:use_recent" tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if not(p.startswith('recent='))])" >All Time</a> | 
+      <b tal:condition="python:use_recent">Recent (<span tal:content="python:statsdates[0].strftime('%m/%d')"></span>&#150;<span tal:content="python:statsdates[1].strftime('%m/%d')"></span>)
+      </b><a tal:condition="python:not use_recent" 
+         tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if not(p.startswith('recent='))]+['recent=True'])">Recent 
+        (<span tal:content="python: statsdates[0].strftime('%m/%d')"></span>&#150;<span tal:content="python: statsdates[1].strftime('%m/%d')"></span>)
+      </a>
+      <input type="hidden" name="cachekey"
+             tal:attributes="value searchhash"
+      />
+      <input type="hidden" name="filename"
+             tal:define="filename request/filename | string:Connexions_results;
+             dummy2 python:request.SESSION.set('results',portal.content.wrapResults(results))"
+             tal:attributes="value filename"
+      />
+      <input class="spreadsheet_button"
+             tabindex=""
+             type="submit"
+             value="Download Spreadsheet"
+             name="form.button.stats"
+             i18n:attributes="value value_button_get_spreadsheet"
+             tal:attributes="tabindex tabindex/next; "
+      />
+    </th>
+    <th>
+      Total Views
+    </th>
+    <th>
+      Views/Day
+    </th>
+    <th>
+      Percentile
+    </th>
+    <th>
+      Rank
+    </th>
+  </tr>
+  <tal:block tal:repeat="resobj batch">
+    <tr tal:define="o resobj; 
+      fields_dict python:getattr(resobj,'fields',None) or {};
+      f_keys python:fields_dict.keys();
+      oddrow repeat/resobj/odd;
+      conflicting python:conflictsMap and conflictsMap.get(resobj.objectId, None);
+      companionElt python:companionMap and companionMap[o.objectId];" 
+      tal:attributes="class python:test(oddrow, 'even', 'odd')">
+      <td class="add_workarea_checkbox"
+        tal:condition="loggedIn" valign="top" >
+        <input type="checkbox" 
+          name="ids:list" 
+          value="m00000"
+          class="noborder"
+          tal:attributes="value o/objectId; checked python:test(length==1,'checked',nothing)" />
+      </td>
+      <td class="object_match">
+               <div class="object_name"
+                   tal:define="version companionElt/getVersionStop | string:;
+                               version python:same_type('',version) and version or '.'.join([str(x) for x in version]);
+                               version python:version or 'latest'">
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"><img tal:replace="structure python:path('here/%s' % path('o/getIcon'))" /></a>
+                <a tal:attributes="href string:${here/portal_url}/content/${o/objectId}/$version/"
+                   tal:define="match python:('title' in f_keys)">
+                 <tal:inside tal:condition="match"
+                             tal:content="structure python:context.wrapMatch(path('o/Title'), fields_dict['title'], open_match, close_match)">Title</tal:inside>
+                 <tal:inside tal:condition="not:match" tal:content="o/Title">Title</tal:inside>
+                </a>
+              <span class="object_id"
+                tal:define="match python:('objectid' in f_keys)">
+                (<span tal:replace="o/objectId" tal:condition="not:match"/><span tal:condition="match" tal:replace="structure python:context.wrapMatch(o.objectId, fields_dict['objectid'],open_match,close_match)">[wrapped id]</span>)</span>
+              </div>
+
+                <span class="presenceWarn"
+                      tal:define="versionStart conflicting/getVersionStart | nothing;"
+                      tal:condition="versionStart">
+                  <tal:innerdefines
+                      tal:define="versionStop  conflicting/getVersionStop | nothing;
+                                  thisVersion resobj/version;
+                                  thisVersion python:[int(x) for x in thisVersion.split('.')];
+                                  inrange python:thisVersion &gt;= versionStart and
+                                                 versionStop == () or thisVersion &lt;= versionStop">
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="inrange">
+                      Already in this lens.
+                    </div>
+                    <div i18n:translate="text_current_version_present" class="already_in_lens"
+                          tal:condition="not:inrange">
+                      An earlier version is in this lens.  Use the "Edit tags, comments, etc." button below to add this newest version.
+                    </div>
+                  </tal:innerdefines>
+                </span>
+      </td>
+      <td class="numericCell">
+        <tal:pop tal:content="python:'%i'%here.portal_hitcount.getHitCountForObject(o.objectId,use_recent)">99.97</tal:pop>
+      </td>
+      <td class="numericCell">
+        <tal:pop tal:content="python:'%.2f'%here.portal_hitcount.getDailyAverageForObject(o.objectId,use_recent)">99.97</tal:pop>
+      </td>
+      <td class="numericCell">
+        <span i18n:translate="text_percentile_out_of">
+          <tal:pop i18n:name="percentile"
+            tal:content="python:'%.2f'%here.portal_hitcount.getPercentileForObject(o.objectId,use_recent)">99.97</tal:pop>%
+
+        </span>
+      </td>
+      <td class="numericCell">
+        <tal:pop tal:content="python:int(count - count * here.portal_hitcount.getPercentileForObject(o.objectId,use_recent)/100.0)">1</tal:pop>
+      </td>
+        </tr>
+      </tal:block>
+</metal:block>
+
+  <metal:block metal:define-macro="WorkspaceAdd">
+  <div tal:condition="loggedIn" class="workspace_add">
+    <span i18n:translate="add_selected_content_to">Add selected content to:</span>
+    <select tal:attributes="name string:workspace${addLoc}"
+            tal:define="target request/target | nothing">
+      <metal:reuse define-macro="personalwsoption">
+        <option value="__home__" i18n:translate="box_text_personal_workspace">Personal Workspace</option>
+        <option disabled="disabled"></option>
+      </metal:reuse>
+      <metal:reuse define-macro="workgroupoptions">
+        <option disabled="disabled" i18n:translate="box_text_shared_wgs">Shared Workgroups:</option>
+        <option disabled="disabled">------------------------------------</option>
+        <tal:define define="groups python:context.getWorkspaces({'id':None, 'title':None, 'link':None});
+                            target target | nothing">
+          <tal:loop tal:condition="groups"
+                    tal:repeat="group groups">
+            <option value="GroupWorkspaces/risa000"
+                    tal:define="groupid group/id;
+                                value string:GroupWorkspaces/${group/id}"
+                    tal:attributes="value value;
+                                    selected python:test(target in (groupid, value), 'selected', nothing)"
+                    tal:content="group/title">I'm a Sample Workgroup</option>
+          </tal:loop>
+          <option disabled="disabled"
+                  tal:condition="not:groups"
+                  i18n:translate="box_text_no_workgroups">none</option>
+        </tal:define>
+      </metal:reuse>
+
+      <tal:commentoutlenses tal:replace="nothing">
+      <option disabled="disabled">--Lenses--</option>
+      <option tal:repeat="lens context/lens_tool/getListsOwned | python:[]"
+        tal:attributes="value string:lenses/${lens/getId};
+                        selected python:test(target == lens.getId, 'selected', nothing);"
+        tal:content="lens/getDisplayName">[lens]</option>
+      </tal:commentoutlenses>
+    </select>
+
+    <button class="context"
+      tabindex=""
+      type="submit"
+      value="Add"
+      name="form.button.WorkspaceAdd"
+      tal:attributes="tabindex tabindex/next;
+                      value string:Add$addLoc"
+      i18n:translate="value_add">Add</button>
+    
+  </div>
+  </metal:block>
+
+<metal:block metal:define-macro="ContextAdd">
+  
+<div class="context_add">
+  <input class="context"
+    tabindex=""
+    type="submit"
+    value="Add selected content"
+    i18n:attributes="value"
+    name="form.button.ContextAdd"
+    tal:define="inContextLabel inContextLabel | string:Add selected content;"
+    tal:attributes="value inContextLabel" />
+</div>
+</metal:block>

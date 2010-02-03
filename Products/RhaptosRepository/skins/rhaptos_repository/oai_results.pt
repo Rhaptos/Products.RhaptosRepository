@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" 
+         xmlns:tal="http://xml.zope.org/namespaces/tal"
+         xmlns:metal="http://xml.zope.org/namespaces/metal"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
+                             http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"
+         tal:define="verb options/verb | nothing;
+                     identifier options/identifier | nothing;
+                     utool nocall:here/portal_url;
+		     portal utool/getPortalObject;
+		     ptitle portal/Title;
+                     server python:request['HTTP_X_FORWARDED_HOST'] or request['SERVER_URL'][7:] or request['SERVER_NAME']">
+  <responseDate tal:content="python:DateTime().HTML4()">2002-05-01T19:20:30Z</responseDate>
+  <request tal:attributes="verb verb;
+                          identifier identifier;
+                          metadataPrefix options/metadataPrefix | nothing;
+                          from options/from | nothing;
+                          until options/until | nothing;
+                          set options/set | nothing;
+                          resumptionToken options/Token | nothing;"
+           tal:content="here/absolute_url">[base URL]</request> 
+
+  <error tal:condition="options/error | nothing" 
+         tal:attributes="code options/error"
+         tal:content="options/message" >[error message]</error>
+
+  <Identify tal:condition="python:verb == 'Identify'">
+  <metal:block metal:use-macro="here/oai_macros/macros/identify"/>
+  </Identify>
+
+  <GetRecord tal:condition="python:verb == 'GetRecord'">
+    <metal:block metal:use-macro="here/oai_macros/macros/records"/>
+  </GetRecord> 
+
+  <ListMetadataFormats  tal:condition="python:verb == 'ListMetadataFormats'">
+  <metal:block metal:use-macro="here/oai_macros/macros/listmetadataformats"/>
+  </ListMetadataFormats>
+
+  <ListIdentifiers tal:condition="python:verb == 'ListIdentifiers'">
+  <metal:block metal:use-macro="here/oai_macros/macros/listidentifiers"/>
+  </ListIdentifiers>
+
+  <ListRecords tal:condition="python:verb in ['ListRecords','SearchRecords']">
+    <metal:block metal:use-macro="here/oai_macros/macros/records"/>
+  </ListRecords>
+
+</OAI-PMH>

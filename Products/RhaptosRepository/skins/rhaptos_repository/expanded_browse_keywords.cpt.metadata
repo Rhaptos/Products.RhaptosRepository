@@ -1,0 +1,9 @@
+[default]
+title=Browse by Keyword
+
+[actions]
+action.success..=traverse_to:string:results_helper
+action.success..Go=traverse_to:string:results_helper
+action.success..WorkspaceAdd=traverse_to:string:addObjectsToWorkspace
+action.failure=redirect_to:string:expanded_browse_keywords
+action.success..stats=traverse_to:string:results_stats.xml

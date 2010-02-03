@@ -1,0 +1,68 @@
+<!-- essentially, the old browse_authors -->
+
+<tal:headers tal:define="dummy python:request.RESPONSE.setHeader('Content-Type', 'text/html;;charset=utf-8')" />
+
+<div metal:define-macro="pane" tal:omit-tag=""
+     tal:define="alphabet python:['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                                  'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Other'];
+                 ajaxParams request/param | nothing;
+                 ajaxParams python:ajaxParams and ajaxParams.split('/') or [];
+                 params paneParams | ajaxParams;
+                 selected python:params and len(params) >= 1 and params[0] or 'A';
+                 highlight python:params and len(params) >= 2 and params[1] or None;
+                 linkbase string:${context/portal_url}/content/browse_content/author;
+                 sqlletter python:selected=='Other' and '[^A-Z]' or selected;
+                 authors python:here.portal_moduledb.sqlGetAuthorByFirstChar(firstletter=sqlletter);
+                 objects python:here.getContentByAuthors([a.personid for a in authors]);
+                 global empty python:True;">
+
+<!-- python:request.get('traverse_subpath') instead of request, maybe? -->
+
+<span id="cnx_browse_active_pane"
+      tal:condition="python:selected and params is None or len(params) <= 1">
+</span>
+
+<h2>Authors</h2>
+
+<span>Note: Includes Editors &amp; Translators</span>
+
+<div class="cnx_alphabet">
+<tal:a tal:repeat="letter alphabet">
+  <a tal:content="letter"
+     onclick="setPane('refine', 'author', 'A');return false;"
+     tal:attributes="href string:$linkbase/$letter;
+                     onclick python:'setPane(\'refine\',\'author\',\'%s\');;return false;;' % letter;
+                     class python:selected == letter and 'selected' or None;">
+    A
+  </a>
+</tal:a>
+</div>
+
+<tal:test tal:condition="selected">
+<h3 tal:content="selected">[A]</h3>
+<ul tal:condition="authors">
+  <tal:row tal:repeat="author authors">
+  <li tal:define="content python:objects.get(author.personid, []);
+                  num_mod python:len([o for o in content if o.portal_type=='Module']);
+                  num_c   python:len(content)-num_mod"
+      tal:condition="content">
+      <tal:flipswitch define="global empty python:False" />
+      <a href="/content/browse_content/author/A/alice/by"
+         onclick="setPane('view','author','A/alice/by',this);return false;"
+         tal:attributes="href string:$linkbase/$selected/${author/personid}/by;
+                         onclick string:setPane('view','author','$selected/${author/personid}/by',this);;return false;;;
+                         class python:highlight == author.personid and 'selected' or nothing"
+         tal:content="python:author.surname+test(author.firstname,', %s' % author.firstname,'')">
+        Liddell, Alice
+      </a>
+      <div i18n:translate="label_browse_authors_link_to_content" class="cnx_details">
+        Modules: <strong tal:content="num_mod" i18n:name="module_count">[0]</strong>,
+        Collections: <strong tal:content="num_c" i18n:name="collection_count">[0]</strong>
+     </div>
+  </li>
+  </tal:row>
+</ul>
+<p tal:condition="empty">No authors found.</p>
+</tal:test>
+
+</div>

@@ -1,0 +1,16 @@
+<dtml-comment>
+connection_id:devrep
+arguments:interval="1 week" end_date="now"
+</dtml-comment>
+
+SELECT moduleid,name,authors,version,revised,submitter,submitlog, count
+FROM 
+(
+SELECT moduleid,count(*)
+FROM modules m 
+WHERE revised >= CAST (<dtml-sqlvar end_date type=string> AS TIMESTAMP) - CAST (<dtml-sqlvar interval type=string> AS INTERVAL)
+GROUP BY moduleid
+) as rows natural join modules
+
+WHERE revised >= CAST (<dtml-sqlvar end_date type=string> AS TIMESTAMP) - CAST (<dtml-sqlvar interval type=string> AS INTERVAL)
+ORDER BY moduleid, revised DESC
