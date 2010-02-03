@@ -3,8 +3,8 @@ ModuleDBTool.py
 
 Provide checkin/checkout support between ModuleDB repository and ZODB
 
-Author: Brent Hendricks
-(C) 2005 Rice University
+Authors: Brent Hendricks, Ross Reedstrom
+(C) 2005-2010 Rice University
 
 This software is subject to the provisions of the GNU Lesser General
 Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
@@ -13,7 +13,7 @@ Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 import os
 import re
 import md5
-from psycopg import Binary
+from psycopg2 import Binary
 import zLOG
 import AccessControl
 from Products.CMFCore.utils import UniqueObject

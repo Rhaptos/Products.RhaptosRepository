@@ -5,7 +5,7 @@ class_name: DBModule
 max_rows: 0
 </dtml-comment>
 
-SELECT moduleid AS "objectId", portal_type, title_order(name) as "sortTitle", name AS title, name as "Title", 'latest' AS version, created, revised, authors as _authors, language, p.fullname||'-::-<dtml-var role>' as _keys
+SELECT moduleid AS "objectId", portal_type, title_order(name) as "sortTitle", name AS title, name as "Title", 'latest' AS version, created as _created, revised as _revised, authors as authors, language, p.fullname||'-::-<dtml-var role>' as _keys
 FROM latest_modules 
 <dtml-if expr="role in ('author', 'maintainer', 'licensor', 'parentAuthor')">
    ,persons p

@@ -67,7 +67,7 @@ class ModuleFile(rhaptosdb_iterator):
             self.pos += size
         res =  cur.dictfetchone()
         if res:
-            data = res['data']
+            data = str(res['data'])
         else:
             data = ''
         return data
@@ -90,7 +90,7 @@ class ModuleFile(rhaptosdb_iterator):
         cur.execute('SELECT mimetype %s' % (self.statement))
         res =  cur.dictfetchone()
         if res:
-            return res['mimetype']
+            return str(res['mimetype'])
         else:
             return None
     

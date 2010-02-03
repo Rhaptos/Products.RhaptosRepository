@@ -14,7 +14,7 @@ import re
 import os
 import Acquisition
 import AccessControl
-from psycopg import ProgrammingError, IntegrityError
+from psycopg2 import ProgrammingError, IntegrityError
 from ZODB.POSException import ConflictError
 from OFS.SimpleItem import SimpleItem
 from OFS.Traversable import Traversable

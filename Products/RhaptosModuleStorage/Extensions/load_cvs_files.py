@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import psycopg
+import psycopg2.psycopg1 as psycopg
 import os
 import sys
 import md5

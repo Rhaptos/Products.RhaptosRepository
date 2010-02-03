@@ -1,4 +1,5 @@
 from ComputedAttribute import ComputedAttribute
+from DateTime import DateTime
 
 class DBModule:
 
@@ -13,16 +14,15 @@ class DBModule:
     Title = ComputedAttribute(lambda self: self.title)
     
     # Convert DB arrays into python tuples, dicts, etc.
-    authors = ComputedAttribute(lambda self: tuple(self._authors[1:-1].split(',')), 1)
-    maintainers = ComputedAttribute(lambda self: tuple(self._maintainers[1:-1].split(',')), 1)
-    licensors = ComputedAttribute(lambda self: tuple(self._licensors[1:-1].split(',')), 1)
-    parentAuthors = ComputedAttribute(lambda self: self._parentauthors and tuple(self._parentauthors[1:-1].split(',')) or [], 1)
     authornames = ComputedAttribute(lambda self: list(self._authornames.split(',')),1)
     keywords = ComputedAttribute(lambda self: list(self._keywords.split(',')),1)
     getHistoryCount = ComputedAttribute(lambda self: self.versioncount)
     matched = ComputedAttribute(lambda self: self._keydict(0),0)
     fields = ComputedAttribute(lambda self: self._keydict(1),0)
     subject = ComputedAttribute(lambda self: self._subject and tuple(self._subject.split(',')) or (),1)
+    created = ComputedAttribute(lambda self: DateTime(self._created.strftime('%Y-%m-%d %H:%M:%S %z')),0)
+    revised = ComputedAttribute(lambda self: DateTime(self._revised.strftime('%Y-%m-%d %H:%M:%S %z')),0)
+
     
     roles = ComputedAttribute(lambda self: self.getRolesDict(),1)
     def getRolesDict(self):
@@ -86,6 +86,7 @@ class DBModuleSearch:
             self.matched = d.copy()
             self.fields = d2.copy()
             self._keys = (self.matched,self.fields)
+            self.revised = DateTime(self.revised.strftime('%Y-%m-%d %H:%M:%S %z'))
             
     def url(self):
         return '/'.join([self.content.absolute_url(),self.objectId,self.version])
@@ -103,16 +104,14 @@ class DBModuleOAI:
     def __init__(self):
         
         # Convert DB arrays into python tuples, dicts, etc.
-            self.authors =  tuple(self.authors[1:-1].split(','))
-            self.maintainers = tuple(self.maintainers[1:-1].split(','))
-            self.licensors = tuple(self.licensors[1:-1].split(','))
-            self.parentAuthors = self.parentAuthors and tuple(self.parentAuthors[1:-1].split(',')) or []
             self.authornames = list(self.authornames.split(', '))
             self.keywords = list(self.keywords.split(', '))
             self.matched = self._keydict(0)
             self.fields = self._keydict(1)
             self.subject = self.subject and tuple(self.subject.split(', ')) or ()
             self.roles = self.roles and eval(self.roles) or {}
+            self.created = DateTime(self.created.strftime('%Y-%m-%d %H:%M:%S %z'))
+            self.revised = DateTime(self.revised.strftime('%Y-%m-%d %H:%M:%S %z'))
 
     def url(self):
         return '/'.join([self.content.absolute_url(),self.objectId,self.version])

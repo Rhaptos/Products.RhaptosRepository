@@ -1,7 +1,7 @@
 from Products.CMFCore.utils import getToolByName
 from StringIO import StringIO
 import string
-import psycopg
+import psycopg2.psycopg1 as psycopg
 
 def upgrade(self,major,minor=None,sub=None):
     """Upgrade the installed tool"""

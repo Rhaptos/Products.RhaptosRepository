@@ -1,5 +1,5 @@
 from ZPublisher.Iterators import IStreamIterator
-import psycopg
+import psycopg2.psycopg1 as psycopg
 
 
 class rhaptosdb_iterator:
@@ -27,7 +27,7 @@ class rhaptosdb_iterator:
             raise StopIteration
         self.pos += self.streamsize
 
-        return data
+        return str(data)
 
     def __len__(self):
         cur = self.db.cursor()

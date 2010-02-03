@@ -4,7 +4,7 @@ from Products.RhaptosModuleStorage.ModuleVersionFolder import ModuleVersionStora
 from Globals import package_home
 from StringIO import StringIO
 import string
-import psycopg
+import psycopg2.psycopg1 as psycopg
 import time
 from Products.RhaptosModuleStorage.config import RATE_MODULE_PERMISSION
  
@@ -62,7 +62,7 @@ def _dbadminexec(d, execstring, template=False):
     except psycopg.OperationalError, e:
         # Badadmin Username: Fail back to user
         raise ValueError, "Unable to connect as supplied DBA admin - %s " %e
-    con.autocommit()
+    con.set_isolation_level(0)
     c = con.cursor()
     try:
         _execute_retry(c, execstring)
@@ -256,7 +256,7 @@ def setupDBConnection(self, portal):
         out.write('Install tsearch in database %s from %s\n' %(d['dbname'], ts_location))
 
     # Finally ready to create the Database Adapter
-    portal.manage_addProduct['ZPsycopgDA'].manage_addZPsycopgConnection(id=d['dbname']+'DA',title='Rhaptos Repository DA',connection_string=_dsn(d), zdatetime=True)
+    portal.manage_addProduct['ZPsycopgDA'].manage_addZPsycopgConnection(id=d['dbname']+'DA',title='Rhaptos Repository DA',encoding='utf-8',connection_string=_dsn(d), zdatetime=True)
     out.write('Install Database Adapter in %s for database %s\n' %(portal.Title(), d['dbname']))
         
 

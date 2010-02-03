@@ -5,7 +5,7 @@ class_name: DBModule
 max_rows: 0
 </dtml-comment>
 
-SELECT m.moduleid as "objectId", m.portal_type, m.name as "Title", m.name as title, 'latest' as version, created, revised, authors as _authors,  k.word, m.language as language
+SELECT m.moduleid as "objectId", m.portal_type, m.name as "Title", m.name as title, 'latest' as version, created as _created, revised as _revised, authors as authors,  k.word, m.language as language
 FROM latest_modules m, modulekeywords mkw, keywords k
 WHERE
   m.module_ident = mkw.module_ident

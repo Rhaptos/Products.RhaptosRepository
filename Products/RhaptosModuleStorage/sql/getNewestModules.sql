@@ -5,7 +5,7 @@ class_file: RhaptosModuleStorage.DBModule.py
 class_name: DBModule
 </dtml-comment>
 
-select m.moduleid as "objectId" , m.portal_type, m.name as "Title", m.name as title, 'latest' as "version", (select count(*) from modules where moduleid=m.moduleid) as versioncount, m.created, m.revised, m.submitter, m.submitlog, a.abstract, 1 as weight, m.authors as _authors,  fullnames(m.authors) as _authornames, l.url as license
+select m.moduleid as "objectId" , m.portal_type, m.name as "Title", m.name as title, 'latest' as "version", (select count(*) from modules where moduleid=m.moduleid) as versioncount, m.created as _created, m.revised as _revised, m.submitter, m.submitlog, a.abstract, 1 as weight, m.authors as authors,  fullnames(m.authors) as _authornames, l.url as license
 from 
 latest_modules m, abstracts a, licenses l
 where
