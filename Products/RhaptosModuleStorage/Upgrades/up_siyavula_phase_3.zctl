@@ -1,6 +1,0 @@
-from Products.ExternalMethod.ExternalMethod import ExternalMethod
-ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','addReRatings')(app.plone)
-
-print "committing transaction..."
-import transaction; transaction.commit()
-print "Done"

@@ -1,3 +1,0 @@
-from Products.ExternalMethod.ExternalMethod import ExternalMethod
-ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','fixCatalogedModuleTitles')(app.plone)
-import transaction; transaction.commit()

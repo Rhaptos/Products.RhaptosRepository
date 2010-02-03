@@ -1,8 +1,0 @@
-from Testing.makerequest import makerequest
-from Products.ExternalMethod.ExternalMethod import ExternalMethod
-
-app=makerequest(app)
-
-ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','storageDispatchUpgrade')(app.plone)
-
-get_transaction().commit()

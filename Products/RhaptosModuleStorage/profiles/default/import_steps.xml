@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<import-steps>
-  <import-step id="rhaptos-modulestorage" version="20090924-01"
-    handler="Products.RhaptosModuleStorage.setuphandlers.setupModuleStorage"
-    title="Setup Module Storage">
-    Setup module storage.
-  </import-step>
-</import-steps>

@@ -1,3 +1,0 @@
-from Products.ExternalMethod.ExternalMethod import ExternalMethod
-ExternalMethod('temp','temp','RhaptosModuleStorage.Upgrade','setSubjectsOnCheckedoutObjects')(app.plone)
-get_transaction().commit()
