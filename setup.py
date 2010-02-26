@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.76'
+version = '0.80'
 
 setup(name='Products.RhaptosRepository',
       version=version,

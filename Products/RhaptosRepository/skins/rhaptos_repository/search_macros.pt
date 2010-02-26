@@ -1075,7 +1075,7 @@
              tal:attributes="value searchhash"
       />
       <input type="hidden" name="filename"
-             tal:define="filename request/filename | string:Connexions_results;
+             tal:define="filename request/filename | string:Statistics_results;
              dummy2 python:request.SESSION.set('results',portal.content.wrapResults(results))"
              tal:attributes="value filename"
       />

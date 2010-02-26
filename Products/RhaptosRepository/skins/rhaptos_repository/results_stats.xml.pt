@@ -231,7 +231,7 @@
 
   </Styles>
   <ss:Worksheet
-      ss:Name="Connexions Statistics">
+      ss:Name="Statistics">
     <Table  tal:define="count python:here.content.countRhaptosObjects()"
         ss:StyleID="ta1">
    <Column ss:StyleID="s22" ss:AutoFitWidth="0"/>
@@ -250,7 +250,7 @@
 
       <Row ss:Height="12.1032">
         <Cell ss:StyleID="s26">
-          <Data ss:Type="String">Connexions Content Information</Data>
+          <Data ss:Type="String">Content Information</Data>
         </Cell>
         <Cell ss:StyleID="s68" ss:Index="4">
           <Data ss:Type="String">Downloaded:</Data>
