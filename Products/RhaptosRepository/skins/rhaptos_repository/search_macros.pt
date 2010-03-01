@@ -827,7 +827,7 @@
              title="Approved"/>
       </tal:comment>
     </metal:metadata_after_title>
-    <meta:optional_data metal:fill-slot="metadata_top">
+    <metal:optional_data metal:fill-slot="metadata_top">
               <div style="font-size: 1.1em; margin-bottom: 0.3em;"
                    tal:define="moduleId python:context.favorites_last_read(o.objectId)"
                    tal:condition="moduleId">
@@ -836,8 +836,8 @@
                     Start from where I last left off &#187;
                   </a>
               </div>
-    </meta:optional_data>
-    <meta:optional_data metal:fill-slot="optional_metadata">
+    </metal:optional_data>
+    <metal:optional_data metal:fill-slot="optional_metadata">
               <div tal:condition="companionMap">
                 <div tal:define="tags companionElt/getTags" tal:condition="tags">
                   <b i18n:translate="text_header_tags">Lens Tags:</b>
@@ -878,7 +878,7 @@
                 </div>
 
               </div>
-    </meta:optional_data>
+    </metal:optional_data>
     <metal:fill fill-slot="simple_results_optional_metadata_right">
       <tal:open condition="context/isOpen|nothing">
         <b tal:condition="companionElt/getApproved|nothing"
