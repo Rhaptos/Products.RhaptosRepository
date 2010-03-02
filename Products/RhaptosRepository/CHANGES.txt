@@ -1,3 +1,6 @@
+RhaptosRepository-0.80.1
+  - remove MMZ rebuild when module published 
+
 RhaptosRepository-0.80
   - generic setup refactor. Rhaptos 2.0 release
 
