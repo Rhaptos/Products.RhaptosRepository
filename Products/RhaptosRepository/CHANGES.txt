@@ -1,3 +1,9 @@
+RhaptosRepository-0.80.1
+  - remove MMZ rebuild when module published 
+
+RhaptosRepository-0.80
+  - generic setup refactor. Rhaptos 2.0 release
+
 RhaptosRepository-0.79
   - siyavula-phase-3 (11 Jan 2010)
 

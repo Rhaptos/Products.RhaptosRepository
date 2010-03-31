@@ -2,7 +2,7 @@
 <?mso-application progid="Excel.Sheet"?>
 
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:x2="http://schemas.microsoft.com/office/excel/2003/xml" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:html="http://www.w3.org/TR/REC-html40" xmlns:c="urn:schemas-microsoft-com:office:component:spreadsheet" xmlns:tal="http://xml.zope.org/namespaces/tal">
-<tal:block tal:define='dummy python:request.RESPONSE.setHeader("Content-type","application/vnd.ms-excel"); dummy2 python:request.RESPONSE.setHeader("Content-disposition","attachment;;filename=Connexions_results.xml")' />
+<tal:block tal:define='dummy python:request.RESPONSE.setHeader("Content-type","application/vnd.ms-excel"); dummy2 python:request.RESPONSE.setHeader("Content-disposition","attachment;;filename=Statistics_results.xml")' />
 <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
 </OfficeDocumentSettings>
 <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">

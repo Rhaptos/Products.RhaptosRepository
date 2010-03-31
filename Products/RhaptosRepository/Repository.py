@@ -487,7 +487,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         container_objs = self.catalog(containedModuleIds=pubobj.objectId)
         for col in container_objs:
             colobj = col.getObject()
-            colobj.notifyContentsRevised(moded_in_publish=object)
+            colobj.notifyContentsRevised()
 
         ### End Event System Hack
 
