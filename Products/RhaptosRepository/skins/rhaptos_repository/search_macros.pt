@@ -1178,14 +1178,15 @@
   <div tal:condition="loggedIn" class="workspace_add">
     <span i18n:translate="add_selected_content_to">Add selected content to:</span>
     <select tal:attributes="name string:workspace${addLoc}"
-            tal:define="target request/target | nothing">
+            tal:define="target request/target | nothing"
+            onchange="disableInIE(this);">
       <metal:reuse define-macro="personalwsoption">
         <option value="__home__" i18n:translate="box_text_personal_workspace">Personal Workspace</option>
-        <option disabled="disabled"></option>
+        <option disabled="disabled" class="disabled"></option>
       </metal:reuse>
       <metal:reuse define-macro="workgroupoptions">
-        <option disabled="disabled" i18n:translate="box_text_shared_wgs">Shared Workgroups:</option>
-        <option disabled="disabled">------------------------------------</option>
+        <option disabled="disabled" class="disabled" i18n:translate="box_text_shared_wgs">Shared Workgroups:</option>
+        <option disabled="disabled" class="disabled">------------------------------------</option>
         <tal:define define="groups python:context.getWorkspaces({'id':None, 'title':None, 'link':None});
                             target target | nothing">
           <tal:loop tal:condition="groups"
@@ -1198,13 +1199,14 @@
                     tal:content="group/title">I'm a Sample Workgroup</option>
           </tal:loop>
           <option disabled="disabled"
+                  class="disabled"
                   tal:condition="not:groups"
                   i18n:translate="box_text_no_workgroups">none</option>
         </tal:define>
       </metal:reuse>
 
       <tal:commentoutlenses tal:replace="nothing">
-      <option disabled="disabled">--Lenses--</option>
+      <option disabled="disabled" class="disabled">--Lenses--</option>
       <option tal:repeat="lens context/lens_tool/getListsOwned | python:[]"
         tal:attributes="value string:lenses/${lens/getId};
                         selected python:test(target == lens.getId, 'selected', nothing);"
