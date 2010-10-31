@@ -6,6 +6,8 @@ import os, sys, shutil, stat
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+from zope.interface import implements
+
 import tempfile
 from OFS.SimpleItem  import SimpleItem
 
@@ -14,7 +16,7 @@ from Products.RhaptosRepository.interfaces.IVersionStorage import IVersionStorag
 
 class DummyStorage(SimpleItem):
 
-    __implements__ = (IVersionStorage)
+    implements(IVersionStorage)
 
     def __init__(self, id):
         self.id = id

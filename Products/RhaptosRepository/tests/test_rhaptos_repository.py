@@ -23,6 +23,7 @@
 $Id: $
 """
 
+from zope.interface import implements
 
 from Products.RhaptosTest import config
 import Products.RhaptosRepository
@@ -45,7 +46,7 @@ from Products.RhaptosTest.base import RhaptosTestCase
 
 
 class DummyStorage(SimpleItem):
-    __implements__ = (IVersionStorage)
+    implements(IVersionStorage)
 
     def __init__(self, id):
         self.id = id

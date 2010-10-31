@@ -8,6 +8,8 @@ This software is subject to the provisions of the GNU Lesser General
 Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 """
 
+from zope.interface import implements
+
 import zLOG
 from OFS.SimpleItem import SimpleItem
 from Products.CMFCore.PortalFolder import PortalFolder
@@ -31,7 +33,7 @@ def manage_addVersionFolder(self, id, title=''):
 
 class VersionFolderStorage(SimpleItem):
 
-    __implements__ = (IVersionStorage)
+    implements(IVersionStorage)
 
     def __init__(self, id):
         self.id = id
