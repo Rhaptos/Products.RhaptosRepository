@@ -1,9 +1,4 @@
-from Interface import Attribute
-try:
-    from Interface import Interface
-except ImportError:
-    # for Zope versions before 2.6.0
-    from Interface import Base as Interface
+from zope.interface import Attribute, Interface
 
 class IVersionedObject(Interface):
     """
