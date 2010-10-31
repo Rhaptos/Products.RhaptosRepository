@@ -16,9 +16,8 @@ import VersionFolder
 from Extensions.ObjectResult import ObjectResult
 from Products.RhaptosModuleStorage.Extensions.DBModule import DBModuleSearch
 
-from Products.CMFCore import utils, CMFCorePermissions
+from Products.CMFCore import utils, permissions
 from Products.CMFCore.DirectoryView import registerDirectory
-from Products.CMFCore.CMFCorePermissions import setDefaultRoles
 
 import sys
 this_module = sys.modules[ __name__ ]
@@ -49,14 +48,14 @@ def initialize(context):
     utils.initializeBasesPhase2( z_bases, context )
     utils.ContentInit(Repository.Repository.meta_type,
                       content_types = contentClasses,
-                      permission = CMFCorePermissions.AddPortalContent,
+                      permission = permissions.AddPortalContent,
                       extra_constructors = contentConstructors,
                       fti = Repository.factory_type_information).initialize(context)
     
     # register class for Copy Support (validaton fails if user can't 'add' it)
     context.registerClass(
         VersionFolder.VersionFolder,
-        permission=CMFCorePermissions.AddPortalContent,
+        permission=permissions.AddPortalContent,
         constructors=(VersionFolder.manage_addVersionFolderForm,
                       VersionFolder.manage_addVersionFolder),
         icon='www/VersionFolder.gif',

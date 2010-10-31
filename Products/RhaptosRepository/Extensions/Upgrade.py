@@ -3,7 +3,7 @@ from Products.ManagableIndex.KeywordIndex import KeywordIndex
 from Products.ManagableIndex.ValueProvider import ExpressionEvaluator
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore import CMFCorePermissions
+from Products.CMFCore import permissions
 from Products.CMFCore.utils import getToolByName
 from Products.RhaptosRepository.LatestReference import addLatestReference
 from Products.ZCatalog.Catalog import CatalogError
@@ -104,7 +104,7 @@ def hitCountUpgrade(self):
     # Plone1 version
     #types_tool.Repository._actions = ({'id':'view', 'name':'Browse', 'action':'browse_content', 'permissions':('View',),'visible':0},)
 
-    types_tool.Repository._actions = [ActionInformation('view', title='Browse', action='browse_content', permissions=(CMFCorePermissions.View),visible=0)]
+    types_tool.Repository._actions = [ActionInformation('view', title='Browse', action='browse_content', permissions=(permissions.View),visible=0)]
 
     out.write("Upgraded actions\n")
 
