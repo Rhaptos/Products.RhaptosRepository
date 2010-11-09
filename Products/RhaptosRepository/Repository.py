@@ -10,19 +10,23 @@ Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 
 import AccessControl
 import zLOG
+from zope.interface import implements
+
 from DateTime import DateTime
 from Globals import InitializeClass, DTMLFile
 from Acquisition import aq_base
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.CMFCore.utils import UniqueObject, getToolByName, _getViewFor
+from Products.CMFCore.utils import UniqueObject, getToolByName
 from Products.CMFCore import permissions
+from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.DynamicType import DynamicType
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 from Products.ZCatalog.ZCatalog import ZCatalog
 from Products.ZCTextIndex.ZCTextIndex import PLexicon, ZCTextIndex
-from Products.ManagableIndex.KeywordIndex import KeywordIndex
-from Products.ManagableIndex.FieldIndex import FieldIndex
-from Products.ManagableIndex.ValueProvider import ExpressionEvaluator
+from Products.PluginIndexes.KeywordIndex import KeywordIndex
+from Products.PluginIndexes.FieldIndex import FieldIndex
+# RCC: Commenting this will cause breakage - still need to refactor this
+# from Products.ManagableIndex.ValueProvider import ExpressionEvaluator
 from Products.ZCTextIndex.Lexicon import StopWordAndSingleCharRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
 from Products.CMFPlone.UnicodeSplitter import Splitter, CaseNormalizer
@@ -36,9 +40,7 @@ from Products.RhaptosCacheTool.Cache import nocache, cache
 from interfaces.IRepository import IRepository
 from interfaces.IVersionStorage import IStorageManager
 
-from psycopg import IntegrityError, ProgrammingError
-
-from Products.PloneLanguageTool.availablelanguages import languageConstants
+from psycopg2 import IntegrityError, ProgrammingError
 
 def cmpTitle(x, y):
     """A method to provide a comparison between the titles of two record objects.
@@ -84,7 +86,7 @@ class Empty: pass
 class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
     """Rhaptos Version Repository tool"""
 
-    __implements__ = (IRepository, StorageManager.__implements__, DynamicType.__implements__)
+    implements(IRepository)
 
     meta_type = 'Repository'
 
@@ -137,14 +139,19 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
 
     #  Copied from PortalContent 
     def __call__(self):
-        '''
-        Invokes the default view.
-        '''
-        view = _getViewFor(self)
-        if getattr(aq_base(view), 'isDocTemp', 0):
-            return view(self, self.REQUEST)
+        """ Invokes the default view.
+        """
+        ti = self.getTypeInfo()
+        method_id = ti and ti.queryMethodID('(Default)', context=self)
+        if method_id and method_id!='(Default)':
+            method = getattr(self, method_id)
+            if getattr(aq_base(method), 'isDocTemp', 0):
+                return method(self, self.REQUEST, self.REQUEST['RESPONSE'])
+            else:
+                return method()
         else:
-            return view()
+            raise NotFound( 'Cannot find default view for "%s"' %
+                            '/'.join( self.getPhysicalPath() ) )
 
     index_html = __call__
     
