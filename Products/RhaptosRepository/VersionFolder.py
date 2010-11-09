@@ -20,7 +20,7 @@ from DateTime import DateTime
 from ComputedAttribute import ComputedAttribute
 from Products.RhaptosModuleStorage.ModuleDBTool import CommitError
 from LatestReference import addLatestReference
-from psycopg import IntegrityError
+from psycopg2 import IntegrityError
 from interfaces.IVersionStorage import IVersionStorage
 
 HISTORY_FIRST_ID = 10000
