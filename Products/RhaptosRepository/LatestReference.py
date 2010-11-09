@@ -14,8 +14,8 @@ from Acquisition import aq_parent
 from Products.References import Reference, _dictify
 
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.traversing.interfaces import ITraverser
-from zope.app.publication.browser import setDefaultSkin
+from zope.traversing.interfaces import ITraverser
+from zope.publisher.skinnable import setDefaultSkin
 from zope.component import ComponentLookupError
 import Products.Five.security
 from zExceptions import NotFound
