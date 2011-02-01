@@ -1,4 +1,7 @@
-RhaptosRepository-0.80.1
+RhaptosRepository-0.82
+  - push collection metadata into DB as well
+
+RhaptosRepository-0.81
   - remove MMZ rebuild when module published 
 
 RhaptosRepository-0.80
