@@ -37,6 +37,7 @@ class StorageManager(BTreeFolder2):
         raises TypeError if storage does not implement IVersionStorage
         raises ValueError if storage already registered
         """
+	import pdb; pdb.set_trace()
         if not IVersionStorage.providedBy(storage):
             raise TypeError, "Storage must implement IVersionStorage"""
 
