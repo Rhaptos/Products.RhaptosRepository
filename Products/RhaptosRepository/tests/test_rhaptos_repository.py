@@ -84,7 +84,7 @@ class TestRhaptosRepository(RhaptosTestCase):
 
     def test_storage_interface(self):
         # Make sure that the repository implements the expected interface.
-        self.failUnless(IStorageManager.isImplementedBy(self.repo))
+        self.failUnless(IStorageManager.providedBy(self.repo))
 
     def test_storage_register_incorrect_interface(self):
         # Make sure that registerStorage raises a TypeError if the storage
@@ -178,7 +178,7 @@ class TestRhaptosRepository(RhaptosTestCase):
 
     def test_repository_interface(self):
         # Make sure that the repository implements the expected interface.
-        self.failUnless(IRepository.isImplementedBy(self.repo))
+        self.failUnless(IRepository.providedBy(self.repo))
 
     def test_repository_empty(self):
         # Make sure that our repository is initially empty.
@@ -206,7 +206,7 @@ class TestRhaptosRepository(RhaptosTestCase):
         version_folder_storage = VersionFolderStorage('version_folder_storage')
         self.repo.registerStorage(version_folder_storage)
         self.version_folder_storage = self.repo.version_folder_storage
-        self.failUnless(IVersionStorage.isImplementedBy(self.version_folder_storage))
+        self.failUnless(IVersionStorage.providedBy(self.version_folder_storage))
 
     def test_version_folder_storage_generate_id(self):
         # Make sure that the version folder storage generates unique IDs.

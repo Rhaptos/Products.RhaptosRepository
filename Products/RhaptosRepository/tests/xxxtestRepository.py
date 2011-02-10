@@ -18,9 +18,9 @@ class TestRepository(BaseTestCase):
         from Products.RhaptosRepository.interfaces.IVersionStorage import IStorageManager
         #from Products.ZopeVersionControl.IVersionControl import IVersionControl
         
-        self.failUnless(IRepository.isImplementedBy(self.content))
-        self.failUnless(IStorageManager.isImplementedBy(self.content))
-        #self.failUnless(IVersionControl.isImplementedBy(self.content))
+        self.failUnless(IRepository.providedBy(self.content))
+        self.failUnless(IStorageManager.providedBy(self.content))
+        #self.failUnless(IVersionControl.providedBy(self.content))
 
     def testHasRhaptosObjectWithNone(self):
         """hasRhaptosObject() must return False if None is given as the ID"""

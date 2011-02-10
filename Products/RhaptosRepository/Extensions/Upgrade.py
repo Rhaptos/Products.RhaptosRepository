@@ -246,7 +246,7 @@ def addSearchCache(self):
     self.searches = OOBTree.OOBTree()
 
 def fixStorageLists(self):
-    self._all_storages = [o.getId() for o in self.objectValues() if IVersionStorage.isImplementedBy(o)]
+    self._all_storages = [o.getId() for o in self.objectValues() if IVersionStorage.providedBy(o)]
 
 
 from Products.CMFPlone.UnicodeSplitter import Splitter, CaseNormalizer

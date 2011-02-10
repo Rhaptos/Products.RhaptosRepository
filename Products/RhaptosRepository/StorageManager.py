@@ -37,7 +37,7 @@ class StorageManager(BTreeFolder2):
         raises TypeError if storage does not implement IVersionStorage
         raises ValueError if storage already registered
         """
-        if not IVersionStorage.isImplementedBy(storage):
+        if not IVersionStorage.providedBy(storage):
             raise TypeError, "Storage must implement IVersionStorage"""
 
         id = storage.getId()

@@ -18,7 +18,7 @@ class TestVersionFolderStorage(BaseTestCase):
 
     def testInterfaces(self):
         """Ensure that tool instances implement the correct interface"""
-        self.failUnless(IVersionStorage.isImplementedBy(self.storage))
+        self.failUnless(IVersionStorage.providedBy(self.storage))
 
     def testGetVersionInfoNonVersioned(self):
         """getVersionInfo() must return None for objects not under version control"""

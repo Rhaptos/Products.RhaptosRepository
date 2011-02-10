@@ -30,7 +30,7 @@ class TestStorageManager(BaseTestCase):
         
     def testInterfaces(self):
         """Ensure that tool instances implement the correct interface"""
-        self.failUnless(IStorageManager.isImplementedBy(self.content))
+        self.failUnless(IStorageManager.providedBy(self.content))
 
     def testRegisterNonStorage(self):
         """registerStorage must raise TypeError if storage does not implement IVersionStorage"""
