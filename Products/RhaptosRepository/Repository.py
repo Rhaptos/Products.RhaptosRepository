@@ -24,7 +24,7 @@ from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2
 from Products.ZCatalog.ZCatalog import ZCatalog
 from Products.ZCTextIndex.ZCTextIndex import PLexicon, ZCTextIndex
 from Products.PluginIndexes.KeywordIndex.KeywordIndex import KeywordIndex
-from Products.PluginIndexes.FieldIndex import FieldIndex
+from Products.PluginIndexes.FieldIndex.FieldIndex import FieldIndex
 # RCC: Commenting this will cause breakage - still need to refactor this
 # from Products.ManagableIndex.ValueProvider import ExpressionEvaluator
 from Products.ZCTextIndex.Lexicon import StopWordAndSingleCharRemover
@@ -197,41 +197,41 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
 
         # XXX: we've replaced the normalizer expressions with plone.indexer
         # decorators in indexer.py 
-        # 
-        # ki= KeywordIndex('keywords')
-        # self.catalog._catalog.addIndex('keywords', ki)
+        
+        ki= KeywordIndex('keywords')
+        self.catalog._catalog.addIndex('keywords', ki)
         # ki._updateProperty('PrenormalizeTerm', 'python: value.lower()')
         # ki._updateProperty('TermType', 'string')
         # ki.keywords._updateProperty('Normalizer', 'python: [k.lower() for k in value]')
 
-        # ki=KeywordIndex('baselanguage')
-        # self.catalog._catalog.addIndex('baselanguage',ki)
+        ki=KeywordIndex('baselanguage')
+        self.catalog._catalog.addIndex('baselanguage',ki)
         # ki._updateProperty('PrenormalizeTerm', "python: value[:(value.find('-') > 0 ) and value.find('-') or len(value)]")
         # ki.baselanguage._updateProperty('Name','language')
         # ki.baselanguage._updateProperty('Normalizer', "python: [value[:(value.find('-') > 0 ) and value.find('-') or len(value)]]")
 
-        # fi=FieldIndex('sortTitle')
-        # self.catalog._catalog.addIndex('sortTitle',fi)
+        fi=FieldIndex('sortTitle')
+        self.catalog._catalog.addIndex('sortTitle',fi)
         # fi._updateProperty('PrenormalizeTerm', 'python: value.lower()')
         # fi._updateProperty('TermType', 'string')
         # fi.sortTitle._updateProperty('Name', 'Title')
         # fi.sortTitle._updateProperty('Normalizer', 'python: here.stripArticles(value)')
 
-        # fi=FieldIndex('parent')
-        # self.catalog._catalog.addIndex('parent',fi)
+        fi=FieldIndex('parent')
+        self.catalog._catalog.addIndex('parent',fi)
         # fi.parent._updateProperty('Name', 'getParent')
         # fi.parent._updateProperty('Normalizer', 'python:value.objectId')
 
-        # ki=KeywordIndex('translators')
-        # self.catalog._catalog.addIndex('translators',ki)
+        ki=KeywordIndex('translators')
+        self.catalog._catalog.addIndex('translators',ki)
         # ki._delObject('translators')
         # ee=ExpressionEvaluator()
         # ee.id='translators'
         # ki._setObject(ee.id,ee)
         # ki.translators._updateProperty('Expression',"python: lambda o: o.roles['translators']")
 
-        # ki=KeywordIndex('editors')
-        # self.catalog._catalog.addIndex('editors',ki)
+        ki=KeywordIndex('editors')
+        self.catalog._catalog.addIndex('editors',ki)
         # ki._delObject('editors')
         # ee=ExpressionEvaluator()
         # ee.id='editors'
