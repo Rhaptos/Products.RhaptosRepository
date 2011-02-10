@@ -10,5 +10,12 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <adapter factory=".indexer.keywords" name="keywords" />
+  <adapter factory=".indexer.baselanguage" name="baselanguage" />
+  <adapter factory=".indexer.sortTitle" name="sortTitle" />
+  <adapter factory=".indexer.parent" name="parent" />
+  <adapter factory=".indexer.translators" name="translators" />
+  <adapter factory=".indexer.editors" name="editors" />
+
 </configure>
 
