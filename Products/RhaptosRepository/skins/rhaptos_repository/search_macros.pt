@@ -227,12 +227,10 @@
           </span>
           <input class="standalone"
               id="go_submit_button"
-              tabindex="" 
               type="submit"
               value="Go"
               name="form.button.Go"
               i18n:attributes="value value_button_go"
-              tal:attributes="tabindex tabindex/next;"
               />
         <input type="hidden" 
           name="template" 
@@ -1080,12 +1078,10 @@
              tal:attributes="value filename"
       />
       <input class="spreadsheet_button"
-             tabindex=""
              type="submit"
              value="Download Spreadsheet"
              name="form.button.stats"
              i18n:attributes="value value_button_get_spreadsheet"
-             tal:attributes="tabindex tabindex/next; "
       />
     </th>
     <th>
@@ -1215,12 +1211,10 @@
     </select>
 
     <button class="context"
-      tabindex=""
       type="submit"
       value="Add"
       name="form.button.WorkspaceAdd"
-      tal:attributes="tabindex tabindex/next;
-                      value string:Add$addLoc"
+      tal:attributes="value string:Add$addLoc"
       i18n:translate="value_add">Add</button>
     
   </div>
@@ -1230,7 +1224,6 @@
   
 <div class="context_add">
   <input class="context"
-    tabindex=""
     type="submit"
     value="Add selected content"
     i18n:attributes="value"

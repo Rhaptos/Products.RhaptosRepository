@@ -67,14 +67,11 @@ if (p) {
         <input type="hidden" name="target" tal:attributes="value request/target | nothing" />
 
         <input type="text" name="words" size="50"
-               tal:attributes="value request/words | nothing; 
-               tabindex tabindex/next"
+               tal:attributes="value request/words | nothing"
                style="margin-bottom: 4px" />
         <span style="white-space:nowrap">
-        <input class="context searchButton" type="submit" value="Search" i18n:attributes="value"
-                      tal:attributes="tabindex tabindex/next"/>
-        <input class="context searchButton" type="reset" value="Reset" i18n:attributes="value"
-                      tal:attributes="tabindex tabindex/next"/>
+        <input class="context searchButton" type="submit" value="Search" i18n:attributes="value"/>
+        <input class="context searchButton" type="reset" value="Reset" i18n:attributes="value"/>
         </span>
         <span style="white-space:nowrap">
         <span i18n:translate="for:">for:</span> <span style="color:green">[<input type="checkbox" class="noborder" name="portal_types:list" value="Module" tal:attributes="checked python:test('Module' in portal_types, 'checked',nothing)" /> <span i18n:translate="modules">modules</span>
@@ -88,8 +85,7 @@ if (p) {
 	  <option tal:attributes="selected python:test(b_size=='100000','selected',nothing)" value="100000">all</option></select> results per page.
 
         <input tal:replace="nothing" class="standalone searchButton" type="button" value="Advanced" i18n:attributes="value"
-                      onClick="location.href='advanced_search'"
-                      tal:attributes="tabindex tabindex/next"/>
+                      onClick="location.href='advanced_search'"/>
         </p>
       </form>
       </tal:block>

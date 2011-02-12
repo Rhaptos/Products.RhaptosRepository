@@ -105,8 +105,7 @@
               <input id="words_input" type="text" 
                 name="words" 
                 size="50"
-                tal:attributes="value request/words | nothing; 
-                tabindex tabindex/next" />
+                tal:attributes="value request/words | nothing"/>
 
               <input type="hidden" 
                 name="allterms" 
@@ -134,13 +133,12 @@
               type="submit" 
               value="Search" 
               name="search"
-              i18n:attributes="value"
-              tal:attributes="tabindex tabindex/next"/>
+              i18n:attributes="value"/>
                   <tal:advancedsearch tal:condition="nothing">
                     FIXME: Remove the link to advanced search for now!
               <a href="#" iscollapsed="1" id="more_options" 
                       onclick="showOptions(this); return false;"
-                      tal:attributes="href string:${searchurl}&showopts=1;tabindex tabindex/next"
+                      tal:attributes="href string:${searchurl}&showopts=1"
                       tal:condition="not: showopts"
                       >Advanced Search</a> 
                   </tal:advancedsearch>
@@ -161,8 +159,7 @@
                   onclick="checkOption(this)" 
                   tal:attributes="name string:weights.title:int:record;
                   checked python:test(weights.has_key('title'), 'checked',nothing);
-                  value default_search_weights/title;
-                  tabindex tabindex/next;" />  
+                  value default_search_weights/title" />  
                 <label for="title_box" i18n:translate="title">Title</label>
                 </span>
                 
@@ -174,8 +171,7 @@
                   onclick="checkOption(this)" 
                   tal:attributes="name string:weights.author:int:record;
                   checked python:test(weights.has_key('author'), 'checked',nothing);
-                  value default_search_weights/author;
-                  tabindex tabindex/next;" />  
+                  value default_search_weights/author" />  
                 <label for="author_box" i18n:translate="author">Author</label> 
                 </span>
                 
@@ -187,8 +183,7 @@
                   name="portal_types:list" 
                   value="Module" 
                   onclick="checkOption(this)" 
-                  tal:attributes="checked python:test('Collection' not in portal_types and 'Module' in portal_types, 'checked',nothing);
-                  tabindex tabindex/next;" />  
+                  tal:attributes="checked python:test('Collection' not in portal_types and 'Module' in portal_types, 'checked',nothing)" />  
                 <img tal:replace="structure here/module_icon.gif" />
                 <label for="module_box" i18n:translate="text_modules">Modules</label>
                 </span>
@@ -200,8 +195,7 @@
                   name="portal_types:list" 
                   value="Collection" 
                   onclick="checkOption(this)" 
-                  tal:attributes="checked python:test('Module' not in portal_types and 'Collection' in portal_types, 'checked',nothing);
-                  tabindex tabindex/next;" />  
+                  tal:attributes="checked python:test('Module' not in portal_types and 'Collection' in portal_types, 'checked',nothing)" />  
                 <img tal:replace="structure here/repository_icon.gif" />
                 <label for="collection_box" i18n:translate="text_collections">Collections</label>
                 <label for="collection_box" i18n:translate="text_course_types" 
@@ -233,7 +227,7 @@
 
                 <span class="search_option">
                     <select id="simple_subject" name="subject" size='1' 
-                            tal:attributes="name python:test(showopts,'hidden_subject','subject'); tabindex tabindex/next;"
+                            tal:attributes="name python:test(showopts,'hidden_subject','subject')"
                             onchange="syncSelect(this,'advanced_subject')" >
                 <option tal:attributes="selected python:test(subject=='','selected',nothing)" value="">All Subjects</option>
                 <option tal:repeat="subj python:here.portal_moduledb.sqlGetTags(scheme='ISKME subject')" 
@@ -346,8 +340,7 @@
               <input id="words_input" type="text" 
                 name="words" 
                 size="50"
-                tal:attributes="value request/words | nothing; 
-                tabindex tabindex/next" />
+                tal:attributes="value request/words | nothing" />
               <input type="hidden" 
                 name="allterms" 
                 tal:attributes="value string:weakAND" />
@@ -372,8 +365,7 @@
               <input id='title_input' type="text" 
                 name="title" 
                 size="50"
-                tal:attributes="value request/title | nothing; 
-                tabindex tabindex/next" />
+                tal:attributes="value request/title | nothing" />
               <input type="hidden" 
                 name="title_type" 
                 tal:attributes="value string:weakAND" />
@@ -400,8 +392,7 @@
               <input id="author_input" type="text" 
                 name="author" 
                 size="50"
-                tal:attributes="value request/author | nothing; 
-                tabindex tabindex/next" />
+                tal:attributes="value request/author | nothing" />
               <input type="hidden" 
                 name="author_type" 
                 tal:attributes="value string:weakAND" />
@@ -455,8 +446,7 @@
               <input id="keyword_input" type="text" 
                 name="keyword" 
                 size="50"
-                tal:attributes="value request/keyword | nothing; 
-                tabindex tabindex/next" />
+                tal:attributes="value request/keyword | nothing" />
               <input type="hidden" 
                 name="keyword_type" 
                 tal:attributes="value string:weakAND" />
@@ -555,8 +545,7 @@
               type="submit" 
               value="Search" 
               name="advancedsearch"
-              i18n:attributes="value"
-              tal:attributes="tabindex tabindex/next"/>
+              i18n:attributes="value"/>
               <a href="#" id="more_options" 
                       onclick="hideOptions(this); return false;" 
                       tal:attributes="href string:${searchurl}"
