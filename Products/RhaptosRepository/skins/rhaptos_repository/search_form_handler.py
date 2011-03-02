@@ -8,8 +8,6 @@
 ##title=
 ##
 
-from zLOG import LOG, INFO
-
 REQUEST = context.REQUEST
 
 words = REQUEST.get('words','')

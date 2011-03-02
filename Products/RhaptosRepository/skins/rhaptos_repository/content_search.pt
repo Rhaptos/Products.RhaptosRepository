@@ -46,7 +46,8 @@ if (p) {
     </metal:block>
 
     <div metal:fill-slot="main"
-         tal:define="Batch python:modules['Products.CMFPlone'].Batch;
+         tal:define="portal context/@@plone_portal_state/portal;
+                        Batch python:modules['Products.CMFPlone'].Batch;
                         start request/start | python:1;
                         b_start request/b_start | python:int(start)-1;
                         results here/search_form_handler; 

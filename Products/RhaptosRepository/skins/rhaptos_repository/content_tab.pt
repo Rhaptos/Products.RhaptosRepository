@@ -1,5 +1,6 @@
 <div  tal:omit-tag=""
-      tal:define="category options/panename | nothing;
+      tal:define="portal context/@@plone_portal_state/portal;
+                  category options/panename | nothing;
                   pss modules/Products/PythonScripts/standard;
                   paneParams options/boxparams | nothing;
                   paneParams python:paneParams and [pss.url_unquote(x.replace('*' ,'%')) for x in paneParams];
