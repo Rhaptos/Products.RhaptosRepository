@@ -142,7 +142,8 @@
                 companionMap python:companion and dict([(i.getId,i) for i in companion]);
                 conflicts conflicts | nothing;
                 conflictsMap python:conflicts and dict([(i.getId(),i) for i in conflicts]);
-                loggedIn not:here/portal_membership/isAnonymousUser;
+                mtool nocall:context/portal_membership;                
+                loggedIn not:mtool/isAnonymousUser;
                 inCourse inCourse | nothing;
                 default_view default_view | string:detail;
                 view_mode python:inCourse and 'compact' or request.has_key('view_mode') and request['view_mode'] or default_view;
@@ -526,6 +527,7 @@
            call fails.  In all of these cases, the fields attribute is
            False, so fall back to an empty dictionary anyway.
         </tal:comment>
+	<tal:defines tal:define="portal context/@@plone_portal_state/portal">
         <tal:block tal:repeat="resobj batch">
           <tr tal:define="o python:portal.content.getRhaptosObject(resobj.objectId, resobj.version); 
           fields_dict python:getattr(resobj,'fields',None) or {};
@@ -814,6 +816,7 @@
             </td>
           </tr>
         </tal:block>
+       </tal:defines>
 </metal:block>
 
 <metal:block metal:define-macro="lens_results">
