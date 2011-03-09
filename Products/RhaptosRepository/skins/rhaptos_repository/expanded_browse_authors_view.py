@@ -12,6 +12,7 @@
 
 request = context.REQUEST
 content = context.portal_url.getPortalObject().content
+portal_url = context.portal_url.getPortalPath()
 
 basehash = context.expanded_searchhash(request.form)
 
@@ -78,7 +79,7 @@ else:
 
 qs = request.environ.get('QUERY_STRING', '')
 queries = '&'.join([p for p in qs.split('&') if not(p.startswith('subset=') or p.startswith('author='))])
-returnhref = '/content/browse_content/author/'+base_letter+'/'+author+'/'+subset
+returnhref = portal_url+'/content/browse_content/author/'+base_letter+'/'+author+'/'+subset
 
 results = sorton != 'title' and content.sortSearchResults(list(raw_results),sorton,recent) or raw_results;
 

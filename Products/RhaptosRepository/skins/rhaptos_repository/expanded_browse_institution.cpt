@@ -26,7 +26,7 @@
       </h1>
 
       <div tal:define="toPass python:pss.url_quote(inst).replace('/','%2F').replace('%','*');
-                       returnhref python:'/content/browse_content/institution/'+base_letter+'/'+toPass">
+                       returnhref string:${context/portal_url}/content/browse_content/institution/${base_letter}/${toPass}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

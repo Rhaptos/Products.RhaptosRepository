@@ -23,7 +23,7 @@
         "<span i18n:name="browse_letter" tal:content="letter"/>"
       </h1>
 
-      <div tal:define="returnhref python:'/content/browse_content/titles/'+letter">
+      <div tal:define="returnhref string:${context/portal_url}/content/browse_content/titles/${letter}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

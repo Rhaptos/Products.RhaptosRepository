@@ -6,15 +6,15 @@
 
 <p metal:define-macro="see_glossary" i18n:domain="rhaptos" id="glossary_links" i18n:translate="text_content_definitions">
     (What are 
-    <a href="/help/glossary#module" i18n:name="module_icon">
+    <a href="/help/glossary#module" tal:attributes="href string:$portal_url/help/glossary#module" i18n:name="module_icon">
       <img tal:replace="structure here/module_icon.gif" /></a> 
     <span i18n:name="module">
-      <a href="/help/glossary#module" i18n:translate="text_module">modules</a>
+      <a href="/help/glossary#module" tal:attributes="href string:$portal_url/help/glossary#module" i18n:translate="text_module">modules</a>
     </span> and 
-    <a href="/help/glossary#course" i18n:name="course_icon">
+    <a href="/help/glossary#course" tal:attributes="href string:$portal_url/help/glossary#course" i18n:name="course_icon">
       <img tal:replace="structure here/repository_icon.gif" /></a> 
     <span i18n:name="collection">
-      <a href="/help/glossary#course">collections</a></span>?)
+      <a href="/help/glossary#course" tal:attributes="href string:$portal_url/help/glossary#course" >collections</a></span>?)
 </p>
 
 <div metal:define-macro="search_browse_nav" class="cnx_search_browse_nav">
@@ -25,7 +25,7 @@
                 chunkparam python:chunknum and '/at'+str(chunknum) or '';"
     tal:attributes="href python:returnhref+chunkparam"
     >Return to Browsing Content</a> |
-  <a href="/content/search">
+  <a href="/content/search" tal:attributes="href string:$portal_url/content/search" >
     Search for Content</a>
 </div>
 

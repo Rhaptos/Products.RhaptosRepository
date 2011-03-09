@@ -40,7 +40,7 @@
         tal:define="qs python:'?langs:list='+'&langs:list='.join(siblingLocales)"
         class="cnx_header_underlink" style="font-weight: normal">
         <a href="/content/expanded_browse_language"
-          tal:attributes="href string:/content/expanded_browse_language${qs}"
+          tal:attributes="href string:${context/portal_url}/content/expanded_browse_language${qs}"
           i18n:translate="text_all_content_in">
           All content in <span tal:replace="nativeName" i18n:name="language_name" />
         </a>
@@ -51,7 +51,7 @@
         <tal:str i18n:translate="text_regional_variants_of">Regional variants:</tal:str>
         <tal:lang tal:repeat="subcode siblingLocales">
           <a href="/content/expanded_browse_language"
-            tal:attributes="href string:/content/expanded_browse_language?langs:list=${subcode}"
+            tal:attributes="href string:${context/portal_url}/content/expanded_browse_language?langs:list=${subcode}"
             tal:content="python:langLookup[subcode]['variantName'] or default"
             i18n:translate="">unspecified</a>
           [<tal:code replace="subcode">de</tal:code>]
@@ -59,7 +59,7 @@
         </tal:lang>
       </div>
       
-      <div tal:define="returnhref python:'/content/browse_content/language/'+'/'.join(langs)">
+      <div tal:define="returnhref python:context.portal_url.getPortalPath()+'/content/browse_content/language/'+'/'.join(langs)">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

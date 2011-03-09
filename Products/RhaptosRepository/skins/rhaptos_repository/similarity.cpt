@@ -35,8 +35,10 @@
       
       <div class="cnx_search_browse_nav">
         <a href="/content/" i18n:translate="label_browse_for_content"
+           tal:attributes="href string:$portal_url/content/">
           >Browse Content</a> | 
-        <a href="/content/search">
+        <a href="/content/search"
+           tal:attributes="href string:$portal_url/content/search">
           Search for Content
         </a>
       </div>

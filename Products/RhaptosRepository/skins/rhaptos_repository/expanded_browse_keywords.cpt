@@ -17,7 +17,7 @@
                      results viewinfo/results;
                      searchhash viewinfo/searchhash;
                      keyword viewinfo/keyword;
-                     base_letter viewinfo/base_letter;
+                     base_letter python:path('viewinfo/base_letter').capitalize();
                      pss modules/Products/PythonScripts/standard;">
 
       <h1 class="topheading" i18n:translate="heading_browse_keywords">Browse by Keyword:
@@ -25,7 +25,7 @@
       </h1>
 
       <div tal:define="toPass python:pss.url_quote(keyword).replace('/','%2F').replace('%', '*');
-                       returnhref python:'/content/browse_content/keyword/'+base_letter.capitalize()+'/'+toPass">
+                       returnhref string:${context/portal_url}/content/browse_content/keyword/${base_letter}/${toPass}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

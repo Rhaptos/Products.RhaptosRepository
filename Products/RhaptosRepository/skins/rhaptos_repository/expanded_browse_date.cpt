@@ -28,7 +28,7 @@
         </span>
       </h1>
 
-      <div tal:define="returnhref python:'/content/browse_content/date/'+new_str">
+      <div tal:define="returnhref string:${context/portal_url}/content/browse_content/date/${new_str}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

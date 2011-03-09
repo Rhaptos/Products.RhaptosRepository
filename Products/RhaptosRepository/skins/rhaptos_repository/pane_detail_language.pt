@@ -72,7 +72,7 @@
 
 <div class="cnx_expand_link cnx_top">
   <a href="#" i18n:translate="label_browse_expandinfo" metal:define-macro="expandlink"
-     tal:define="base string:/content/expanded_browse_language;
+     tal:define="base string:${context/portal_url}/content/expanded_browse_language;
                  query python:context.expanded_query(langs=selected, b_start=b_start)"
      tal:attributes="href python:'%s?%s' % (base, query)">Expand this Information</a>
 </div>

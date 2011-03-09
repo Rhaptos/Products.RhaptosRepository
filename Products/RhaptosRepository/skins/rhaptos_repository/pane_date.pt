@@ -45,35 +45,40 @@ or
  <li>
    <a href="/content/browse_content/date/today" i18n:translate="text_revised_today"
       onclick="setPane('view','date','today',this);return false;"
-      tal:attributes="class python:highlight == 'today' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'today' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/date/today">
     Today
    </a>
  </li>
  <li>
    <a href="/content/browse_content/date/week" i18n:translate="text_revised_week"
       onclick="setPane('view','date','week',this);return false;"
-      tal:attributes="class python:highlight == 'week' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'week' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/date/week">
     This week
    </a>
  </li>
  <li>
    <a href="/content/browse_content/date/month" i18n:translate="text_revised_month"
       onclick="setPane('view','date','month',this);return false;"
-      tal:attributes="class python:highlight == 'month' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'month' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/date/month">
     This month
    </a>
  </li>
  <li>
    <a href="/content/browse_content/date/year" i18n:translate="text_revised_year"
       onclick="setPane('view','date','year',this);return false;"
-      tal:attributes="class python:highlight == 'year' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'year' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/date/year">
     This year
    </a>
  </li>
  <li>
    <a href="/content/browse_content/date/ever" i18n:translate="text_revised_ever"
       onclick="setPane('view','date','ever',this);return false;"
-      tal:attributes="class python:highlight == 'ever' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'ever' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/date/ever">
     Ever
    </a>
  </li>

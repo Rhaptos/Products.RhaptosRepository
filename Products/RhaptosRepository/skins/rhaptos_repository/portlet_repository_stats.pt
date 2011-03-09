@@ -21,14 +21,14 @@
           tal:define=" numc python:here.content.countRhaptosObjects(['Collection'])">
           <img tal:replace="structure here/repository_icon.gif" /> Total Collections: <strong tal:content="numc">[count]</strong>
           <div tal:condition="python:numc">
-            <a tal:attributes="href string:${portal_url}/content/randomContent?portal_type=Collection">Visit a random collection</a>
+            <a tal:attributes="href string:${context/portal_url}/content/randomContent?portal_type=Collection">Visit a random collection</a>
             </div>
         </dd>
         <dd class="portletItem even"
           tal:define="numm python:here.content.countRhaptosObjects(['Module']);">
           <img tal:replace="structure here/module_icon.gif" /> Total Modules: <strong tal:content="numm">[count]</strong>
           <div tal:condition="python:numm">
-            <a tal:attributes="href string:${portal_url}/content/randomContent?portal_type=Module">Visit a random module</a>
+            <a tal:attributes="href string:${context/portal_url}/content/randomContent?portal_type=Module">Visit a random module</a>
           </div>
           
           <span class="portletBottomLeft"></span>

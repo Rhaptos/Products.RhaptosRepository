@@ -34,7 +34,7 @@
         
         <dd class="portletMore even">
           <strong>
-            <a href="/content/browse_latest" i18n:translate="box_text_more">More...</a>
+            <a href="/content/browse_latest" tal:attributes="href string:$portal_url/content/browse_latest" i18n:translate="box_text_more">More...</a>
           </strong>
           
           <span class="portletBottomLeft"></span>

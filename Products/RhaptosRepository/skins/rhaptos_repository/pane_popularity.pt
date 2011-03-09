@@ -16,14 +16,16 @@
  <li>
    <a href="/content/browse_content/popularity/weekly" i18n:translate="text_popular_recent"
       onclick="setPane('view','popularity','weekly',this);return false;"
-      tal:attributes="class python:highlight == 'weekly' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'weekly' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/popularity/weekly">
     Most Popular Last Week
    </a>
  </li>
  <li>
    <a href="/content/browse_content/popularity/alltime" i18n:translate="text_popular_ever"
       onclick="setPane('view','popularity','alltime',this);return false;"
-      tal:attributes="class python:highlight == 'alltime' and 'selected' or nothing">
+      tal:attributes="class python:highlight == 'alltime' and 'selected' or nothing;
+                      href string:${context/portal_url}/content/browse_content/popularity/alltime">
     Most Popular of All Time
    </a>
  </li>

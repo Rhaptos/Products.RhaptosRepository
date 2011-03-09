@@ -42,7 +42,7 @@
 	  i18n:name="end_date">[date]</tal:date>
       </div>
  
-      <div tal:define="returnhref python:'/content/browse_content/popularity/'+param_string">
+      <div tal:define="returnhref string:${context/portal_url}/content/browse_content/popularity/${param_string}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
 

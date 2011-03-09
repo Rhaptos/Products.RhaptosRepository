@@ -21,7 +21,7 @@
 
       <div class="cnx_search_browse_nav" i18n:translate="text_search_browse_links">
         <span i18n:name="browse_link">
-          <a href="/content/" i18n:translate="label_browse_for_content">Browse Content</a>
+          <a href="/content/" i18n:translate="label_browse_for_content" tal:attributes="href string:${context/portal_url}/content/">Browse Content</a>
         </span>
         | Search for Content
       </div>
@@ -75,7 +75,7 @@
           roles request/roles | python:['Authors','Editors','Translators','Maintainers'];
           role_names python:[r.lower().rstrip('s') for r in roles];
           subject request/subject | nothing;
-          searchurl request/searchurl | string:/content/search?;
+          searchurl request/searchurl | string:${context/portal_url}/content/search?;
 	  showopts request/showopts | nothing;
 	  optdisplay python:test(showopts,'','none');
 	  nonoptdisplay python:test(showopts,'none','');
@@ -84,15 +84,15 @@
 	  ">
           
       <script type="text/javascript" 
-          tal:attributes="src string:$portal_url/search_functions.js;" 
+          tal:attributes="src string:${context/portal_url}/search_functions.js;" 
           src="/search_functions.js"> </script>
       <script type="text/javascript" 
-          tal:attributes="src string:$portal_url/results_functions.js;"
+          tal:attributes="src string:${context/portal_url}/results_functions.js;"
           src="/results_functions.js"> </script>
 
       <form action="/content/search" name="search" id="simple_search" class="search_options"
             tal:attributes="style string:display: ${nonoptdisplay};
-                            action string:$portal_url/content/search;">
+                            action string:${context/portal_url}/content/search;">
         
         <div id="search_form">
         <table width="100%">
@@ -212,10 +212,10 @@
                            name="rating:int"
                            type="radio"/>
                     <tal:stars repeat="i python:range(0,num)">
-                      <img tal:attributes="src string:${portal_url}/filled_star.gif"/>
+                      <img tal:attributes="src string:${context/portal_url}/filled_star.gif"/>
                     </tal:stars>
                     <tal:stars repeat="i python:range(num,5)">
-                      <img tal:attributes="src string:${portal_url}/empty_star.gif"/>
+                      <img tal:attributes="src string:${context/portal_url}/empty_star.gif"/>
                     </tal:stars>
                     <br/>
                   </tal:loop>

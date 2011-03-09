@@ -19,7 +19,7 @@
         <span i18n:name="subject" tal:replace="subject"/>
       </h1>
 
-      <div tal:define="returnhref python:'/content/browse_content/subject/'+subject">
+      <div tal:define="returnhref string:${context/portal_url}/content/browse_content/subject/${subject}">
         <metal:block metal:use-macro="here/browse_macro/macros/search_browse_nav" />
       </div>
       <!--<p tal:replace="structure request/form"></p>-->

@@ -594,7 +594,7 @@
                 <span tal:repeat="author o/authors">
                   <tal:person tal:define="m python:here.desecured.getMemberById(author)">
                     <tal:badauthor tal:on-error="string:(${author})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -615,7 +615,7 @@
                 <span tal:repeat="editor editors">
                   <tal:person tal:define="m python:here.desecured.getMemberById(editor)">
                     <tal:badauthor tal:on-error="string:(${editor})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -636,7 +636,7 @@
                 <span tal:repeat="translator translators">
                   <tal:person tal:define="m python:here.desecured.getMemberById(translator)">
                     <tal:badauthor tal:on-error="string:(${translator})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -657,7 +657,7 @@
                 <span tal:repeat="maintainer maintainers">
                   <tal:person tal:define="m python:here.desecured.getMemberById(maintainer)">
                     <tal:badauthor tal:on-error="string:(${maintainer})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'maintainer' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -792,7 +792,7 @@
               <td class="left-cell">
                 <b i18n:translate="text_rating_header">Rating: </b>
               </td>
-              <td class="star-rating"><metal:rating_macro metal:define-macro="rating_macro"><tal:stardefs tal:define="fullstars python:int(math.modf(round(o.rating() * 2) / 2.0)[1]); halfstar python:math.modf(round(o.rating() * 2) / 2.0)[0]; hasstars python:fullstars or halfstar"><tal:hasstars tal:condition="hasstars"><tal:stars repeat="i python:range(0, fullstars)"><img tal:attributes="src string:${portal_url}/full_star.png"/></tal:stars><img tal:condition="halfstar" tal:attributes="src string:${portal_url}/half_star.png"/><tal:empty_stars repeat="i python:range(0, 5 - (fullstars + (halfstar and 1 or 0)))"><img tal:attributes="src string:${portal_url}/empty_star.png"/></tal:empty_stars></tal:hasstars><tal:nostars tal:condition="not:hasstars" i18n:translate="not_rated_like">Not yet rated</tal:nostars></tal:stardefs></metal:rating_macro></td>
+              <td class="star-rating"><metal:rating_macro metal:define-macro="rating_macro"><tal:stardefs tal:define="fullstars python:int(math.modf(round(o.rating() * 2) / 2.0)[1]); halfstar python:math.modf(round(o.rating() * 2) / 2.0)[0]; hasstars python:fullstars or halfstar"><tal:hasstars tal:condition="hasstars"><tal:stars repeat="i python:range(0, fullstars)"><img tal:attributes="src string:${context/portal_url}/full_star.png"/></tal:stars><img tal:condition="halfstar" tal:attributes="src string:${portal_url}/half_star.png"/><tal:empty_stars repeat="i python:range(0, 5 - (fullstars + (halfstar and 1 or 0)))"><img tal:attributes="src string:${portal_url}/empty_star.png"/></tal:empty_stars></tal:hasstars><tal:nostars tal:condition="not:hasstars" i18n:translate="not_rated_like">Not yet rated</tal:nostars></tal:stardefs></metal:rating_macro></td>
               </tr>
 
               <tr tal:condition="request/DEBUG | nothing">
@@ -824,7 +824,7 @@
     <metal:metadata_after_title fill-slot="metadata_after_title">
       <tal:comment condition="nothing">
         <img tal:condition="companionElt/getApproved|nothing"
-             tal:attributes="src string:${portal_url}/award_star_gold_3.png"
+             tal:attributes="src string:${context/portal_url}/award_star_gold_3.png"
              title="Approved"/>
       </tal:comment>
     </metal:metadata_after_title>
@@ -899,7 +899,7 @@
 
   <metal:block metal:define-macro="simple_results">
       <tal:block tal:repeat="resobj batch">
-        <tr tal:define="o python:portal.content.getRhaptosObject(resobj.objectId, resobj.version); 
+        <tr tal:define="o python:context.portal_url.content.getRhaptosObject(resobj.objectId, resobj.version); 
           fields_dict python:getattr(resobj,'fields',None) or {};
           f_keys python:fields_dict.keys();
           oddrow repeat/resobj/odd;
@@ -966,7 +966,7 @@
                 <span tal:repeat="author o/authors">
                   <tal:person tal:define="m python:here.desecured.getMemberById(author)">
                     <tal:badauthor tal:on-error="string:(${author})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -987,7 +987,7 @@
                 <span tal:repeat="editor editors">
                   <tal:person tal:define="m python:here.desecured.getMemberById(editor)">
                     <tal:badauthor tal:on-error="string:(${editor})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
@@ -1008,7 +1008,7 @@
                 <span tal:repeat="translator translators">
                   <tal:person tal:define="m python:here.desecured.getMemberById(translator)">
                     <tal:badauthor tal:on-error="string:(${translator})">
-                      <a tal:attributes="href string:/member_profile/${m/id}"
+                      <a tal:attributes="href string:${context/portal_url}/member_profile/${m/id}"
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
