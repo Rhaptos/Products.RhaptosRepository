@@ -1,3 +1,6 @@
+RhaptosRepository-0.83
+  - twitbook buttons remove ratings
+
 RhaptosRepository-0.82
   - push collection metadata into DB as well
 
