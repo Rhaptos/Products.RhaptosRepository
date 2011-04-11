@@ -27,6 +27,9 @@ setup(name='Products.RhaptosRepository',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'Products.RhaptosModuleStorage',
+          'Products.RhaptosCacheTool',
+          'Products.References',
       ],
       tests_require = [
            'zope.testing>=3.5',
