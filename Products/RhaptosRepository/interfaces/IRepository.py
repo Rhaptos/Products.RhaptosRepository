@@ -37,7 +37,9 @@ class IRepository(Interface):
         raises CommitError if object is not already under version control
         """
 
-    def searchRepository():
+    def searchRepository(query, query_type="weakAND", weights=0,
+                         field_queries={}, sorton='weight', recent=False,
+                         use_cache=True, min_rating=0):
         """Search the repository for content
 
         Accepts parameters via the REQUEST object:
