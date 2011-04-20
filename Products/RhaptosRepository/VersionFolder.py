@@ -165,6 +165,9 @@ class VersionFolderStorage(SimpleItem):
         vf.latest.edit(clone.Title(), version)
         self.catalog.catalog_object(vf.latest)
 
+        #Push metadata into DB
+        self.portal_moduledb.insertModuleVersion(clone)
+
     def notifyObjectRevised(self, object, origobj=None):
         """One of this storage's objects was revised.
            We should trigger a more specific event.
