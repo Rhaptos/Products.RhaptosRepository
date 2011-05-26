@@ -1,3 +1,6 @@
+RhaptosRepository-0.83.1
+  - remove extra trailing slash from OAI content urls
+
 RhaptosRepository-0.83
   - twitbook buttons remove ratings
 
