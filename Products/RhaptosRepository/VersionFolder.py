@@ -92,12 +92,11 @@ class VersionFolderStorage(SimpleItem):
         Returns a unique identifier associated with this object's
         version history
         """
-        if self.isUnderVersionControl(object):
-            raise VersionControlError('The resource is already under version control.')
+        if not(self.isUnderVersionControl(object)):
+            objectId = self.generateId()
+            object.objectId = objectId
 
-        objectId = self.generateId()
-        object.objectId = objectId
-        return objectId
+        return object.objectId
     
     def isResourceUpToDate(self, object):
         """
