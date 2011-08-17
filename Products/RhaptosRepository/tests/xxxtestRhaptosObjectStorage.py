@@ -52,7 +52,7 @@ class TestRhaptosObjectStorage(BaseTestCase):
 ##         objectId = self.content.publishObject(self.ob1, message)
 ##         self.ob1.setBaseObject(objectId)
 ##         self.ob1.updateMetadata()
-##         self.ob1.logAction('submit', message)
+##         self.ob1.logAction('publish', message)
 ##         vi = self.storage.getVersionInfo(self.ob1)
 ##         self.assertEqual(vi.objectId, 'col10001')
 ##         self.assertEqual(vi.version, '1.1')

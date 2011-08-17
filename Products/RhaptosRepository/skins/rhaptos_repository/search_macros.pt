@@ -602,12 +602,12 @@
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                            tal:define="full_name python:m.getProperty('fullname');
+                            tal:define="full_name m/fullname;
                             wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
                             dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                             tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          tal:content="m/fullname">Authorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
@@ -623,12 +623,12 @@
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          tal:content="m/fullname">Editorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
@@ -644,12 +644,12 @@
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          tal:content="m/fullname">Translatorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="maintainers o/maintainers"
@@ -665,12 +665,12 @@
                         tal:define="match python:'maintainer' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['maintainer'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Maintainername</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Maintainername</tal:inside
+                          tal:content="m/fullname">Maintainername</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/maintainer/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="object_extended_metadata" tal:condition="o/institution | nothing">
@@ -975,12 +975,12 @@
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                            tal:define="full_name python:m.getProperty('fullname');
+                            tal:define="full_name m/fullname;
                             wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
                             dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                             tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          tal:content="m/fullname">Authorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
@@ -996,12 +996,12 @@
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          tal:content="m/fullname">Editorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
@@ -1017,12 +1017,12 @@
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          tal:content="m/fullname">Translatorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
           <metal:otherbasicdata metal:define-slot="optional_metadata">

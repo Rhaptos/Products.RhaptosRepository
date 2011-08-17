@@ -92,12 +92,11 @@ class VersionFolderStorage(SimpleItem):
         Returns a unique identifier associated with this object's
         version history
         """
-        if self.isUnderVersionControl(object):
-            raise VersionControlError('The resource is already under version control.')
+        if not(self.isUnderVersionControl(object)):
+            objectId = self.generateId()
+            object.objectId = objectId
 
-        objectId = self.generateId()
-        object.objectId = objectId
-        return objectId
+        return object.objectId
     
     def isResourceUpToDate(self, object):
         """
@@ -289,10 +288,11 @@ class VersionFolderStorage(SimpleItem):
 
         
         m = self.portal_membership.getMemberById(user_id)
-        for c in cs:
-            c.weight = 0
-            c.matched = {m.fullname:[role]}
-            c.fields = {role:[m.fullname]}
+        if m:
+            for c in cs:
+                c.weight = 0
+                c.matched = {m.fullname:[role]}
+                c.fields = {role:[m.fullname]}
 
         return cs
 
@@ -596,6 +596,7 @@ class VersionFolder(PortalFolder):
 
     # Set default roles for these permissions
     security.setPermissionDefault('Edit Rhaptos Object', ('Manager', 'Owner','Maintainer'))
+    security.setPermissionDefault('Publish Rhaptos Object', ('Manager', ))
 
 
 class VersionInfo:

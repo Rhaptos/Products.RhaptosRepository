@@ -117,7 +117,7 @@
                   <ims1_2_1:vcard>
 BEGIN:vCard
 FN:<tal:name tal:content="python:p.fullname">[name]</tal:name>
-EMAIL;INTERNET:<tal:email tal:content="python:p.getProperty('email')">[email]</tal:email>
+EMAIL;INTERNET:<tal:email tal:content="p/email">[email]</tal:email>
 END:vCard
 		</ims1_2_1:vcard>
                 </ims1_2_1:centity>

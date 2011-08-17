@@ -1,3 +1,8 @@
+RhaptosRepository-0.84
+  - implement trustedzip import
+  - new member first publish review
+  - handle authors without a member account
+
 RhaptosRepository-0.83.1
   - remove extra trailing slash from OAI content urls
 

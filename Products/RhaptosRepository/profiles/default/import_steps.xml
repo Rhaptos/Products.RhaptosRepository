@@ -6,4 +6,10 @@
   <dependency step="typeinfo"/>
   Setup the Rhaptos Repository
  </import-step>
+  <import-step id="addroles" version="20110815-01"
+      handler="Products.RhaptosRepository.setuphandlers.addRoles"
+      title="Add Roles">
+    Add Roles
+  </import-step>
+
 </import-steps>
