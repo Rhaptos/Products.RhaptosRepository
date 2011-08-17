@@ -1,3 +1,6 @@
+RhaptosRepository-0.84.1
+  - unicode fix in truncate helper script
+
 RhaptosRepository-0.84
   - implement trustedzip import
   - new member first publish review
