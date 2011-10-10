@@ -18,7 +18,7 @@ from DateTime import DateTime
 from ComputedAttribute import ComputedAttribute
 from Products.RhaptosModuleStorage.ModuleDBTool import CommitError
 from LatestReference import addLatestReference
-from psycopg import IntegrityError
+from psycopg import IntegrityError, Binary
 from interfaces.IVersionStorage import IVersionStorage
 
 HISTORY_FIRST_ID = 10000
@@ -164,6 +164,14 @@ class VersionFolderStorage(SimpleItem):
 
         #Push metadata into DB
         self.portal_moduledb.insertModuleVersion(clone)
+
+        # Generate collxml and stuff it into the DB as well
+        xml = clone.restrictedTraverse('source_create')()
+        # We know this will be a new file, so just insert it.
+        res = self.portal_moduledb.sqlInsertFile(file = Binary(xml))
+        fid = res[0].fileid
+        # This step depends on the InsertModuleVersion call, above
+        self.portal_moduledb.sqlInsertModuleFile(moduleid=clone.objectId, version=clone.version, fileid=fid, filename='collection.xml',mimetype='text/xml')
 
     def notifyObjectRevised(self, object, origobj=None):
         """One of this storage's objects was revised.
