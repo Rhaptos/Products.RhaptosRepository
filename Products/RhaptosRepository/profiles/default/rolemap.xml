@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<rolemap>
+    <roles>
+        <role name="Publisher"/>
+    </roles>
+    <permissions>
+        <permission name="Publish Rhaptos Object" acquire="True">
+          <role name="Manager"/>
+          <role name="Publisher"/>
+        </permission>
+    </permissions>
+</rolemap>

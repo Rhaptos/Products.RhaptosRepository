@@ -354,6 +354,7 @@ table tr #stats_view_submode{
   display: block;
   margin-left: -.3em;
   text-decoration: underline;
+  background-image: none;
 }
 
 * html .spreadsheet_button{
@@ -554,6 +555,7 @@ table tr #stats_view_submode{
 h3 .whats_this{
   font-size: .65em;
   font-weight: normal;
+  text-decoration: underline;
 }
 
 .lens_comments p{

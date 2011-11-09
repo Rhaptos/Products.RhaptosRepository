@@ -9,7 +9,11 @@
 charset = context.portal_properties.site_properties.getProperty('default_charset', 'utf-8')
 if min is None:
     min = int(0.8 * max)
-ustr = unicode(str, charset)
+
+if same_type(str,u''):
+    ustr = str
+else:
+    ustr = unicode(str, charset)
 if len(ustr) > max:
     words = ustr.split()
     chop = 0

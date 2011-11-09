@@ -1,7 +1,10 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.80.1'
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+version = read("Products", "RhaptosRepository", "version.txt").strip()
 
 setup(name='Products.RhaptosRepository',
       version=version,

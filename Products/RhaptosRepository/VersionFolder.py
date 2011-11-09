@@ -18,7 +18,7 @@ from DateTime import DateTime
 from ComputedAttribute import ComputedAttribute
 from Products.RhaptosModuleStorage.ModuleDBTool import CommitError
 from LatestReference import addLatestReference
-from psycopg2 import IntegrityError
+from psycopg2 import IntegrityError, Binary
 from interfaces.IVersionStorage import IVersionStorage
 
 HISTORY_FIRST_ID = 10000
@@ -92,12 +92,11 @@ class VersionFolderStorage(SimpleItem):
         Returns a unique identifier associated with this object's
         version history
         """
-        if self.isUnderVersionControl(object):
-            raise VersionControlError('The resource is already under version control.')
+        if not(self.isUnderVersionControl(object)):
+            objectId = self.generateId()
+            object.objectId = objectId
 
-        objectId = self.generateId()
-        object.objectId = objectId
-        return objectId
+        return object.objectId
     
     def isResourceUpToDate(self, object):
         """
@@ -162,6 +161,17 @@ class VersionFolderStorage(SimpleItem):
         # Reset the 'latest' reference
         vf.latest.edit(clone.Title(), version)
         self.catalog.catalog_object(vf.latest)
+
+        #Push metadata into DB
+        self.portal_moduledb.insertModuleVersion(clone)
+
+        # Generate collxml and stuff it into the DB as well
+        xml = clone.restrictedTraverse('source_create')()
+        # We know this will be a new file, so just insert it.
+        res = self.portal_moduledb.sqlInsertFile(file = Binary(xml))
+        fid = res[0].fileid
+        # This step depends on the InsertModuleVersion call, above
+        self.portal_moduledb.sqlInsertModuleFile(moduleid=clone.objectId, version=clone.version, fileid=fid, filename='collection.xml',mimetype='text/xml')
 
     def notifyObjectRevised(self, object, origobj=None):
         """One of this storage's objects was revised.
@@ -286,10 +296,11 @@ class VersionFolderStorage(SimpleItem):
 
         
         m = self.portal_membership.getMemberById(user_id)
-        for c in cs:
-            c.weight = 0
-            c.matched = {m.fullname:[role]}
-            c.fields = {role:[m.fullname]}
+        if m:
+            for c in cs:
+                c.weight = 0
+                c.matched = {m.fullname:[role]}
+                c.fields = {role:[m.fullname]}
 
         return cs
 
@@ -593,6 +604,7 @@ class VersionFolder(PortalFolder):
 
     # Set default roles for these permissions
     security.setPermissionDefault('Edit Rhaptos Object', ('Manager', 'Owner','Maintainer'))
+    security.setPermissionDefault('Publish Rhaptos Object', ('Manager', ))
 
 
 class VersionInfo:

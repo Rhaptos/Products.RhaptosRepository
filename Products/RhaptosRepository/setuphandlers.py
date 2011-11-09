@@ -64,3 +64,8 @@ def setupRepository(context):
 
     logger.info("done.")
 
+def addRoles(context):
+    if context.readDataFile('rhaptosrepository.txt') is None:
+        return
+    portal = context.getSite()
+    portal.acl_users.addRole('Publisher')

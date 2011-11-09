@@ -341,7 +341,7 @@
 	  ss:Type="String"><tal:span tal:repeat="author o/authors"
 	  ><tal:person tal:define="m python:here.desecured.getMemberById(author)"
 	  ><tal:badauthor tal:on-error="string:(${author})"
-	  ><tal:inside tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+	  ><tal:inside tal:content="m/fullname">Authorname</tal:inside
 			  ><tal:comma tal:condition="not:repeat/author/end"
 		           >, </tal:comma></tal:badauthor></tal:person></tal:span></Data>
         </Cell>

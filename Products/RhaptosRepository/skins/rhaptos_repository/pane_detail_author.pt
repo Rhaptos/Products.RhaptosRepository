@@ -41,7 +41,7 @@
 
 <span id="cnx_browse_active_pane"></span>
 
-<h2><tal:name replace="python:m.getProperty('fullname')">Author Name</tal:name></h2>
+<h2><tal:name replace="m/fullname">Author Name</tal:name></h2>
 
 <div style="font-weight: bold"><a href="" tal:attributes="href string:${context/portal_url}/member_profile/${member}"
           i18n:translate="label_view_profile">View author profile</a></div>

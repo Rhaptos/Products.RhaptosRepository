@@ -202,16 +202,20 @@
                   tal:attributes="selected python:test(sorton=='getApproved','selected',nothing)" value="getApproved">Review Status</option>
               <option tal:condition="python:was_search or template.id=='similarity'"
                   tal:attributes="selected python:test(sorton=='weight','selected',nothing)" value="weight">Relevance</option>
-              <option tal:attributes="selected python:test(sorton=='popularity','selected',nothing)" value="popularity">Popularity</option>
+              <option tal:attributes="selected python:test(sorton=='popularity','selected',nothing)" value="popularity" tal:condition="context/has_stats">Popularity</option>
+<tal:disabled-ratings tal:replace="nothing">
               <option tal:condition="python:template.id=='collection_composer'"
                   tal:attributes="selected python:test(sorton=='rating','selected',nothing)" value="rating">Rating</option>
+</tal:disabled-ratings>
 	      <option tal:condition="python:view_mode=='statistics' or sorton=='views'"
 	      tal:attributes="selected python:test(sorton=='views','selected',nothing)" value="views">Total Views</option>
               <option tal:attributes="selected python:test(sorton=='language','selected',nothing)" value="language">Language</option>
               <option tal:attributes="selected python:test(sorton=='revised','selected',nothing)" value="revised">Revision Date</option>
               <option tal:attributes="selected python:test(sorton=='title','selected',nothing)" value="title">Title</option>
               <option tal:attributes="selected python:test(sorton=='portal_type','selected',nothing)" value="portal_type" tal:condition="not:inCourse">Type</option>
+<tal:disabled-ratings tal:replace="nothing">
               <option tal:attributes="selected python:test(sorton=='rating','selected',nothing)" value="rating" tal:condition="not:inCourse">Rating</option>
+</tal:disabled-ratings>
             </select>
           </span>
           <span id="b_size" i18n:translate="text_change_search_batching">
@@ -268,10 +272,10 @@
 	      >Detail</a> |
               <b tal:condition="python:view_mode == 'compact'">Compact</b><a tal:condition="python:view_mode != 'compact'"
                 tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=compact'])"
-              >Compact</a> |
+              >Compact</a> <tal:pop tal:condition="context/has_stats">|
               <b tal:condition="python:view_mode == 'statistics'">Statistics</b><a tal:condition="python:view_mode != 'statistics'"
                 tal:attributes="href python:template+'?'+'&'.join([p for p in qs.split('&') if p != 'view_mode='+view_mode]+['view_mode=statistics'])"
-		>Statistics</a>
+		>Statistics</a></tal:pop>
             </span>
 
           <metal:block metal:use-macro="here/batch_macros_results/macros/navigation" />
@@ -313,7 +317,7 @@
 
       </tbody>
       </table>
-      <tal:span tal:condition="python:view_mode != 'statistics'">
+      <tal:span tal:condition="python:view_mode != 'statistics' and context.has_stats()">
       <tal:span tal:condition="use_recent|nothing">*</tal:span>Popularity is measured as percentile rank of page views/day over <tal:span tal:condition="python:not use_recent">all time</tal:span> <tal:span tal:condition="python:use_recent" tal:define="statsdates python:here.portal_hitcount.getIncrementDateRange()"><span tal:content="python:statsdates[0].strftime('%m/%d')"></span>&#150;<span tal:content="python:statsdates[1].strftime('%m/%d')"></span></tal:span></tal:span>
     </tal:block>
 
@@ -598,12 +602,12 @@
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                            tal:define="full_name python:m.getProperty('fullname');
+                            tal:define="full_name m/fullname;
                             wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
                             dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                             tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          tal:content="m/fullname">Authorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
@@ -619,12 +623,12 @@
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          tal:content="m/fullname">Editorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
@@ -640,12 +644,12 @@
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          tal:content="m/fullname">Translatorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="basic_metadata" tal:define="maintainers o/maintainers"
@@ -661,12 +665,12 @@
                         tal:define="match python:'maintainer' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['maintainer'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Maintainername</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Maintainername</tal:inside
+                          tal:content="m/fullname">Maintainername</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/maintainer/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div class="object_extended_metadata" tal:condition="o/institution | nothing">
@@ -759,7 +763,7 @@
                 <tal:lang tal:replace="python:here.portal_languages.getNameForLanguageCode(base_lang)">English</tal:lang>
               </td>
               </tr>
-              <tr class="object_extended_metadata">
+              <tr class="object_extended_metadata" tal:condition="context/has_stats">
               <td class="left-cell">
                 <b i18n:translate="text_popularity_header">Popularity: </b>
               </td>
@@ -787,6 +791,7 @@
               </td>
               </tr>
 
+<tal:disabled-ratings tal:replace="nothing">
               <tr tal:condition="python:hasattr(o, 'rating')"
                   class="object_extended_metadata">
               <td class="left-cell">
@@ -794,6 +799,7 @@
               </td>
               <td class="star-rating"><metal:rating_macro metal:define-macro="rating_macro"><tal:stardefs tal:define="fullstars python:int(math.modf(round(o.rating() * 2) / 2.0)[1]); halfstar python:math.modf(round(o.rating() * 2) / 2.0)[0]; hasstars python:fullstars or halfstar"><tal:hasstars tal:condition="hasstars"><tal:stars repeat="i python:range(0, fullstars)"><img tal:attributes="src string:${portal_url}/full_star.png"/></tal:stars><img tal:condition="halfstar" tal:attributes="src string:${portal_url}/half_star.png"/><tal:empty_stars repeat="i python:range(0, 5 - (fullstars + (halfstar and 1 or 0)))"><img tal:attributes="src string:${portal_url}/empty_star.png"/></tal:empty_stars></tal:hasstars><tal:nostars tal:condition="not:hasstars" i18n:translate="not_rated_like">Not yet rated</tal:nostars></tal:stardefs></metal:rating_macro></td>
               </tr>
+</tal:disabled-ratings>
 
               <tr tal:condition="request/DEBUG | nothing">
                 <td class="left-cell">
@@ -969,12 +975,12 @@
                         tal:define="match python:'author' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                            tal:define="full_name python:m.getProperty('fullname');
+                            tal:define="full_name m/fullname;
                             wrapped_name python:context.wrapMatch(full_name, fields_dict['author'],open_match,close_match);
                             dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                             tal:content="structure wrapped_name">Authorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Authorname</tal:inside
+                          tal:content="m/fullname">Authorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/author/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div tal:define="editors python:o.roles.has_key('editors') and o.roles['editors']"
@@ -990,12 +996,12 @@
                         tal:define="match python:'editor' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['editor'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Editorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Editorname</tal:inside
+                          tal:content="m/fullname">Editorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/editor/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
               <div tal:define="translators python:o.roles.has_key('translators') and o.roles['translators']"
@@ -1011,12 +1017,12 @@
                         tal:define="match python:'translator' in f_keys">
                         <tal:inside tal:condition="match">
                           <tal:matched
-                          tal:define="full_name python:m.getProperty('fullname');
+                          tal:define="full_name m/fullname;
                           wrapped_name python:context.wrapMatch(full_name, fields_dict['translator'],open_match,close_match);
                           dummy python:found_author.extend(test(wrapped_name!=full_name,[True],[]));"
                           tal:content="structure wrapped_name">Translatorname</tal:matched></tal:inside
                           ><tal:inside tal:condition="not:match"
-                          tal:content="python:m.getProperty('fullname')">Translatorname</tal:inside
+                          tal:content="m/fullname">Translatorname</tal:inside
                           ></a><tal:comma tal:condition="not:repeat/translator/end">, </tal:comma></tal:badauthor></tal:person></span>
               </div>
           <metal:otherbasicdata metal:define-slot="optional_metadata">
@@ -1039,12 +1045,14 @@
           </span>
           <br />
         </tal:popularity>
+<tal:disabled-ratings tal:replace="nothing">
         <tal:rating tal:condition="python:sorton=='rating'">
           <b i18n:translate="text_rating_header">Rating:</b>
           <div style="white-space: nowrap;">
           <metal:use-rating use-macro="context/search_macros/macros/rating_macro" />
           </div>
         </tal:rating>
+</tal:disabled-ratings>
         <tal:date tal:condition="python:sorton=='revised'">
           <b i18n:translate="text_revised_header">Revised: </b>
           <span tal:content="python:here.toLocalizedTime(o.revised)" />
@@ -1178,14 +1186,15 @@
   <div tal:condition="loggedIn" class="workspace_add">
     <span i18n:translate="add_selected_content_to">Add selected content to:</span>
     <select tal:attributes="name string:workspace${addLoc}"
-            tal:define="target request/target | nothing">
+            tal:define="target request/target | nothing"
+            onchange="disableInIE(this);">
       <metal:reuse define-macro="personalwsoption">
         <option value="__home__" i18n:translate="box_text_personal_workspace">Personal Workspace</option>
-        <option disabled="disabled"></option>
+        <option disabled="disabled" class="disabled"></option>
       </metal:reuse>
       <metal:reuse define-macro="workgroupoptions">
-        <option disabled="disabled" i18n:translate="box_text_shared_wgs">Shared Workgroups:</option>
-        <option disabled="disabled">------------------------------------</option>
+        <option disabled="disabled" class="disabled" i18n:translate="box_text_shared_wgs">Shared Workgroups:</option>
+        <option disabled="disabled" class="disabled">------------------------------------</option>
         <tal:define define="groups python:context.getWorkspaces({'id':None, 'title':None, 'link':None});
                             target target | nothing">
           <tal:loop tal:condition="groups"
@@ -1198,13 +1207,14 @@
                     tal:content="group/title">I'm a Sample Workgroup</option>
           </tal:loop>
           <option disabled="disabled"
+                  class="disabled"
                   tal:condition="not:groups"
                   i18n:translate="box_text_no_workgroups">none</option>
         </tal:define>
       </metal:reuse>
 
       <tal:commentoutlenses tal:replace="nothing">
-      <option disabled="disabled">--Lenses--</option>
+      <option disabled="disabled" class="disabled">--Lenses--</option>
       <option tal:repeat="lens context/lens_tool/getListsOwned | python:[]"
         tal:attributes="value string:lenses/${lens/getId};
                         selected python:test(target == lens.getId, 'selected', nothing);"

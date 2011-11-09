@@ -1,4 +1,24 @@
-RhaptosRepository-0.80.1
+RhaptosRepository-0.84.2
+  - fix import step
+
+RhaptosRepository-0.84.1
+  - unicode fix in truncate helper script
+
+RhaptosRepository-0.84
+  - implement trustedzip import
+  - new member first publish review
+  - handle authors without a member account
+
+RhaptosRepository-0.83.1
+  - remove extra trailing slash from OAI content urls
+
+RhaptosRepository-0.83
+  - twitbook buttons remove ratings
+
+RhaptosRepository-0.82
+  - push collection metadata into DB as well
+
+RhaptosRepository-0.81
   - remove MMZ rebuild when module published 
 
 RhaptosRepository-0.80
