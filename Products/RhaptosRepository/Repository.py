@@ -36,7 +36,7 @@ from Products.RhaptosCacheTool.Cache import nocache, cache
 from interfaces.IRepository import IRepository
 from interfaces.IVersionStorage import IStorageManager
 
-from psycopg import IntegrityError, ProgrammingError
+from psycopg2 import IntegrityError, ProgrammingError
 
 from Products.PloneLanguageTool.availablelanguages import languageConstants
 
