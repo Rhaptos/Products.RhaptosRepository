@@ -25,160 +25,162 @@
       </metal:define>
     </Identify>
     <metal:define define-macro="records">
-      <record tal:repeat="obj options/results">
-        <header>
-	  <identifier tal:content="string:oai:${server}:${obj/objectId}">[identifier]</identifier>
-          <datestamp tal:content="obj/revised/HTML4">[datestamp]</datestamp>
-        </header>
-        <metadata tal:define="lang python:obj.language">
-          <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" 
-                     xmlns:dc="http://purl.org/dc/elements/1.1/" 
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                     tal:condition="python:options['metadataPrefix'] == 'oai_dc'" 
-                     xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/     
-                     http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-            <dc:title tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</dc:title>
-            <dc:creator tal:repeat="p obj/authors" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</dc:creator>
-            <dc:subject tal:repeat="word obj/keywords | nothing" tal:content="word">[keyword]</dc:subject>
-            <dc:description tal:content="obj/abstract">[abstract]</dc:description>
-            <dc:language tal:condition="lang" tal:content="lang | nothing">[language code]</dc:language>
-            <dc:date tal:content="obj/revised/HTML4">[2001-12-14]</dc:date>
-            <dc:identifier tal:content="string:${obj/url}">[url]</dc:identifier>
-            <dc:rights tal:content="string:${obj/license}">[rights]</dc:rights>
-          </oai_dc:dc>
-          
+      <tal:records tal:repeat="obj options/results">
+        <record tal:condition="obj/harvestable| string:True">
+          <header>
+        <identifier tal:content="string:oai:${server}:${obj/objectId}">[identifier]</identifier>
+            <datestamp tal:content="obj/revised/HTML4">[datestamp]</datestamp>
+          </header>
+          <metadata tal:define="lang python:obj.language">
+            <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" 
+                       xmlns:dc="http://purl.org/dc/elements/1.1/" 
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                       tal:condition="python:options['metadataPrefix'] == 'oai_dc'" 
+                       xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/     
+                       http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+              <dc:title tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</dc:title>
+              <dc:creator tal:repeat="p obj/authors" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</dc:creator>
+              <dc:subject tal:repeat="word obj/keywords | nothing" tal:content="word">[keyword]</dc:subject>
+              <dc:description tal:content="obj/abstract">[abstract]</dc:description>
+              <dc:language tal:condition="lang" tal:content="lang | nothing">[language code]</dc:language>
+              <dc:date tal:content="obj/revised/HTML4">[2001-12-14]</dc:date>
+              <dc:identifier tal:content="string:${obj/url}">[url]</dc:identifier>
+              <dc:rights tal:content="string:${obj/license}">[rights]</dc:rights>
+            </oai_dc:dc>
+            
 
-          <cnxdc:dc xmlns:cnxdc="http://cnx.org/technology/schemas/cnx_dc/" 
-                     xmlns:dc="http://purl.org/dc/elements/1.1/" 
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                     tal:condition="python:options['metadataPrefix'] == 'cnx_dc'" 
-                     xsi:schemaLocation="http://cnx.rice.edu/cnx_dc/     
-                     http://cnx.rice.edu/technology/cnx_dc/schema/xsd/1.0/cnx-dc-extension.xsd">
-            <dc:title tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</dc:title>
-            <dc:creator tal:repeat="p obj/authors" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</dc:creator>
-            <cnxdc:maintainer tal:repeat="p obj/maintainers" tal:content="python:here.desecured.getMemberById(p).fullname">[maintainer]</cnxdc:maintainer>
-            <cnxdc:translator tal:repeat="p obj/roles/translators | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:translator>
-            <cnxdc:sponsor tal:repeat="p obj/roles/sponsors | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:sponsor>
-            <cnxdc:funder tal:repeat="p obj/roles/funders | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:funder>
-            <cnxdc:cnx-subject tal:repeat="word obj/subject | nothing" tal:content="word">[keyword]</cnxdc:cnx-subject>
-            <dc:subject tal:repeat="word obj/keywords | nothing" tal:content="word">[keyword]</dc:subject>
-            <dc:description tal:content="obj/abstract">[abstract]</dc:description>
-            <dc:language tal:condition="lang" tal:content="lang | nothing">[language code]</dc:language>
-            <dc:date tal:content="obj/revised/HTML4">[2001-12-14]</dc:date>
-            <dc:identifier tal:content="string:${obj/url}">[url]</dc:identifier>
-            <dc:rights tal:content="string:${obj/license}">[rights]</dc:rights>
-          </cnxdc:dc>
-          <ims1_2_1:lom xmlns:ims1_2_1="http://www.imsglobal.org/xsd/imsmd_v1p2" tal:condition="python:options['metadataPrefix'] == 'ims1_2_1'" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd">
-            <ims1_2_1:general>
-              <ims1_2_1:title>
-                <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</ims1_2_1:langstring>
-              </ims1_2_1:title>
-              <ims1_2_1:language tal:content="lang">[language]</ims1_2_1:language>
-              <ims1_2_1:description>
-                <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="obj/abstract">[abstract]</ims1_2_1:langstring>
-              </ims1_2_1:description>
-              <ims1_2_1:keyword tal:repeat="word obj/keywords | nothing">
-                <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="word">[keyword]</ims1_2_1:langstring>
-              </ims1_2_1:keyword>
-              <ims1_2_1:structure>
-                <ims1_2_1:source>
-                  <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
-                </ims1_2_1:source>
-                <ims1_2_1:value>
-                  <ims1_2_1:langstring xml:lang="x-none">Mixed</ims1_2_1:langstring>
-                </ims1_2_1:value>
-              </ims1_2_1:structure>
-              <ims1_2_1:aggregationlevel>
-                <ims1_2_1:source>
-                  <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
-                </ims1_2_1:source>
-                <ims1_2_1:value tal:condition="python:obj.portal_type == 'Module'">
-                  <ims1_2_1:langstring xml:lang="x-none">2</ims1_2_1:langstring>
-                </ims1_2_1:value>
-                <ims1_2_1:value tal:condition="python:obj.portal_type == 'Collection'">
-                  <ims1_2_1:langstring xml:lang="x-none">3</ims1_2_1:langstring>
-                </ims1_2_1:value>
-              </ims1_2_1:aggregationlevel>
-            </ims1_2_1:general>
-            <ims1_2_1:lifecycle>
-              <ims1_2_1:version>
-                <ims1_2_1:langstring xml:lang="x-none" tal:content="obj/version">[version]</ims1_2_1:langstring>
-              </ims1_2_1:version>
-              <ims1_2_1:contribute>
-                <ims1_2_1:role>
+            <cnxdc:dc xmlns:cnxdc="http://cnx.org/technology/schemas/cnx_dc/" 
+                       xmlns:dc="http://purl.org/dc/elements/1.1/" 
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                       tal:condition="python:options['metadataPrefix'] == 'cnx_dc'" 
+                       xsi:schemaLocation="http://cnx.rice.edu/cnx_dc/     
+                       http://cnx.rice.edu/technology/cnx_dc/schema/xsd/1.0/cnx-dc-extension.xsd">
+              <dc:title tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</dc:title>
+              <dc:creator tal:repeat="p obj/authors" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</dc:creator>
+              <cnxdc:maintainer tal:repeat="p obj/maintainers" tal:content="python:here.desecured.getMemberById(p).fullname">[maintainer]</cnxdc:maintainer>
+              <cnxdc:translator tal:repeat="p obj/roles/translators | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:translator>
+              <cnxdc:sponsor tal:repeat="p obj/roles/sponsors | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:sponsor>
+              <cnxdc:funder tal:repeat="p obj/roles/funders | nothing" tal:content="python:here.desecured.getMemberById(p).fullname">Dushay, Naomi</cnxdc:funder>
+              <cnxdc:cnx-subject tal:repeat="word obj/subject | nothing" tal:content="word">[keyword]</cnxdc:cnx-subject>
+              <dc:subject tal:repeat="word obj/keywords | nothing" tal:content="word">[keyword]</dc:subject>
+              <dc:description tal:content="obj/abstract">[abstract]</dc:description>
+              <dc:language tal:condition="lang" tal:content="lang | nothing">[language code]</dc:language>
+              <dc:date tal:content="obj/revised/HTML4">[2001-12-14]</dc:date>
+              <dc:identifier tal:content="string:${obj/url}">[url]</dc:identifier>
+              <dc:rights tal:content="string:${obj/license}">[rights]</dc:rights>
+            </cnxdc:dc>
+            <ims1_2_1:lom xmlns:ims1_2_1="http://www.imsglobal.org/xsd/imsmd_v1p2" tal:condition="python:options['metadataPrefix'] == 'ims1_2_1'" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p4.xsd">
+              <ims1_2_1:general>
+                <ims1_2_1:title>
+                  <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="python: callable(obj.Title) and obj.Title() or obj.Title">[title]</ims1_2_1:langstring>
+                </ims1_2_1:title>
+                <ims1_2_1:language tal:content="lang">[language]</ims1_2_1:language>
+                <ims1_2_1:description>
+                  <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="obj/abstract">[abstract]</ims1_2_1:langstring>
+                </ims1_2_1:description>
+                <ims1_2_1:keyword tal:repeat="word obj/keywords | nothing">
+                  <ims1_2_1:langstring tal:attributes="xml:lang lang" tal:content="word">[keyword]</ims1_2_1:langstring>
+                </ims1_2_1:keyword>
+                <ims1_2_1:structure>
                   <ims1_2_1:source>
                     <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
                   </ims1_2_1:source>
                   <ims1_2_1:value>
-                    <ims1_2_1:langstring xml:lang="x-none">Author</ims1_2_1:langstring>
+                    <ims1_2_1:langstring xml:lang="x-none">Mixed</ims1_2_1:langstring>
                   </ims1_2_1:value>
-                </ims1_2_1:role>
-                <ims1_2_1:centity tal:repeat="p python:[here.desecured.getMemberById(a) for a in obj.authors]">
-                  <ims1_2_1:vcard>
+                </ims1_2_1:structure>
+                <ims1_2_1:aggregationlevel>
+                  <ims1_2_1:source>
+                    <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
+                  </ims1_2_1:source>
+                  <ims1_2_1:value tal:condition="python:obj.portal_type == 'Module'">
+                    <ims1_2_1:langstring xml:lang="x-none">2</ims1_2_1:langstring>
+                  </ims1_2_1:value>
+                  <ims1_2_1:value tal:condition="python:obj.portal_type == 'Collection'">
+                    <ims1_2_1:langstring xml:lang="x-none">3</ims1_2_1:langstring>
+                  </ims1_2_1:value>
+                </ims1_2_1:aggregationlevel>
+              </ims1_2_1:general>
+              <ims1_2_1:lifecycle>
+                <ims1_2_1:version>
+                  <ims1_2_1:langstring xml:lang="x-none" tal:content="obj/version">[version]</ims1_2_1:langstring>
+                </ims1_2_1:version>
+                <ims1_2_1:contribute>
+                  <ims1_2_1:role>
+                    <ims1_2_1:source>
+                      <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
+                    </ims1_2_1:source>
+                    <ims1_2_1:value>
+                      <ims1_2_1:langstring xml:lang="x-none">Author</ims1_2_1:langstring>
+                    </ims1_2_1:value>
+                  </ims1_2_1:role>
+                  <ims1_2_1:centity tal:repeat="p python:[here.desecured.getMemberById(a) for a in obj.authors]">
+                    <ims1_2_1:vcard>
 BEGIN:vCard
 FN:<tal:name tal:content="python:p.fullname">[name]</tal:name>
 EMAIL;INTERNET:<tal:email tal:content="p/email">[email]</tal:email>
 END:vCard
-		</ims1_2_1:vcard>
-                </ims1_2_1:centity>
-                <ims1_2_1:date>
-                  <ims1_2_1:datetime tal:content="obj/revised"/>
-                </ims1_2_1:date>
-              </ims1_2_1:contribute>
-            </ims1_2_1:lifecycle>
-            <ims1_2_1:technical>
-              <ims1_2_1:format>text/html</ims1_2_1:format>
-              <ims1_2_1:location type="URI" tal:content="string:${obj/url}">[url]</ims1_2_1:location>
-              <ims1_2_1:requirement>
-                <ims1_2_1:type>
+          </ims1_2_1:vcard>
+                  </ims1_2_1:centity>
+                  <ims1_2_1:date>
+                    <ims1_2_1:datetime tal:content="obj/revised"/>
+                  </ims1_2_1:date>
+                </ims1_2_1:contribute>
+              </ims1_2_1:lifecycle>
+              <ims1_2_1:technical>
+                <ims1_2_1:format>text/html</ims1_2_1:format>
+                <ims1_2_1:location type="URI" tal:content="string:${obj/url}">[url]</ims1_2_1:location>
+                <ims1_2_1:requirement>
+                  <ims1_2_1:type>
+                    <ims1_2_1:source>
+                      <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
+                    </ims1_2_1:source>
+                    <ims1_2_1:value>
+                      <ims1_2_1:langstring xml:lang="x-none">Browser</ims1_2_1:langstring>
+                    </ims1_2_1:value>
+                  </ims1_2_1:type>
+                  <ims1_2_1:name>
+                    <ims1_2_1:source>
+                      <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
+                    </ims1_2_1:source>
+                    <ims1_2_1:value>
+                      <ims1_2_1:langstring xml:lang="x-none">Any</ims1_2_1:langstring>
+                    </ims1_2_1:value>
+                  </ims1_2_1:name>
+                </ims1_2_1:requirement>
+              </ims1_2_1:technical>
+              <ims1_2_1:rights>
+                <ims1_2_1:copyrightandotherrestrictions>
                   <ims1_2_1:source>
                     <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
                   </ims1_2_1:source>
                   <ims1_2_1:value>
-                    <ims1_2_1:langstring xml:lang="x-none">Browser</ims1_2_1:langstring>
+                    <ims1_2_1:langstring xml:lang="x-none">yes</ims1_2_1:langstring>
                   </ims1_2_1:value>
-                </ims1_2_1:type>
-                <ims1_2_1:name>
-                  <ims1_2_1:source>
-                    <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
-                  </ims1_2_1:source>
-                  <ims1_2_1:value>
-                    <ims1_2_1:langstring xml:lang="x-none">Any</ims1_2_1:langstring>
-                  </ims1_2_1:value>
-                </ims1_2_1:name>
-              </ims1_2_1:requirement>
-            </ims1_2_1:technical>
-            <ims1_2_1:rights>
-              <ims1_2_1:copyrightandotherrestrictions>
+                </ims1_2_1:copyrightandotherrestrictions>
+                <ims1_2_1:description>
+                  <ims1_2_1:langstring xml:lang="en" tal:content="obj/license | nothing">[license]</ims1_2_1:langstring>
+                </ims1_2_1:description>
+              </ims1_2_1:rights>
+            <tal:div tal:condition="python: obj.subject">
+            <ims1_2_1:classification tal:repeat="subj python: obj.subject">
+              <ims1_2_1:purpose>
                 <ims1_2_1:source>
                   <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
                 </ims1_2_1:source>
                 <ims1_2_1:value>
-                  <ims1_2_1:langstring xml:lang="x-none">yes</ims1_2_1:langstring>
+                  <ims1_2_1:langstring xml:lang="x-none">Discipline</ims1_2_1:langstring>
                 </ims1_2_1:value>
-              </ims1_2_1:copyrightandotherrestrictions>
-              <ims1_2_1:description>
-                <ims1_2_1:langstring xml:lang="en" tal:content="obj/license | nothing">[license]</ims1_2_1:langstring>
-              </ims1_2_1:description>
-            </ims1_2_1:rights>
-          <tal:div tal:condition="python: obj.subject">
-          <ims1_2_1:classification tal:repeat="subj python: obj.subject">
-            <ims1_2_1:purpose>
-              <ims1_2_1:source>
-                <ims1_2_1:langstring xml:lang="x-none">LOMv1.0</ims1_2_1:langstring>
-              </ims1_2_1:source>
-              <ims1_2_1:value>
-                <ims1_2_1:langstring xml:lang="x-none">Discipline</ims1_2_1:langstring>
-              </ims1_2_1:value>
-            </ims1_2_1:purpose>
-            <ims1_2_1:keyword>
-                <ims1_2_1:langstring xml:lang="en" tal:content="subj">Subject Discipline</ims1_2_1:langstring>
-            </ims1_2_1:keyword>
-          </ims1_2_1:classification>
-          </tal:div>
-          </ims1_2_1:lom>
-        </metadata>
-      </record>
+              </ims1_2_1:purpose>
+              <ims1_2_1:keyword>
+                  <ims1_2_1:langstring xml:lang="en" tal:content="subj">Subject Discipline</ims1_2_1:langstring>
+              </ims1_2_1:keyword>
+            </ims1_2_1:classification>
+            </tal:div>
+            </ims1_2_1:lom>
+          </metadata>
+        </record>
+      </tal:records>
     </metal:define>
     <ListMetadataFormats>
       <metal:define define-macro="listmetadataformats">
@@ -191,10 +193,12 @@ END:vCard
     </ListMetadataFormats>
     <ListIdentifiers>
       <metal:define define-macro="listidentifiers">
-        <header tal:repeat="r options/results">
-          <identifier tal:content="string:oai:${server}:${r/objectId}">[identifier]</identifier>
-          <datestamp tal:content="r/revised/HTML4">[datestamp]</datestamp>
-        </header>
+        <tal:headers tal:repeat="r options/results">
+          <header tal:condition="r/harvestable | string:True">
+            <identifier tal:content="string:oai:${server}:${r/objectId}">[identifier]</identifier>
+            <datestamp tal:content="r/revised/HTML4">[datestamp]</datestamp>
+          </header>
+        </tal:headers>
       </metal:define>
     </ListIdentifiers>
   </body>

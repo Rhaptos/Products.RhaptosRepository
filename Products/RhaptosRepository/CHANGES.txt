@@ -1,3 +1,9 @@
+RhaptosRepository-0.86
+  - extend OAI to honor new 'harvestable' flag for collections
+
+RhaptosRepository-0.85
+  - store collxml in DB at collection publish time
+
 RhaptosRepository-0.84.2
   - fix import step
 

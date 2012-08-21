@@ -280,6 +280,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         added.add(self._addColumn('url'))
         added.add(self._addColumn('version'))
         added.add(self._addColumn('weight', 0))
+        added.add(self._addColumn('harvestable', 1))
         added.remove(None)
         return tuple(added)
 
