@@ -331,8 +331,8 @@ function Keeper() {
 		_intervalID = setInterval(_watchHistoryLength, _pollInterval);
 		
 	// IE 5.5+ Windows
-	} else if (typeof ActiveXObject != "undefined" && window.print && 
-			   !window.opera && navigator.userAgent.match(/MSIE (\d\.\d)/)[1] >= 5.5) {
+	} else if (typeof ActiveXObject != "undefined" && window.print &&
+			   !window.opera && navigator.userAgent.match(/MSIE (\d+\.\d+)/)[1] >= 5.5) {
 		/* iframe references */
 		var _historyFrameObj, _historyFrameRef;
 		
