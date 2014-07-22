@@ -508,10 +508,9 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         """Search repository by date: start and end"""
         result = []
 
-        for name in self.listStorages():
-            s = self.getStorage(name)
-            objects = s.searchDateRange(start, end)
-            result.extend(objects)
+        s = self.getStorage('module_version_storage')
+        objects = s.searchDateRange(start, end, ['Module','Collection'])
+        result.extend(objects)
 
         result.sort(lambda x, y: cmp(x.revised, y.revised))
 
