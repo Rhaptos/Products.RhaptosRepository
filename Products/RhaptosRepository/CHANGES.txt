@@ -1,3 +1,6 @@
+RhaptosRepository-0.88
+  - OAI feed  - change URLs to new webview
+
 RhaptosRepository-0.87
   - psycopg2 upgrade
 
