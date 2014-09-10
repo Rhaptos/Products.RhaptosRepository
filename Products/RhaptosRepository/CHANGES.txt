@@ -1,3 +1,6 @@
+RhaptosRepository-0.88.1
+  - OAI feed - switch some URLs back to old
+
 RhaptosRepository-0.88
   - OAI feed  - change URLs to new webview
 
