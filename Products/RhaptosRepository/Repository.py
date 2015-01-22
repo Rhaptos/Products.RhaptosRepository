@@ -8,6 +8,9 @@ This software is subject to the provisions of the GNU Lesser General
 Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 """
 
+import logging
+import re
+
 import AccessControl
 import zLOG
 from DateTime import DateTime
@@ -26,6 +29,7 @@ from Products.ManagableIndex.ValueProvider import ExpressionEvaluator
 from Products.ZCTextIndex.Lexicon import StopWordAndSingleCharRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
 from Products.CMFPlone.UnicodeSplitter import Splitter, CaseNormalizer
+from Products.CMFPlone.utils import _createObjectByType
 from Products.RhaptosModuleStorage.ModuleDBTool import CommitError
 
 from Products.RhaptosModuleStorage.Extensions.DBModule import DBModuleSearch
@@ -35,10 +39,15 @@ from Products.RhaptosCacheTool.Cache import nocache, cache
 
 from interfaces.IRepository import IRepository
 from interfaces.IVersionStorage import IStorageManager
+from LatestReference import addLatestReference
+from VersionFolder import VersionFolder
 
-from psycopg2 import IntegrityError, ProgrammingError
+from psycopg2 import IntegrityError, ProgrammingError, Binary
+import simplejson
 
 from Products.PloneLanguageTool.availablelanguages import languageConstants
+
+logger = logging.getLogger('RhaptosRepository')
 
 def cmpTitle(x, y):
     """A method to provide a comparison between the titles of two record objects.
@@ -145,6 +154,191 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             return view(self, self.REQUEST)
         else:
             return view()
+
+    def _create_module(self, key, data):
+        """Create a module in ZODB from data in the postgres db"""
+        from Products.RhaptosModuleStorage.ModuleVersionFolder import \
+                ModuleVersionStub
+
+        # Create a module version stub (e.g. /plone/content/m9001)
+        storage = self.getStorageForType('Module')
+        mvs = ModuleVersionStub(data['id'], storage=storage.id)
+        self._setObject(data['id'], mvs, set_owner=0)
+        logger.debug('Created ModuleVersionStub %s'
+                     % '/'.join(mvs.getPhysicalPath()))
+
+        # Code copied from publishObject
+        self.cache.clearSearchCache()
+        #FIXME: these things shouldn't be done here, but with some sort of
+        # event system hitcount update
+        hitcount = getToolByName(self, 'portal_hitcount', None)
+        if hitcount:
+            hitcount.registerObject(data['id'], DateTime())
+        # Not going to trigger pdf production here
+        # (storage.notifyObjectRevised), should be in cnx-publishing
+        # instead
+
+        pubobj = storage.getObject(data['id'], 'latest')
+        self.catalog.catalog_object(pubobj)
+        logger.debug('Add %s to catalog'
+                     % '/'.join(pubobj.getPhysicalPath()))
+
+    def _create_collection(self, key, data):
+        """Create a collection in ZODB from data in the postgres db"""
+        # Create a version folder (e.g. /plone/content/col11554)
+        moduledb_tool = getToolByName(self, 'portal_moduledb')
+        storage = self.getStorageForType('Collection')
+        if data['id'] not in self.objectIds():
+            vf = VersionFolder(data['id'], storage=storage.id)
+            self._setObject(data['id'], vf, set_owner=0)
+        vf = getattr(self, data['id'])
+        logger.debug('Created VersionFolder %s'
+                     % '/'.join(vf.getPhysicalPath()))
+
+        # Create a collection (e.g. /plone/content/col11554/1.1)
+        collection = _createObjectByType('Collection', vf, data['version'])
+        collection.objectId = data['id']
+        collection.version = data['version']
+        for k, v in dict(title=data['name'], authors=data['authors'],
+                         maintainers=data['maintainers'],
+                         licensors=data['licensors'],
+                         parentAuthors=data['parentAuthors'],
+                         language=data['language'],
+                         subject=data['_subject'].split(', ')).items():
+            setattr(collection, k, v)
+        logger.debug('Created collection %s'
+                     % '/'.join(collection.getPhysicalPath()))
+        logger.debug(str(collection.propertyItems()))
+
+        # Code copied from publishObject
+        self.cache.clearSearchCache()
+        #FIXME: these things shouldn't be done here, but with some sort of
+        # event system hitcount update
+        hitcount = getToolByName(self, 'portal_hitcount', None)
+        if hitcount:
+            hitcount.registerObject(data['id'], DateTime())
+        # Not going to trigger pdf production here
+        # (storage.notifyObjectRevised), should be in cnx-publishing
+        # instead
+
+        # Get collection tree
+        tree = moduledb_tool.sqlGetCollectionTree(
+            id=data['id'], version=data['version'], aq_parent=self).tuples()
+
+        if not tree or tree[0][0] is None:
+            logger.debug('Unable to get collection tree for %s' % key)
+            # can't get the collection tree, nothing to do
+            raise KeyError(key)
+
+        tree = simplejson.loads(tree[0][0])
+        modules = []
+
+        def create_objects(contents, folder):
+            # Create the top level objects
+            for node in contents:
+                new_folder = None
+                if node['id'] == 'subcol':
+                    new_folder = _createObjectByType(
+                        'SubCollection', folder,
+                        folder.generateUniqueId('SubCollection'))
+                    new_folder.title = node['title']
+                    logger.debug('Created subcollection: %s' % new_folder)
+                elif node['id'].startswith('m'):
+                    if node['id'] not in self.objectIds():
+                        # Create the module if it doesn't exist
+                        module = self[node['id']]
+                    obj = _createObjectByType(
+                        'PublishedContentPointer', folder, node['id'])
+                    obj.moduleId = node['id']
+                    obj.version = node['version']
+                    modules.append((node['id'], node['version']))
+                    logger.debug('Created PublishedContentPointer %s@%s'
+                                 % (obj.getModuleId(), obj.getVersion()))
+
+                # Create all the objects in "contents"
+                if new_folder:
+                    create_objects(node.get('contents') or [], new_folder)
+
+        # Create SubCollections and PublishedContentPointer according to
+        # the collection tree
+        create_objects(tree['contents'], collection)
+        # Copied from Products.RhaptosRepository.VersionFolder.checkinResource
+        if 'latest' not in vf.objectIds():
+            addLatestReference(vf, 'latest', collection.Title(),
+                               collection.version)
+            logger.debug('Added latest reference')
+        collection.submitter = data['submitter']
+        collection.submitlog = data['submitlog']
+        collection.state = 'public'
+        logger.debug('Finished creating collection')
+
+        # Create collection.xml if it doesn't exist in postgres
+        filenames = moduledb_tool.sqlGetModuleFilenames(
+            id=data['id'], version=data['version']).tuples()
+        if filenames and 'collection.xml' not in filenames[0]:
+            logger.debug('Create collection.xml for %s' % key)
+            xml = collection.restrictedTraverse('source_create')()
+            res = moduledb_tool.sqlInsertFile(file = Binary(xml))
+            fid = res[0].fileid
+
+            moduledb_tool.sqlInsertModuleFile(
+                moduleid=collection.objectId, version=collection.version,
+                fileid=fid, filename='collection.xml', mimetype='text/xml',
+                aq_parent=self)
+
+        pubobj = storage.getObject(data['id'], 'latest')
+        self.catalog.catalog_object(pubobj)
+        logger.debug('Add %s to catalog'
+                     % '/'.join(pubobj.getPhysicalPath()))
+
+    def __getitem__(self, key):
+        try:
+            # Try returning the object
+            try:
+                return getattr(self, key)
+            except AttributeError:
+                pass
+
+            # The key has to be either in the format of col12345 or m12345
+            m = re.match('(col|m)([0-9]+)$', key)
+            if not m:
+                raise KeyError(key)
+
+            # The key is not in the ZODB, look for it in the postgres db
+            moduledb_tool = getToolByName(self, 'portal_moduledb')
+            data = moduledb_tool.sqlGetLatestModule(id=key).dictionaries()
+            if not data:
+                # The key isn't in the postgres db either
+                raise KeyError(key)
+            data = data[0]
+
+            if m.group(1) == 'm':  # Create a module
+                logger.debug('Create module %s from postgres' % key)
+                self._create_module(key, data)
+                logger.debug('Created module %s from postgres' % key)
+            elif m.group(1) == 'col':  # Create a collection
+                print('logger.level: %s' % logger.level)
+                logger.debug('Create collection %s from postgres' % key)
+                history = moduledb_tool.sqlGetHistory(id=key).dictionaries()
+                for i in history:
+                    data = moduledb_tool.sqlGetModule(
+                        id=key, version=i['version']).dictionaries()
+                    if data:
+                        data = data[0]
+                        logger.debug('Create collection %s version %s'
+                                     % (data['id'], data['version']))
+                        self._create_collection(key, data)
+                logger.debug('Created collection %s from postgres' % key)
+
+        except KeyError:
+            # No need to log
+            raise
+        except Exception:
+            # This function often silently fails, so adding explicit logging
+            logger.exception('Something failed in %s' % self.__getitem__)
+            raise
+
+        return getattr(self, key)
 
     index_html = __call__
     
