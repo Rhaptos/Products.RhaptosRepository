@@ -295,9 +295,11 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         try:
             # Try returning the object
             try:
-                return getattr(self, key)
+                return getattr(self.aq_inner, key)
             except AttributeError:
                 pass
+            except TypeError: # key is None or not a string
+                raise KeyError('bad type')
 
             # The key has to be either in the format of col12345 or m12345
             m = re.match('(col|m)([0-9]+)$', key)
