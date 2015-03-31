@@ -230,7 +230,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             # can't get the collection tree, nothing to do
             raise KeyError(key)
 
-        tree = simplejson.loads(tree[0][0])
+        tree = simplejson.loads(tree[0][0].decode('utf-8'))
         modules = []
 
         def create_objects(contents, folder):
