@@ -206,6 +206,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
                          language=data['language'],
                          subject=data['_subject'].split(', ')).items():
             setattr(collection, k, v)
+        if data.has_key('print_style'):
+            collection.parameters.manage_addProperty('printstyle',data['print_style'],'string')
         logger.debug('Created collection %s'
                      % '/'.join(collection.getPhysicalPath()))
         logger.debug(str(collection.propertyItems()))
