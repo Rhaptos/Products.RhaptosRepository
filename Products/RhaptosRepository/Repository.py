@@ -191,9 +191,9 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         if data['id'] not in self.objectIds():
             vf = VersionFolder(data['id'], storage=storage.id)
             self._setObject(data['id'], vf, set_owner=0)
+            logger.debug('Created VersionFolder %s'
+                         % '/'.join(vf.getPhysicalPath()))
         vf = getattr(self, data['id'])
-        logger.debug('Created VersionFolder %s'
-                     % '/'.join(vf.getPhysicalPath()))
 
         # Create a collection (e.g. /plone/content/col11554/1.1)
         collection = _createObjectByType('Collection', vf, data['version'])
@@ -292,6 +292,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         self.catalog.catalog_object(pubobj)
         logger.debug('Add %s to catalog'
                      % '/'.join(pubobj.getPhysicalPath()))
+
 
     def __getitem__(self, key):
         try:

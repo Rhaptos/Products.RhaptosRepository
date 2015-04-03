@@ -9,8 +9,12 @@ Public License Version 2.1 (LGPL).  See LICENSE.txt for details.
 """
 
 import zLOG
+import logging
+import re
+
 from OFS.SimpleItem import SimpleItem
 from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFCore.utils import getToolByName
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
@@ -20,6 +24,8 @@ from Products.RhaptosModuleStorage.ModuleDBTool import CommitError
 from LatestReference import addLatestReference
 from psycopg2 import IntegrityError, Binary
 from interfaces.IVersionStorage import IVersionStorage
+
+logger = logging.getLogger('RhaptosRepository')
 
 HISTORY_FIRST_ID = 10000
 
@@ -318,12 +324,12 @@ class VersionFolderStorage(SimpleItem):
                 weights = self.default_search_weights
             else:
                 weights = {'fulltext':1,'abstract':1,'keyword':10, 'author':50, 'translator':40,
-			'editor':20, 'maintainer':10, 'licensor':10, 'subject':10,'institution':10,
-			'language':5, 'exact_title':100, 'title':10, 'containedIn':200, 'objectid':1000,
-			'containedAuthor':0, 'maintainer':0,'parentAuthor':0}
+                           'editor':20, 'maintainer':10, 'licensor':10, 'subject':10,'institution':10,
+                           'language':5, 'exact_title':100, 'title':10, 'containedIn':200, 'objectid':1000,
+                           'containedAuthor':0, 'maintainer':0,'parentAuthor':0}
 
 
-	person_fields = [k for k in weights.keys() if k in ['author','translator','editor','maintainer'] and weights[k]]
+        person_fields = [k for k in weights.keys() if k in ['author','translator','editor','maintainer'] and weights[k]]
 
         # Query is a list of words, need to remove stopwords
         cooked,uncook = self.cookSearchTerms(query)
@@ -469,16 +475,16 @@ class VersionFolderStorage(SimpleItem):
                 # Get potential authorids, then find objects with those ids
                     authors = self.portal_moduledb.sqlGetPeoplebyName(query=[w])
                     for author in authors:
-			for field in person_fields:
-                                cs = self.catalog({field+'s':author.personid,'portal_type':'Collection'})
-                                for c in cs:
-                                    c.weight = 0
-                                    c.matched={}
-                                    c.fields={}
-                                    object = objects.setdefault(c.objectId, c)
-                                    object.weight  += weights[field] 
-                                    object.matched.setdefault(w,[]).append(field)
-                                    object.fields.setdefault(field,[]).append(w)
+                        for field in person_fields:
+                            cs = self.catalog({field+'s':author.personid,'portal_type':'Collection'})
+                            for c in cs:
+                                c.weight = 0
+                                c.matched={}
+                                c.fields={}
+                                object = objects.setdefault(c.objectId, c)
+                                object.weight  += weights[field] 
+                                object.matched.setdefault(w,[]).append(field)
+                                object.fields.setdefault(field,[]).append(w)
     
         result = objects.values()
         if result is not None:
@@ -538,6 +544,41 @@ class VersionFolder(PortalFolder):
     def __init__(self, id, title='', storage=None):
         PortalFolder.__init__(self, id, title)
         self.storage = storage
+
+    def __getitem__(self, key):
+        try:
+            # Try returning the object
+            try:
+                return getattr(self.aq_inner, key)
+            except AttributeError:
+                pass
+            except TypeError: # key is None or not a string
+                raise KeyError('bad type')
+
+            # The key has to be in the format 1.234 - it is a version
+            m = re.match('^1.([0-9]+)$', key)
+            if not m:
+                raise KeyError(key)
+
+            # The key is not in the ZODB, look for it in the postgres db
+            moduledb_tool = getToolByName(self, 'portal_moduledb')
+            data = moduledb_tool.sqlGetModule(id=self.id,version=key).dictionaries()
+            if not data:
+                # The key isn't in the postgres db either
+                raise KeyError(key)
+            data = data[0]
+            logger.debug('Create collection %s version %s' % (data['id'], data['version']))
+            self.aq_parent._create_collection(key, data)
+
+        except KeyError:
+            # No need to log
+            raise
+        except Exception:
+            # This function often silently fails, so adding explicit logging
+            logger.exception('Something failed in %s' % self.__getitem__)
+            raise
+
+        return getattr(self, key)
 
     security.declarePublic('index_html')
     def index_html(self):
