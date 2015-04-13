@@ -1,3 +1,7 @@
+RhaptosRepository-1.0.0
+  - create Zope content objects (collections and modules) from db entries
+  - store and retrieve printstyle to db
+
 RhaptosRepository-0.88.1
   - OAI feed - switch some URLs back to old
 
