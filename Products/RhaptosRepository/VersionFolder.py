@@ -46,7 +46,12 @@ class VersionFolderStorage(SimpleItem):
     def generateId(self):
         """Create a unique ID for this object"""
         self._next_id = self._next_id + 1
-        return 'col%d' % self._next_id
+        candidateId = 'col%d' % self._next_id
+        while self.hasObject(candidateid):
+            self._next_id = self._next_id + 1
+            candidateId = 'col%d' % self._next_id
+        return candidateId
+
 
     def hasObject(self, id):
         """Return True if an object with the specified id is located in this storage"""
@@ -544,6 +549,9 @@ class VersionFolder(PortalFolder):
     def __init__(self, id, title='', storage=None):
         PortalFolder.__init__(self, id, title)
         self.storage = storage
+        idnum = int(id[3:])
+        if idnum > storage._next_id:
+            storage._next_id = idnum
 
     def __getitem__(self, key):
         try:
