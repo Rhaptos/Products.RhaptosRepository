@@ -47,7 +47,7 @@ class VersionFolderStorage(SimpleItem):
         """Create a unique ID for this object"""
         self._next_id = self._next_id + 1
         candidateId = 'col%d' % self._next_id
-        while self.hasObject(candidateid):
+        while self.hasObject(candidateId):
             self._next_id = self._next_id + 1
             candidateId = 'col%d' % self._next_id
         return candidateId
