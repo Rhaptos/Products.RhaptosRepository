@@ -55,8 +55,14 @@ class VersionFolderStorage(SimpleItem):
 
     def hasObject(self, id):
         """Return True if an object with the specified id is located in this storage"""
-        # XXX: Should we do something more in intelligent?
-        return hasattr(self.aq_parent.aq_base, id)
+        # short circuit existence check, then trigger creation from db
+        exists = hasattr(self.aq_parent.aq_base, id)
+        if not exists: #See if it's in the db
+            try:
+               obj=self.aq_parent[id]
+            except: #Any error means it's not there - need bracket notation to trigger db fetch
+                obj = None
+        return exists or obj
     
     def createVersionFolder(self, object):
         """Create a new version folder instance inside the repository"""
@@ -549,9 +555,6 @@ class VersionFolder(PortalFolder):
     def __init__(self, id, title='', storage=None):
         PortalFolder.__init__(self, id, title)
         self.storage = storage
-        idnum = int(id[3:])
-        if idnum > storage._next_id:
-            storage._next_id = idnum
 
     def __getitem__(self, key):
         try:
