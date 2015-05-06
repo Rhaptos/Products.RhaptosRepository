@@ -46,12 +46,23 @@ class VersionFolderStorage(SimpleItem):
     def generateId(self):
         """Create a unique ID for this object"""
         self._next_id = self._next_id + 1
-        return 'col%d' % self._next_id
+        candidateId = 'col%d' % self._next_id
+        while self.hasObject(candidateId):
+            self._next_id = self._next_id + 1
+            candidateId = 'col%d' % self._next_id
+        return candidateId
+
 
     def hasObject(self, id):
         """Return True if an object with the specified id is located in this storage"""
-        # XXX: Should we do something more in intelligent?
-        return hasattr(self.aq_parent.aq_base, id)
+        # short circuit existence check, then trigger creation from db
+        exists = hasattr(self.aq_parent.aq_base, id)
+        if not exists: #See if it's in the db
+            try:
+               obj=self.aq_parent[id]
+            except: #Any error means it's not there - need bracket notation to trigger db fetch
+                obj = None
+        return exists or obj
     
     def createVersionFolder(self, object):
         """Create a new version folder instance inside the repository"""

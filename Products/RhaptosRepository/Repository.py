@@ -324,15 +324,20 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             elif m.group(1) == 'col':  # Create a collection
                 print('logger.level: %s' % logger.level)
                 logger.debug('Create collection %s from postgres' % key)
+                #History is descending in time- newest first
                 history = moduledb_tool.sqlGetHistory(id=key).dictionaries()
-                for i in history:
+                prev_ver='' #need to skip multiple minor versions from rewrite
+                for item in history:
+                    if item['version'] == prev_ver:
+                        continue;
                     data = moduledb_tool.sqlGetModule(
-                        id=key, version=i['version']).dictionaries()
+                        id=key, version=item['version']).dictionaries()
                     if data:
                         data = data[0]
                         logger.debug('Create collection %s version %s'
                                      % (data['id'], data['version']))
                         self._create_collection(key, data)
+                    prev_ver = item['version']
                 logger.debug('Created collection %s from postgres' % key)
 
         except KeyError:
