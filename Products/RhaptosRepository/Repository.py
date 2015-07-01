@@ -279,7 +279,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         # Create collection.xml if it doesn't exist in postgres
         filenames = moduledb_tool.sqlGetModuleFilenames(
             id=data['id'], version=data['version']).tuples()
-        if filenames and 'collection.xml' not in filenames[0]:
+        if filenames and 'collection.xml' not in str(filenames):
             logger.debug('Create collection.xml for %s' % key)
             xml = collection.restrictedTraverse('source_create')()
             res = moduledb_tool.sqlInsertFile(file = Binary(xml))
