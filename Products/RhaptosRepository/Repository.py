@@ -202,6 +202,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         for k, v in dict(title=data['name'], authors=data['authors'],
                          maintainers=data['maintainers'],
                          licensors=data['licensors'],
+                         _parent_id=data['parent_id'],
+                         _parent_version=data['parent_version'],
                          parentAuthors=data['parentAuthors'],
                          language=data['language'],
                          subject=data['_subject'].split(', ')).items():
@@ -277,7 +279,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         # Create collection.xml if it doesn't exist in postgres
         filenames = moduledb_tool.sqlGetModuleFilenames(
             id=data['id'], version=data['version']).tuples()
-        if filenames and 'collection.xml' not in filenames[0]:
+        if filenames and 'collection.xml' not in str(filenames):
             logger.debug('Create collection.xml for %s' % key)
             xml = collection.restrictedTraverse('source_create')()
             res = moduledb_tool.sqlInsertFile(file = Binary(xml))
