@@ -185,8 +185,20 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
 
     def _create_collection(self, key, data):
         """Create a collection in ZODB from data in the postgres db"""
-        # Create a version folder (e.g. /plone/content/col11554)
         moduledb_tool = getToolByName(self, 'portal_moduledb')
+
+        # Get collection tree
+        tree = moduledb_tool.sqlGetCollectionTree(
+            id=data['id'], version=data['version'], aq_parent=self).tuples()
+
+        if not tree or tree[0][0] is None:
+            logger.debug('Unable to get collection tree for %s' % key)
+            # can't get the collection tree, nothing to do
+            raise KeyError(key)
+
+        tree = simplejson.loads(tree[0][0].decode('utf-8'))
+
+        # Create a version folder (e.g. /plone/content/col11554)
         storage = self.getStorageForType('Collection')
         if data['id'] not in self.objectIds():
             vf = VersionFolder(data['id'], storage=storage.id)
@@ -225,16 +237,6 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         # (storage.notifyObjectRevised), should be in cnx-publishing
         # instead
 
-        # Get collection tree
-        tree = moduledb_tool.sqlGetCollectionTree(
-            id=data['id'], version=data['version'], aq_parent=self).tuples()
-
-        if not tree or tree[0][0] is None:
-            logger.debug('Unable to get collection tree for %s' % key)
-            # can't get the collection tree, nothing to do
-            raise KeyError(key)
-
-        tree = simplejson.loads(tree[0][0].decode('utf-8'))
         modules = []
 
         def create_objects(contents, folder):
