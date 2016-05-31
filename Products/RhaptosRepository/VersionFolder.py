@@ -185,7 +185,7 @@ class VersionFolderStorage(SimpleItem):
         # Generate collxml and stuff it into the DB as well
         xml = clone.restrictedTraverse('source_create')()
         # We know this will be a new file, so just insert it.
-        res = self.portal_moduledb.sqlInsertFile(file = Binary(xml))
+        res = self.portal_moduledb.sqlInsertFile(file = Binary(xml), media_type='text/xml')
         fid = res[0].fileid
         # This step depends on the InsertModuleVersion call, above
         self.portal_moduledb.sqlInsertModuleFile(moduleid=clone.objectId, version=clone.version, fileid=fid, filename='collection.xml',mimetype='text/xml')
