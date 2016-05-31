@@ -282,7 +282,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         if filenames and 'collection.xml' not in str(filenames):
             logger.debug('Create collection.xml for %s' % key)
             xml = collection.restrictedTraverse('source_create')()
-            res = moduledb_tool.sqlInsertFile(file = Binary(xml))
+            res = moduledb_tool.sqlInsertFile(file = Binary(xml), media_type='text/xml')
             fid = res[0].fileid
 
             moduledb_tool.sqlInsertModuleFile(
