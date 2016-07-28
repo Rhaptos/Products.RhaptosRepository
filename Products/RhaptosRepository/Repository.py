@@ -211,6 +211,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         collection = _createObjectByType('Collection', vf, data['version'])
         collection.objectId = data['id']
         collection.version = data['version']
+        collection.created = DateTime(data['_created'].isoformat())
+        collection.revised = DateTime(data['_revised'].isoformat())
         for k, v in dict(title=data['name'], authors=data['authors'],
                          maintainers=data['maintainers'],
                          licensors=data['licensors'],
