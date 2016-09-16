@@ -102,11 +102,11 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
     portal_type = 'Repository'
 
     dsw = default_search_weights = {'fulltext':1,'abstract':1,'subject':10,'keyword':10,
-                              'author':50,  'translator':40,'editor':20, 'maintainer':10, 
-			      'licensor':10, 'institution':10, 'exact_title':100, 'title':10, 
-			      'language':5, 'containedIn':200, 'parentAuthor':0, 
+                              'author':50,  'translator':40,'editor':20, 'maintainer':10,
+			      'licensor':10, 'institution':10, 'exact_title':100, 'title':10,
+			      'language':5, 'containedIn':200, 'parentAuthor':0,
 			      'containedAuthor':0, 'objectid':1000}
-    
+
     # placeholder attributes for otherwise-not-present catalog columns/indexes
     fields = {}
     matched = {}
@@ -144,7 +144,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         self._create_catalog()
         self._create_cache() #results cache needs better invalidation code - consider fake=True if you're getting conflicts on publish
 
-    #  Copied from PortalContent 
+    #  Copied from PortalContent
     def __call__(self):
         '''
         Invokes the default view.
@@ -357,7 +357,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         return getattr(self, key)
 
     index_html = __call__
-    
+
     security.declarePublic("Title")
     def Title(self):
         """Fulfil new-ish interface expectations for title (so we work with breadcrumbs, etc)"""
@@ -538,7 +538,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             count += storage.countObjects(portal_types)
 
         return count
-                
+
 
     def getRhaptosObjectLanguageCounts(self, portal_types=None):
         """Returns a list of tuples of language codes and count of objects using them, ordered by number of objects, descending"""
@@ -566,7 +566,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         langs.sort(lambda x,y: cmp(y[1],x[1]))
 
         return langs
-                
+
 
     def langLookup(self,langs=None):
         """Accesses the languageConstants monkeypatch on PloneLanguageTool, which
@@ -580,8 +580,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         else:
           returnDict={}
           for k in langs:
-            returnDict[k]=lcdict[k]                    
-          return returnDict 
+            returnDict[k]=lcdict[k]
+          return returnDict
 
     def getRhaptosObject(self, id, version=None, **kwargs):
         """Returns the object with the specified ID"""
@@ -594,7 +594,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             return self._getStorageForObjectId(id).getHistory(id)
         except KeyError:
             return None
-        
+
     security.declarePrivate("deleteRhaptosObject")
     def deleteRhaptosObject(self, objectId, version=None, **kwargs):
         """Deletes all the objects with the specified ID"""
@@ -603,7 +603,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             raise KeyError, objectId
 
         return self._getStorageForObjectId(objectId).deleteObject(objectId, version)
-    
+
         self.cache.clearSearchCache()
 
         #FIXME: this shouldn't be done here, but with some sort of event system
@@ -633,7 +633,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         storage.checkinResource(object, message, user)
 
         self.cache.clearSearchCache()
-        
+
         #FIXME: these things shouldn't be done here, but with some sort of event system
         # hitcount update
         hitcount = getToolByName(self, 'portal_hitcount', None)
@@ -674,7 +674,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         # we could look this up after publication (and would have to with proper events),
         # but that would be version inspection
         origobj = object.getPublishedObject().latest
-        
+
         storage = self.getStorageForType(object.portal_type)
         user = AccessControl.getSecurityManager().getUser().getUserName()
         storage.checkinResource(object, message, user)
@@ -687,13 +687,13 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             pubobj = object.getPublishedObject().latest
         except AttributeError:
             pass
-        
+
         # lens events
         self.lens_tool.notifyLensRevisedObject(pubobj)
-        
+
         # storage events (mostly collection printing, at the moment)
         storage.notifyObjectRevised(pubobj, origobj)
-        
+
         # notice of change to all containing collections, latest version only
         container_objs = self.catalog(containedModuleIds=pubobj.objectId)
         for col in container_objs:
@@ -710,10 +710,10 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
     def isLatestVersion(self, object):
         """Returns true if object is the most recent revision of an object"""
         return self.getStorageForType(object.portal_type).isLatestVersion(object)
-        
+
     def getVersionInfo(self, object):
         return self.getStorageForType(object.portal_type).getVersionInfo(object)
-        
+
     def searchRepositoryByDate(self, start, end, REQUEST=None):
         """Search repository by date: start and end"""
         result = []
@@ -750,7 +750,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
                 alluncook.update(uncook)
 
         return allcooked,alluncook
-    
+
     def searchRepository(self, query, query_type="weakAND", weights=dsw, field_queries={}, sorton='weight',recent=False,use_cache=True,min_rating=0):
         """Search the repository: portal_types defaults to all types w/ storage objects
         Default weights are stored in default_search_weights on the repository
@@ -785,15 +785,15 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             matched = []
             term_results = {}
 
-#            restrict = [(t,v[0]) for t,v in field_queries.items() if v[1] == 'AND'] 
+#            restrict = [(t,v[0]) for t,v in field_queries.items() if v[1] == 'AND']
             restrict = None
-            
+
             # First, the 'anywhere' query
             if query:
                 for name, portal_types in storages.items():
                     storage = self.getStorage(name)
                     result.extend(storage.search(query, portal_types, weights, restrict, min_rating=min_rating))
-                    
+
                 result,skipped,matched = applyQueryType(result,query,query_type)
                 term_results['any'] = (skipped,matched)
 
@@ -819,8 +819,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
                 term_results[field] = (fskipped,fmatched)
 
 
-                # intersect each result set with the previous ones. Each 
-                # field_query is ANDed with the others (including the 
+                # intersect each result set with the previous ones. Each
+                # field_query is ANDed with the others (including the
                 # 'anywhere' query), IFF one of the previous searches had a matching term,
                 # and this search had a matching term. This 'weakAND' drops any field that had
                 # all of its terms dropped. The 'matched' dictionaries of each result object are updated
@@ -843,12 +843,12 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
 
             result = self.sortSearchResults(result, sorton, recent)
             self.cache.resultsCacheInject(searchhash, (result,term_results,sorton,recent))
-               
+
             return self.wrapResults(result),term_results,searchhash
 
     def wrapResults(self,results):
-        """wrap list of results from pluggable brains or catalog record 
-           searches to standalone DBModuleSearch objects that can be 
+        """wrap list of results from pluggable brains or catalog record
+           searches to standalone DBModuleSearch objects that can be
            pickled, and thus cached or stored in a session variable.
            This method is idempotent, so can safely be called on lists m
            """
@@ -861,7 +861,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         def sort_rating(a, b):
             return cmp(getattr(b, 'rating', 0), getattr(a, 'rating', 0))
 
-        if sorton=='weight':        
+        if sorton=='weight':
             result.sort(lambda x,y: int(y.weight-x.weight or cmpTitle(x,y)))
         elif sorton=='popularity':
             hc_tool = getToolByName(self, 'portal_hitcount', None)
@@ -881,24 +881,24 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             result.sort(sort_rating)
 
         return self.wrapResults(result)
-    
+
     def getContentByAuthor (self, authorid):
         """Return all content by a particular author"""
 
         return self.getContentByRole('author',authorid)
-    
+
     def getContentByRole(self, role, user_id):
         """Return all content by where the user has the specified role"""
 
         storages = {}
         for name in self.listStorages():
             storages[name] = None
-            
+
         content = []
         for name in storages.keys():
             storage = self.getStorage(name)
             content.extend(storage.getObjectsByRole(role, user_id))
-            
+
         return content
 
 def applyQueryType(result,query,query_type):
@@ -915,7 +915,7 @@ def applyQueryType(result,query,query_type):
         matches = []
         for o in result:
             matches.extend(o.matched)
-             
+
         zeros = [term for term in query if matches.count(term) == 0 ]
         if zeros:
             somelen = len(query) - len(zeros)
@@ -933,5 +933,5 @@ def applyQueryType(result,query,query_type):
             return result, zeros, someterms
     else:
         return result, query, []
-    
+
 InitializeClass(Repository)
