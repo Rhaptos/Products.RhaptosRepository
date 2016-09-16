@@ -258,7 +258,14 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
                     obj = _createObjectByType(
                         'PublishedContentPointer', folder, node['id'])
                     obj.moduleId = node['id']
-                    obj.version = node['version']
+                    obj.version = 'latest'
+                    # FIXME - should track if original was set to latest, but
+                    # that info is not sent properly to the DB, nor returned
+                    # in the json
+                    # if node['latest']:
+                    #    obj.version = 'latest'
+                    # else:
+                    #    obj.version = node['version']
                     modules.append((node['id'], node['version']))
                     logger.debug('Created PublishedContentPointer %s@%s'
                                  % (obj.getModuleId(), obj.getVersion()))
