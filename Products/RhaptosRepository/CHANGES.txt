@@ -1,3 +1,6 @@
+RhaptosRepository-1.4.1
+  - handle trees with subcollections with ids other than subcol
+
 RhaptosRepository-1.4.0
   - creating collections from DB, don't pin modules
 
