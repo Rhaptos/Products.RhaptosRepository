@@ -245,7 +245,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             # Create the top level objects
             for node in contents:
                 new_folder = None
-                if node['id'] == 'subcol':
+                if node['id'] == 'subcol' or node['id'].startswith('col'):
                     new_folder = _createObjectByType(
                         'SubCollection', folder,
                         folder.generateUniqueId('SubCollection'))
