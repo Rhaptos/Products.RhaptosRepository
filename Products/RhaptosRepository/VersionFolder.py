@@ -41,16 +41,10 @@ class VersionFolderStorage(SimpleItem):
 
     def __init__(self, id):
         self.id = id
-        self._next_id = HISTORY_FIRST_ID
 
     def generateId(self):
-        """Create a unique ID for this object"""
-        self._next_id = self._next_id + 1
-        candidateId = 'col%d' % self._next_id
-        while self.hasObject(candidateId):
-            self._next_id = self._next_id + 1
-            candidateId = 'col%d' % self._next_id
-        return candidateId
+        """Fetch a unique ID for this object"""
+        return 'col%d' % self.portal_moduledb.sqlGetNextCollectionId()[0].collectionid
 
 
     def hasObject(self, id):
