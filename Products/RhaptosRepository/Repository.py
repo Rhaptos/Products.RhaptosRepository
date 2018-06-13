@@ -216,6 +216,7 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         for k, v in dict(title=data['name'], authors=data['authors'],
                          maintainers=data['maintainers'],
                          licensors=data['licensors'],
+                         license=data['license'],
                          _parent_id=data['parent_id'],
                          _parent_version=data['parent_version'],
                          parentAuthors=data['parentAuthors'],
