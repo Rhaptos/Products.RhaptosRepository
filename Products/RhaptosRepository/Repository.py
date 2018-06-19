@@ -283,6 +283,10 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
             addLatestReference(vf, 'latest', collection.Title(),
                                collection.version)
             logger.debug('Added latest reference')
+        else:
+            if collection.version.split('.') > vf.latest.version.split('.'):
+                vf.latest.edit(collection.Title(), collection.version)
+
         collection.submitter = data['submitter']
         collection.submitlog = data['submitlog']
         collection.state = 'public'
