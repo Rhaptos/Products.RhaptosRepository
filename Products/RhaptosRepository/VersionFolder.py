@@ -573,7 +573,7 @@ class VersionFolder(PortalFolder):
                 raise KeyError(key)
             data = data[0]
             logger.debug('Create collection %s version %s' % (data['id'], data['version']))
-            self.aq_parent._create_collection(key, data)
+            self.aq_parent._create_collection('%s/%s' % (data['id'], key), data)
 
         except KeyError:
             # No need to log
