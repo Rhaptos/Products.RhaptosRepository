@@ -1,3 +1,6 @@
+RhaptosRepository-1.4.4
+  - when creating collection, update latest Proxy if newer version
+
 RhaptosRepository-1.4.3
   - when creating collection from DB, set license
 
