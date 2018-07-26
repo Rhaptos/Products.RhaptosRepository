@@ -213,6 +213,8 @@ class Repository(UniqueObject, DynamicType, StorageManager, BTreeFolder2):
         collection.version = data['version']
         collection.created = DateTime(data['_created'].isoformat())
         collection.revised = DateTime(data['_revised'].isoformat())
+        collection.setKeywords(data['_keywords'].split(', '))
+        collection.setAbstract(data['abstract'])
         for k, v in dict(title=data['name'], authors=data['authors'],
                          maintainers=data['maintainers'],
                          licensors=data['licensors'],
