@@ -1,3 +1,6 @@
+RhaptosRepository-1.4.5
+  - when creating collection, include abstract and keywords
+
 RhaptosRepository-1.4.4
   - when creating collection, update latest Proxy if newer version
 
